@@ -2,3 +2,5 @@
 /ios/Pods
 ios/.xcode.env
 /node_modules
+/mobile_sdk
+/ios/ReactAgentforce.xcworkspace/xcuserdata
