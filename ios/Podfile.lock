@@ -1,16 +1,8 @@
 PODS:
-  - AgentforceSDK (11.6.0):
-    - AgentforceService (~> 3)
-    - SalesforceLogging
-    - SalesforceNavigation
-    - SalesforceNetwork
-    - SalesforceUser
-    - swift-markdown-ui
   - AgentforceService (3.2.0):
     - SalesforceLogging
     - SalesforceNetwork
   - boost (1.83.0)
-  - cmark_gfm (0.26.0)
   - DoubleConversion (1.1.6)
   - FBLazyVector (0.74.7)
   - FMDB/Core (2.7.12)
@@ -1286,13 +1278,10 @@ PODS:
   - SQLCipher/common (4.6.1)
   - SQLCipher/standard (4.6.1):
     - SQLCipher/common
-  - swift-markdown-ui (2.4.0):
-    - cmark_gfm (~> 0.26)
-    - NetworkImage
   - Yoga (0.0.0)
 
 DEPENDENCIES:
-  - AgentforceSDK
+  - AgentforceService (~> 3)
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
@@ -1300,6 +1289,7 @@ DEPENDENCIES:
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
   - MobileSync (from `../mobile_sdk/SalesforceMobileSDK-iOS`)
+  - NetworkImage
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCT-Folly/Fabric (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTDeprecation (from `../node_modules/react-native/ReactApple/Libraries/RCTFoundation/RCTDeprecation`)
@@ -1354,23 +1344,24 @@ DEPENDENCIES:
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - SalesforceAnalytics (from `../mobile_sdk/SalesforceMobileSDK-iOS`)
+  - SalesforceLogging
+  - SalesforceNavigation
+  - SalesforceNetwork
   - SalesforceReact (from `../node_modules/react-native-force`)
   - SalesforceSDKCommon (from `../mobile_sdk/SalesforceMobileSDK-iOS`)
   - SalesforceSDKCore (from `../mobile_sdk/SalesforceMobileSDK-iOS`)
+  - SalesforceUser
   - SmartStore (from `../mobile_sdk/SalesforceMobileSDK-iOS`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
   https://github.com/forcedotcom/SalesforceMobileSDK-iOS-Specs/:
-    - AgentforceSDK
     - AgentforceService
-    - cmark_gfm
     - NetworkImage
     - SalesforceLogging
     - SalesforceNavigation
     - SalesforceNetwork
     - SalesforceUser
-    - swift-markdown-ui
   trunk:
     - FMDB
     - SocketRocket
@@ -1508,10 +1499,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  AgentforceSDK: 2ddd18d29114839bb9e0ea85c153e5fbf8ce140b
   AgentforceService: 5c1c019759692a7dcc87a863925348a13447e189
   boost: d3f49c53809116a5d38da093a8aa78bf551aed09
-  cmark_gfm: 9d458ed3cc6c095911a752c6dc2a69951e0a6532
   DoubleConversion: 76ab83afb40bddeeee456813d9c04f67f78771b5
   FBLazyVector: 04dc972982abebd96d823752c3a426bbe6ac397f
   FMDB: 728731dd336af3936ce00f91d9d8495f5718a0e6
@@ -1582,9 +1571,8 @@ SPEC CHECKSUMS:
   SmartStore: 9fb3af7aaaebb9fcdeab32e70a73c940a6b30bd1
   SocketRocket: abac6f5de4d4d62d24e11868d7a2f427e0ef940d
   SQLCipher: 77fbe633cd84db04b07876dd50766b4924b57d61
-  swift-markdown-ui: b957d239fcc61a383c29bf935effb6cbfb35dda0
   Yoga: 9db4b2da1ed5d8e0c94158f9ac379c8b1b529f59
 
-PODFILE CHECKSUM: 13c0b2d5ded0edf87b984b4c5b621524590eb673
+PODFILE CHECKSUM: bc40f61f30940a6a796d63fc4ce41579d010cc28
 
 COCOAPODS: 1.16.2

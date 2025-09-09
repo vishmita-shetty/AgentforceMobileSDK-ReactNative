@@ -5,3 +5,5 @@ ios/.xcode.env
 /mobile_sdk
 /ios/ReactAgentforce.xcworkspace/xcuserdata
 /ios/.claude
+/build
+/ios/Frameworks
