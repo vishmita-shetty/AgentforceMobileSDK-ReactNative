@@ -56,6 +56,30 @@ This document outlines the plan for creating local XCFramework distributions of 
 2. Ensure ReactCommon conflicts are resolved
 3. Validate that all custom markdown functionality is preserved
 
+## Build Artifact Locations
+
+### Directory Structure
+```
+/Users/jbovet/Documents/GitHub/Syngenta/
+├── AgentforceService/                    # Source code
+│   ├── build/                           # Build artifacts
+│   │   ├── ios.xcarchive/
+│   │   └── ios-simulator.xcarchive/
+│   ├── AgentforceService.xcframework    # Final XCFramework
+│   ├── AgentforceMobileService-local.xcframework.zip
+│   └── AgentforceService-local.podspec  # Local podspec
+├── AgentforceSDK/                       # Source code  
+│   ├── build/                           # Build artifacts
+│   │   ├── ios.xcarchive/
+│   │   └── ios-simulator.xcarchive/
+│   ├── AgentforceSDK.xcframework        # Final XCFramework
+│   ├── AgentforceMobileSDK-iOS-local.xcframework.zip
+│   └── AgentforceSDK-local.podspec      # Local podspec
+└── ReactNative-AgentforceSDK/ios/       # ReactNative project
+    ├── Podfile                          # Updated to use local podspecs
+    └── LOCAL_DISTRIBUTION_PLAN.md       # This document
+```
+
 ## Implementation Steps
 
 ### Step 1: Build XCFrameworks
@@ -64,6 +88,9 @@ This document outlines the plan for creating local XCFramework distributions of 
 ```bash
 cd /Users/jbovet/Documents/GitHub/Syngenta/AgentforceService
 
+# Create build directory
+mkdir -p build
+
 # Build for iOS device
 xcodebuild archive \
   -workspace AgentforceService.xcworkspace \
@@ -82,13 +109,13 @@ xcodebuild archive \
   SKIP_INSTALL=NO \
   BUILD_LIBRARY_FOR_DISTRIBUTION=YES
 
-# Create XCFramework
+# Create XCFramework in project root
 xcodebuild -create-xcframework \
   -framework build/ios.xcarchive/Products/Library/Frameworks/AgentforceService.framework \
   -framework build/ios-simulator.xcarchive/Products/Library/Frameworks/AgentforceService.framework \
   -output "AgentforceService.xcframework"
 
-# Create zip
+# Create zip in project root
 zip -r AgentforceMobileService-local.xcframework.zip AgentforceService.xcframework
 ```
 
@@ -96,6 +123,9 @@ zip -r AgentforceMobileService-local.xcframework.zip AgentforceService.xcframewo
 ```bash
 cd /Users/jbovet/Documents/GitHub/Syngenta/AgentforceSDK
 
+# Create build directory
+mkdir -p build
+
 # Build for iOS device
 xcodebuild archive \
   -workspace AgentforceSDK.xcworkspace \
@@ -114,13 +144,13 @@ xcodebuild archive \
   SKIP_INSTALL=NO \
   BUILD_LIBRARY_FOR_DISTRIBUTION=YES
 
-# Create XCFramework
+# Create XCFramework in project root
 xcodebuild -create-xcframework \
   -framework build/ios.xcarchive/Products/Library/Frameworks/AgentforceSDK.framework \
   -framework build/ios-simulator.xcarchive/Products/Library/Frameworks/AgentforceSDK.framework \
   -output "AgentforceSDK.xcframework"
 
-# Create zip
+# Create zip in project root
 zip -r AgentforceMobileSDK-iOS-local.xcframework.zip AgentforceSDK.xcframework
 ```
 
