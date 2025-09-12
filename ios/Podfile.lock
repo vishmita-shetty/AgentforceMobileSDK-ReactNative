@@ -1,18 +1,24 @@
 PODS:
   - AgentforceSDK (11.8.5):
     - AgentforceSDK/Binary (= 11.8.5)
-    - AgentforceService (>= 2.1.1)
+    - AgentforceService
+    - LiveKitClient
     - SalesforceLogging
     - SalesforceNavigation
     - SalesforceNetwork
     - SalesforceUser
   - AgentforceSDK/Binary (11.8.5):
-    - AgentforceService (>= 2.1.1)
+    - AgentforceService
+    - LiveKitClient
     - SalesforceLogging
     - SalesforceNavigation
     - SalesforceNetwork
     - SalesforceUser
-  - AgentforceService (3.2.0):
+  - AgentforceService (3.4.0):
+    - AgentforceService/Binary (= 3.4.0)
+    - LiveKitClient
+  - AgentforceService/Binary (3.4.0):
+    - LiveKitClient
     - SalesforceLogging
     - SalesforceNetwork
   - boost (1.83.0)
@@ -27,6 +33,12 @@ PODS:
   - hermes-engine (0.74.7):
     - hermes-engine/Pre-built (= 0.74.7)
   - hermes-engine/Pre-built (0.74.7)
+  - LiveKitClient (2.0.18):
+    - LiveKitWebRTC (= 125.6422.11)
+    - Logging
+    - SwiftProtobuf
+  - LiveKitWebRTC (125.6422.11)
+  - Logging (1.5.4)
   - MobileSync (13.0.2):
     - MobileSync/MobileSync (= 13.0.2)
   - MobileSync/MobileSync (13.0.2):
@@ -1290,10 +1302,12 @@ PODS:
   - SQLCipher/common (4.6.1)
   - SQLCipher/standard (4.6.1):
     - SQLCipher/common
+  - SwiftProtobuf (1.31.0)
   - Yoga (0.0.0)
 
 DEPENDENCIES:
   - AgentforceSDK (from `../../AgentforceSDK`)
+  - AgentforceService (from `../../AgentforceService`)
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
@@ -1363,19 +1377,25 @@ DEPENDENCIES:
 
 SPEC REPOS:
   https://github.com/forcedotcom/SalesforceMobileSDK-iOS-Specs/:
-    - AgentforceService
     - SalesforceLogging
     - SalesforceNavigation
     - SalesforceNetwork
     - SalesforceUser
+  https://github.com/livekit/podspecs.git:
+    - Logging
   trunk:
     - FMDB
+    - LiveKitClient
+    - LiveKitWebRTC
     - SocketRocket
     - SQLCipher
+    - SwiftProtobuf
 
 EXTERNAL SOURCES:
   AgentforceSDK:
     :path: "../../AgentforceSDK"
+  AgentforceService:
+    :path: "../../AgentforceService"
   boost:
     :podspec: "../node_modules/react-native/third-party-podspecs/boost.podspec"
   DoubleConversion:
@@ -1507,8 +1527,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  AgentforceSDK: 93543223e3ca927010de2b9120ab980f046bd71b
-  AgentforceService: 5c1c019759692a7dcc87a863925348a13447e189
+  AgentforceSDK: 6a48183acc5b4f9e8658fe0721b86770c9ed0bf8
+  AgentforceService: 0a18293e49651c35bbcaa37cb4d144efe42455c7
   boost: d3f49c53809116a5d38da093a8aa78bf551aed09
   DoubleConversion: 76ab83afb40bddeeee456813d9c04f67f78771b5
   FBLazyVector: 04dc972982abebd96d823752c3a426bbe6ac397f
@@ -1516,6 +1536,9 @@ SPEC CHECKSUMS:
   fmt: 4c2741a687cc09f0634a2e2c72a838b99f1ff120
   glog: fdfdfe5479092de0c4bdbebedd9056951f092c4f
   hermes-engine: 21ea4e6a0b64854652c8c20cb815efdbb3131fdd
+  LiveKitClient: 051bd7a7562c12df4dc0fca5ff70a414a2c11eaf
+  LiveKitWebRTC: fd39d4e51ea51db3367f98c8c82cbf33e50b88c2
+  Logging: b2531e476d82e63f657fc610379691ae44daa9f2
   MobileSync: e8e3a3b93327334380b7144ba6f76fcd739dba57
   RCT-Folly: 5dc73daec3476616d19e8a53f0156176f7b55461
   RCTDeprecation: c4e6e3f6d44f76c45a964b40fa3eb2475259c027
@@ -1523,51 +1546,51 @@ SPEC CHECKSUMS:
   RCTTypeSafety: 4e9f36465ccbcca7b62f5cb8fc1ff2c997c3b92e
   React: 7f6ee889aa17245726efe5c0be52389e58d9d7c1
   React-callinvoker: 0155d33f43924c206dfaa040c020d0404bbb54d6
-  React-Codegen: 16b3c98135968de37085da126814187e6db73d7b
+  React-Codegen: dbde37f3f0e1b41442c05cdaac9170266eb32327
   React-Core: 063d3e42f48c671822d16ade452b8d25793cc9fa
   React-CoreModules: 46303f9f50e942fdd8763626464a8a24d9a36419
   React-cxxreact: 08e7fb41e693d0d18266c394d95501c719f81a7e
-  React-debug: 81d2423e256c8f0dad94f368e7a5450b3885c5b5
-  React-Fabric: 87f30b642973d16bbe84c0b898cebab6a26d8b65
-  React-FabricImage: 1ebed5160efb85acf9c492dfff7d21ec04225369
-  React-featureflags: c3e59ddabf0bc2b8e125aff4aab6943112f5d852
-  React-graphics: cd4fdf0130e3ff941044cac69b7706608f3a7d08
+  React-debug: 2ebca59859f724f9bec1a27ea5e42127323dbb63
+  React-Fabric: f35364c067beb490413087d476e7c32ff7ce35d3
+  React-FabricImage: e56ff44c910a8cffd7c957101ca6ab7a12f7b5fe
+  React-featureflags: 22ae4b2df9d070cbca7bb84ff7b6ce1507c589e5
+  React-graphics: e17f9762507f78a65c7c2ea3ec8f15ae3f9b393e
   React-hermes: 1313182de2921855390a3cde52e2a407a345775f
-  React-ImageManager: bc485f4de8fb13ebb8663e1f969fc1f28d1209cc
-  React-jserrorhandler: 863c218d19b34470fc3fc99872fb5175fee47356
+  React-ImageManager: 08b97d6df4f71349ee32a415f971682f5e7b0939
+  React-jserrorhandler: 81e491ad79c93e1495fbac4d297de673921c486c
   React-jsi: ffc343198a6e03042a205db9e149f321d356f033
   React-jsiexecutor: 50079a521784bfb675522f1c93dd741200c6d8dc
-  React-jsinspector: f250539d29817196179ea349ba4d475d256777a6
-  React-jsitracing: a884f4eb46ba8c373d909f9a712824af65ff41b8
+  React-jsinspector: 1eeb36a1a34369a793e7194838682dd380843b88
+  React-jsitracing: 82d47f192fdf740779c586fe06035ab366b73e6a
   React-logger: 58cd5ca2c3ab03a06b33e6d46a210d2b17ca116d
-  React-Mapbuffer: f245095650540b8ddd09ac907a79605f68b1f4d4
+  React-Mapbuffer: 038c3530476b004ab938c56d1a00140afa3fdc3c
   react-native-safe-area-context: 758e894ca5a9bd1868d2a9cfbca7326a2b6bf9dc
-  React-nativeconfig: 3b359be06d9ee8d64c1eacbca4f1040f331573fd
-  React-NativeModulesApple: 8fa1db4855dbc1d437d017bc080e75535c85d2d2
+  React-nativeconfig: fc1e87992e794e20f5e22116221577f21e05a18c
+  React-NativeModulesApple: 02a87759a8b359b91e5f5c57d05204d012bbce20
   React-perflogger: e9ebfc705cb9f60ef5d471637350ccab7abd0444
   React-RCTActionSheet: 75cf1acf78e9c2eab4431c3bec100a6462a7f0d5
   React-RCTAnimation: 93c464b62848bf9eddecf592819ca76111efb542
   React-RCTAppDelegate: 2f909ac09a87c15465f8b9a5a23c522ca1c19bb3
   React-RCTBlob: 946b43b7698e04ca313f4c872d716887f9e87fd8
-  React-RCTFabric: f92685634fe3ef6ec0fc08ce3b55174b0a7cfb55
+  React-RCTFabric: d6183f2a3838d6d3db780653d25e947bb34ee66a
   React-RCTImage: f3e09ea018d9d49908ce13b4a56949bb7a27a640
   React-RCTLinking: d808fd43aeb59a4e8851a31b82adcf86d585ac5d
   React-RCTNetwork: c36cabc37ebd5b6944ad2ba6b41971d8fb273dae
   React-RCTSettings: 4268e08911a0005568328fa8909f3558c8ce2a83
   React-RCTText: 82d4e9e279c9cfaed5b95bb86a1d7212a7fd6f21
   React-RCTVibration: 6a0fe57a35bf19d88a611d64563b34fce81af0a7
-  React-rendererdebug: 98e83fde6f560b98727a050c602791b72eb7d792
-  React-rncore: bb90d227f926d19683f9c5790d8e3687a4db051a
-  React-RuntimeApple: d6a09a97e8e8b2b110df39078785afd091e9118f
-  React-RuntimeCore: 5473e766306c1c9036a5867544673693d1412da8
+  React-rendererdebug: 52f603fe6170cf607db1ea49c43eabb2f42a4cf7
+  React-rncore: 0812a9d992dc5f522a3b82a44a538206356194c6
+  React-RuntimeApple: 3fc2684f07223b77ff34de60c39456e6c72db070
+  React-RuntimeCore: a6f1390c11cf7bcaeba0198549bdbda029a93a30
   React-runtimeexecutor: 99640ce20e73e06301dd5e18cc6646fa0968347b
-  React-RuntimeHermes: aba99ffa7ddace35e066beedb8610a8210ee074b
-  React-runtimescheduler: c5080bd8fd77bd9b98d9a5ec2a4a5cee523e3ec8
-  React-utils: 005eaf562b377922d8cf8a5e433046185e479796
-  ReactCommon: 788c996e0ae30635a67c2567db2e21f459bcd632
-  RNCMaskedView: af7c1703f39cdef08a99275bfcadf324aa403403
-  RNGestureHandler: eb1839bf183a333a8cf9bb16d26d41cb17850a4d
-  RNScreens: ef68e50aea531dd00c592ba4683bbcb89d4d2e1a
+  React-RuntimeHermes: e88641ccd12fc7b0e7879e6ead6b70fe28a5c409
+  React-runtimescheduler: 1dcdcd65d72bdce74a58a2da5d5b3295b27c6ca2
+  React-utils: e45cd7466d8fd9f1a88611fb8e9d38b92ef05b76
+  ReactCommon: 82c202f4ec2759b2e8461a5a524e3d0e9ec14b1e
+  RNCMaskedView: d7d429af166e632081fc0933bebad668e8e700b7
+  RNGestureHandler: 1ce686552d81933f0ebd5237353188b16fd04cca
+  RNScreens: 9ffe14a19aa4fecfe49ead4cfea952cba63e02f5
   SalesforceAnalytics: dcbedf2a52478f72d6f41453cc8264667059eb3f
   SalesforceLogging: 174438f5745353c816de5c3188ffaa21be55ff49
   SalesforceNavigation: c7dfa7a232252295585817d0ce3920c7e1dc7ad6
@@ -1579,8 +1602,9 @@ SPEC CHECKSUMS:
   SmartStore: 9fb3af7aaaebb9fcdeab32e70a73c940a6b30bd1
   SocketRocket: abac6f5de4d4d62d24e11868d7a2f427e0ef940d
   SQLCipher: 77fbe633cd84db04b07876dd50766b4924b57d61
-  Yoga: 9db4b2da1ed5d8e0c94158f9ac379c8b1b529f59
+  SwiftProtobuf: caa61117d9a5eeb60a52375f6685991a1fd4bd7b
+  Yoga: 6986e115ef4e300f1f5b4910d5eef51c711c8747
 
-PODFILE CHECKSUM: 2b08447237d7479ef28611d20a4f4e117c9fab39
+PODFILE CHECKSUM: 991bc750611450299d051b481042a1e26b4d4109
 
 COCOAPODS: 1.16.2
