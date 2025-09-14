@@ -29,9 +29,12 @@ target 'ReactAgentforce' do
   use_mobile_sdk!(:path => '../mobile_sdk/SalesforceMobileSDK-iOS')
   pod 'SalesforceReact', :path => '../node_modules/react-native-force'
   
-  # Use binary distributions (exactly like GitHub releases)
-  pod 'AgentforceSDK', :podspec => '../../AgentforceSDK/AgentforceSDK-binary.podspec'
-  pod 'AgentforceService', :podspec => '../../AgentforceService/AgentforceService-binary.podspec'
+  # Use local source pods (like working project)
+  pod 'AgentforceSDK', :path => '../../AgentforceSDK'
+  pod 'AgentforceService', :path => '../../AgentforceService'
+
+  # Add missing AgentforceSDK dependencies
+  pod 'LiveKitClient', '2.6.0'
 end
 
 pre_install do |installer|

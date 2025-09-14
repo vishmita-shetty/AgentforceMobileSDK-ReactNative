@@ -1,12 +1,23 @@
 PODS:
-  - AgentforceSDK (11.8.5-local):
+  - AgentforceSDK (11.8.5):
+    - AgentforceSDK/Binary (= 11.8.5)
     - AgentforceService
     - LiveKitClient
     - SalesforceLogging
     - SalesforceNavigation
     - SalesforceNetwork
     - SalesforceUser
-  - AgentforceService (3.2.0-local):
+  - AgentforceSDK/Binary (11.8.5):
+    - AgentforceService
+    - LiveKitClient
+    - SalesforceLogging
+    - SalesforceNavigation
+    - SalesforceNetwork
+    - SalesforceUser
+  - AgentforceService (3.4.0):
+    - AgentforceService/Binary (= 3.4.0)
+    - LiveKitClient
+  - AgentforceService/Binary (3.4.0):
     - LiveKitClient
     - SalesforceLogging
     - SalesforceNetwork
@@ -25,13 +36,13 @@ PODS:
     - hermes-engine/Pre-built (= 0.74.7)
   - hermes-engine/Pre-built (0.74.7)
   - InternalCollectionsUtilities (1.1.4)
-  - LiveKitClient (2.7.2):
+  - LiveKitClient (2.6.0):
     - DequeModule (= 1.1.4)
-    - LiveKitWebRTC (= 137.7151.04)
+    - LiveKitWebRTC (= 125.6422.29)
     - Logging (= 1.5.4)
     - OrderedCollections (= 1.1.4)
     - SwiftProtobuf
-  - LiveKitWebRTC (137.7151.04)
+  - LiveKitWebRTC (125.6422.29)
   - Logging (1.5.4)
   - MobileSync (13.0.2):
     - MobileSync/MobileSync (= 13.0.2)
@@ -1302,14 +1313,15 @@ PODS:
   - Yoga (0.0.0)
 
 DEPENDENCIES:
-  - AgentforceSDK (from `../../AgentforceSDK/AgentforceSDK-binary.podspec`)
-  - AgentforceService (from `../../AgentforceService/AgentforceService-binary.podspec`)
+  - AgentforceSDK (from `../../AgentforceSDK`)
+  - AgentforceService (from `../../AgentforceService`)
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - fmt (from `../node_modules/react-native/third-party-podspecs/fmt.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
+  - LiveKitClient (= 2.6.0)
   - MobileSync (from `../mobile_sdk/SalesforceMobileSDK-iOS`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCT-Folly/Fabric (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
@@ -1392,9 +1404,9 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   AgentforceSDK:
-    :podspec: "../../AgentforceSDK/AgentforceSDK-binary.podspec"
+    :path: "../../AgentforceSDK"
   AgentforceService:
-    :podspec: "../../AgentforceService/AgentforceService-binary.podspec"
+    :path: "../../AgentforceService"
   boost:
     :podspec: "../node_modules/react-native/third-party-podspecs/boost.podspec"
   DoubleConversion:
@@ -1526,8 +1538,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  AgentforceSDK: 795671973c9ad185b29fd756c1cb7d6d613693c3
-  AgentforceService: f72ba6490f1fc7e46de3e84ce9b6f0a1ccf09506
+  AgentforceSDK: 6a48183acc5b4f9e8658fe0721b86770c9ed0bf8
+  AgentforceService: 0a18293e49651c35bbcaa37cb4d144efe42455c7
   boost: d3f49c53809116a5d38da093a8aa78bf551aed09
   DequeModule: 646e2f186357734310ba696172d271f0988d3fb8
   DoubleConversion: 76ab83afb40bddeeee456813d9c04f67f78771b5
@@ -1537,8 +1549,8 @@ SPEC CHECKSUMS:
   glog: fdfdfe5479092de0c4bdbebedd9056951f092c4f
   hermes-engine: 21ea4e6a0b64854652c8c20cb815efdbb3131fdd
   InternalCollectionsUtilities: c32aa362a8455b73c93cc941ac98f50c4e25ed0c
-  LiveKitClient: 12765695a1ac469e1b7608d1d3663db8ec5b524f
-  LiveKitWebRTC: c376f5ce67c46fc96b97db1489939a8823b36f85
+  LiveKitClient: ad2b3e37118ee7fd0eb215dc26c226b94c78ed2e
+  LiveKitWebRTC: c0c768aac64553fefae3a8d7a7f354b081d9635d
   Logging: b2531e476d82e63f657fc610379691ae44daa9f2
   MobileSync: e8e3a3b93327334380b7144ba6f76fcd739dba57
   OrderedCollections: 68f29db2e771b704400ee1078ea34ef98a38e01f
@@ -1607,6 +1619,6 @@ SPEC CHECKSUMS:
   SwiftProtobuf: caa61117d9a5eeb60a52375f6685991a1fd4bd7b
   Yoga: 6986e115ef4e300f1f5b4910d5eef51c711c8747
 
-PODFILE CHECKSUM: 861c8000506bf879662eb6b1e8eab0e8e4827925
+PODFILE CHECKSUM: a643dd518fcdc17b572912e0b553e5561814f307
 
 COCOAPODS: 1.16.2
