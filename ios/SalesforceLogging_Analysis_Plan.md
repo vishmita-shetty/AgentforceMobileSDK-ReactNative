@@ -246,3 +246,140 @@ Binary framework distribution is absolutely possible and recommended, but requir
 - **Module-stable interfaces** for protocol witness resolution
 
 The issue was not a fundamental Swift limitation but a build configuration problem.
+
+## CRITICAL UPDATE: Issue Persists Despite Correct Build Settings
+
+### **Current Status: UNRESOLVED**
+
+Despite successfully implementing all identified fixes, the symbol resolution error **still persists**:
+```
+dyld[92679]: Symbol not found: _$s17SalesforceLogging6LoggerP3log_5levelySS_AA8LogLevelOtFTj
+```
+
+### **What We Have Confirmed Working**
+
+1. **BUILD_LIBRARY_FOR_DISTRIBUTION=YES**: ✅ **CONFIRMED**
+   - AgentforceSDK XCFramework now has `.swiftinterface` files
+   - Path: `AgentforceSDK.xcframework/ios-arm64_x86_64-simulator/AgentforceSDK.framework/Modules/AgentforceSDK.swiftmodule/*.swiftinterface`
+   - Module stability is properly enabled
+
+2. **Mobile SDK Version Alignment**: ✅ **CONFIRMED**
+   - AgentforceSDK: SalesforceLogging 1.0.0 (Mobile SDK v13.0.2)
+   - AgentforceService: SalesforceLogging 1.0.0 (Mobile SDK v13.0.2)
+   - React Native: SalesforceLogging 1.0.0 (Mobile SDK v13.0.2)
+   - All projects now use identical versions
+
+3. **Binary Distribution**: ✅ **CONFIRMED**
+   - React Native Podfile uses binary XCFramework consumption:
+   ```ruby
+   pod 'AgentforceSDK', :podspec => '../../AgentforceSDK/AgentforceSDK-binary.podspec'
+   pod 'AgentforceService', :podspec => '../../AgentforceService/AgentforceService-binary.podspec'
+   ```
+
+### **Technical Analysis: Why The Fix Should Work But Doesn't**
+
+**Expected Behavior**: With `BUILD_LIBRARY_FOR_DISTRIBUTION=YES`, Swift generates stable module interfaces that should provide protocol witness table compatibility across different compilation contexts.
+
+**Actual Behavior**: The protocol witness symbol `_$s17SalesforceLogging6LoggerP3log_5levelySS_AA8LogLevelOtFTj` is still missing at runtime, suggesting a deeper ABI compatibility issue.
+
+### **Remaining Hypotheses for Expert Review**
+
+#### **Hypothesis 1: Protocol Witness Table Generation Timing**
+- **Problem**: AgentforceSDK binary expects protocol witness generated during its compilation
+- **Root Cause**: Protocol witness tables might be generated differently between:
+  - When AgentforceSDK was built (with its SalesforceLogging context)
+  - When React Native app runs (with its SalesforceLogging context)
+- **Evidence**: Symbol name indicates protocol requirement witness for `Logger.log(_:level:)`
+
+#### **Hypothesis 2: Swift Compiler Version Mismatch**
+- **Problem**: Different Swift compiler versions might generate incompatible protocol witnesses
+- **Investigation Needed**: Compare Swift compiler versions used in:
+  - AgentforceSDK build environment
+  - React Native build environment
+- **Command**: `swiftc --version` in both contexts
+
+#### **Hypothesis 3: Dependency Linking Order**
+- **Problem**: SalesforceLogging.framework might not be properly linked before AgentforceSDK
+- **Investigation Needed**: Check framework loading order in runtime
+- **Evidence**: Dynamic linker error occurs at load time, not at protocol call time
+
+#### **Hypothesis 4: Multiple SalesforceLogging Versions**
+- **Problem**: Despite version alignment, there might be multiple SalesforceLogging binaries
+- **Investigation Needed**: Verify only one SalesforceLogging.framework exists in final app bundle
+- **Command**: `find ReactAgentforce.app -name "SalesforceLogging*" -type f`
+
+### **Advanced Debugging Steps for Expert**
+
+#### **Step 1: Protocol Witness Analysis**
+```bash
+# Check if working project has the expected symbol
+nm "/path/to/working/SalesforceLogging.framework/SalesforceLogging" | grep "_.*s17SalesforceLogging6LoggerP3log_5levelySS_AA8LogLevelOtFTj"
+
+# Check if our SalesforceLogging has the symbol
+nm "Pods/SalesforceLogging/SalesforceLogging.framework/SalesforceLogging" | grep "_.*s17SalesforceLogging6LoggerP3log_5levelySS_AA8LogLevelOtFTj"
+
+# Compare all Logger-related symbols
+nm "Pods/SalesforceLogging/SalesforceLogging.framework/SalesforceLogging" | grep -E "(Logger|log)" > our_symbols.txt
+nm "/path/to/working/SalesforceLogging.framework/SalesforceLogging" | grep -E "(Logger|log)" > working_symbols.txt
+diff our_symbols.txt working_symbols.txt
+```
+
+#### **Step 2: Swift Module Interface Comparison**
+```bash
+# Compare Swift interfaces between working and non-working
+cat "AgentforceSDK.xcframework/.../AgentforceSDK.swiftmodule/...swiftinterface" | grep -A5 -B5 "Logger"
+cat "/working/AgentforceSDK/.../AgentforceSDK.swiftmodule/...swiftinterface" | grep -A5 -B5 "Logger"
+```
+
+#### **Step 3: Runtime Library Loading Analysis**
+```bash
+# Check what libraries are loaded at runtime
+DYLD_PRINT_LIBRARIES=1 xcrun simctl launch [device] [bundle_id] 2>&1 | grep -i salesforce
+```
+
+#### **Step 4: Concrete Implementation Analysis**
+```bash
+# Find concrete Logger implementations in AgentforceSDK
+grep -r "Logger.*:" AgentforceSDK/AgentforceSDK/ --include="*.swift"
+grep -r "SalesforceLogging" AgentforceSDK/AgentforceSDK/ --include="*.swift"
+```
+
+### **Key Questions for Expert Review**
+
+1. **Is our understanding of Swift protocol witness tables correct?**
+   - Should `BUILD_LIBRARY_FOR_DISTRIBUTION=YES` guarantee cross-module protocol conformance?
+
+2. **Are we missing a step in binary framework distribution?**
+   - Do we need to provide concrete Logger implementation in the consuming app?
+   - Should protocol witnesses be embedded differently?
+
+3. **Is there a fundamental limitation with binary Swift frameworks and protocol conformances?**
+   - Are there known issues with distributing frameworks that depend on protocol conformances?
+
+4. **Should we consider alternative approaches?**
+   - Source-only distribution
+   - Static framework instead of dynamic
+   - Different linking strategy
+
+### **Working Reference Project**
+- **Path**: `/Users/jbovet/Downloads/ReactAgentforce/ReactAgentforce`
+- **Status**: Successfully runs with AgentforceSDK
+- **Key Difference**: Uses source compilation, not binary distribution
+- **Investigation Value**: This project can serve as a baseline for symbol comparison
+
+### **Technical Context Summary**
+- **Platform**: iOS 18.5 Simulator, iPhone 16
+- **Swift Version**: 5.x (exact version TBD)
+- **Xcode Version**: Latest
+- **CocoaPods Version**: Latest
+- **Mobile SDK**: v13.0.2 across all projects
+- **Build Settings**: `BUILD_LIBRARY_FOR_DISTRIBUTION=YES` confirmed
+- **Module Stability**: Confirmed with `.swiftinterface` files present
+
+### **Immediate Next Steps**
+1. Compare Swift compiler versions between build environments
+2. Analyze protocol witness symbols in working vs non-working SalesforceLogging binaries
+3. Investigate if concrete Logger implementation is required in consuming app
+4. Consider whether the issue is fundamental to Swift binary framework distribution
+
+The root cause appears to be deeper than build configuration and may require Swift ABI or protocol conformance expertise to resolve.
