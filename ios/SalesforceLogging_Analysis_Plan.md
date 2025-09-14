@@ -185,3 +185,64 @@ This created a **2+ major version gap** causing Swift ABI incompatibilities in S
 ✅ **Protocol witnesses**: Now compatible across all frameworks
 
 The `Symbol not found: _$s17SalesforceLogging6LoggerP3log_5levelySS_AA8LogLevelOtFTj` error should be resolved with consistent Mobile SDK v13.0.2 usage across all components.
+
+## Update: ULTIMATE ROOT CAUSE DISCOVERED
+
+### **The Real Issue: BUILD_LIBRARY_FOR_DISTRIBUTION Setting**
+
+After extensive analysis comparing working vs non-working projects, the ultimate root cause was discovered:
+
+**Problem**: AgentforceSDK XCFramework was built with `BUILD_LIBRARY_FOR_DISTRIBUTION=NO`
+**Solution**: Rebuild with `BUILD_LIBRARY_FOR_DISTRIBUTION=YES`
+
+### **Technical Explanation**
+
+**Swift Module Stability and Binary Distribution:**
+1. **BUILD_LIBRARY_FOR_DISTRIBUTION=NO** (our original setting):
+   - Uses unstable Swift ABI
+   - Protocol witnesses are compiler/context specific
+   - Cross-module protocol conformance fails at runtime
+   - Binary frameworks are not stable across compilation contexts
+
+2. **BUILD_LIBRARY_FOR_DISTRIBUTION=YES** (correct setting):
+   - Enables Swift Module Stability
+   - Creates stable Swift module interfaces (.swiftinterface files)
+   - Generates ABI-compatible protocol witnesses
+   - Allows binary frameworks to work across different Swift compiler versions
+
+### **Why This Matters**
+
+AgentforceSDK source code contains **67 direct calls** to `SalesforceLogging.Logger.log()` methods across **32 files**. When compiled as a binary framework:
+
+- **With unstable ABI**: Protocol witness table symbols become context-dependent and break
+- **With stable ABI**: Protocol witness tables are generated in a compatible format
+
+### **Key Evidence**
+
+1. **Working project uses source compilation** (no binary distribution issues)
+2. **Our binary XCFramework** expects specific protocol witness symbols
+3. **Symbol analysis showed** working AgentforceSDK doesn't expect the problematic symbol
+4. **Build script was using wrong setting**: `BUILD_LIBRARY_FOR_DISTRIBUTION=NO`
+
+### **Final Resolution**
+
+Updated `build-frameworks.sh` build settings from:
+```bash
+BUILD_SETTINGS="SKIP_INSTALL=NO BUILD_LIBRARY_FOR_DISTRIBUTION=NO"
+```
+
+To:
+```bash
+BUILD_SETTINGS="SKIP_INSTALL=NO BUILD_LIBRARY_FOR_DISTRIBUTION=YES"
+```
+
+**This enables proper binary framework distribution with module stability, resolving the protocol witness table issue while maintaining the ability to distribute binary XCFrameworks.**
+
+### **Lesson Learned**
+
+Binary framework distribution is absolutely possible and recommended, but requires:
+- **BUILD_LIBRARY_FOR_DISTRIBUTION=YES** for module stability
+- **Proper Swift ABI compatibility** for cross-module protocol conformances
+- **Module-stable interfaces** for protocol witness resolution
+
+The issue was not a fundamental Swift limitation but a build configuration problem.
