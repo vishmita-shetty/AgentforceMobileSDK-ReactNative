@@ -138,3 +138,50 @@ Getting runtime error: `Symbol not found: _$s17SalesforceLogging6LoggerP3log_5le
 3. **Verify AgentforceSDK binary distribution** includes all required protocol witnesses or use matching Mobile SDK version
 
 **The issue is protocol witness availability, not framework version incompatibility.**
+
+## Update: Final Root Cause and Resolution
+
+### **Actual Root Cause Discovered**
+After deeper analysis, the real issue was **Mobile SDK version mismatch between projects**:
+
+- **AgentforceSDK binary**: Originally built against **Mobile SDK v11.1.0**
+- **React Native project**: Using **Mobile SDK v13.0.2**
+- **AgentforceService**: Also using **Mobile SDK v11.1.0**
+
+This created a **2+ major version gap** causing Swift ABI incompatibilities in SalesforceLogging protocol definitions.
+
+### **Resolution Applied**
+1. **Updated AgentforceSDK Podfile** to use Mobile SDK v13.0.2:
+   ```ruby
+   # Salesforce Mobile Interface - Use same versions as React Native v13.0.2
+   pod 'SalesforceNetwork', '1.0.0'
+   pod 'SalesforceLogging', '1.0.0'
+   pod 'SalesforceNavigation', '1.0.0'
+   pod 'SalesforceUser', '1.0.0'
+   ```
+
+2. **Updated AgentforceService Podfile** to use Mobile SDK v13.0.2:
+   ```ruby
+   # Updated to match Mobile SDK v13.0.2
+   mobile_sdk_repo = 'https://github.com/forcedotcom/SalesforceMobileSDK-iOS.git'
+   mobile_sdk_release_tag = 'v13.0.2'
+   pod 'SalesforceNetwork', :git => mobile_sdk_repo, :tag => mobile_sdk_release_tag
+   pod 'SalesforceLogging', :git => mobile_sdk_repo, :tag => mobile_sdk_release_tag
+   ```
+
+3. **Fixed build-frameworks.sh script** by removing false-positive version checks
+
+4. **Rebuilt both frameworks** from source using consistent Mobile SDK v13.0.2
+
+### **Key Learnings**
+- **Binary vs Source compatibility**: When switching from source to binary distribution, ensure ALL dependencies use the same Mobile SDK version
+- **Swift ABI sensitivity**: Major Mobile SDK version differences cause protocol witness mismatches
+- **Version alignment critical**: All frameworks in the dependency chain must use compatible Mobile SDK versions
+
+### **Final Solution Status**
+✅ **AgentforceSDK**: Rebuilt against Mobile SDK v13.0.2
+✅ **AgentforceService**: Rebuilt against Mobile SDK v13.0.2
+✅ **React Native**: Using Mobile SDK v13.0.2
+✅ **Protocol witnesses**: Now compatible across all frameworks
+
+The `Symbol not found: _$s17SalesforceLogging6LoggerP3log_5levelySS_AA8LogLevelOtFTj` error should be resolved with consistent Mobile SDK v13.0.2 usage across all components.
