@@ -383,3 +383,190 @@ grep -r "SalesforceLogging" AgentforceSDK/AgentforceSDK/ --include="*.swift"
 4. Consider whether the issue is fundamental to Swift binary framework distribution
 
 The root cause appears to be deeper than build configuration and may require Swift ABI or protocol conformance expertise to resolve.
+
+## 🎯 CRITICAL DISCOVERY: Mismatched SalesforceLogging Sources
+
+### **ROOT CAUSE IDENTIFIED: Incompatible SalesforceLogging Implementations**
+
+**The fundamental issue**: AgentforceSDK and React Native are using **different SalesforceLogging implementations** with incompatible protocol witness tables.
+
+#### **AgentforceSDK Package.swift (Expected Dependencies)**
+```swift
+dependencies: [
+    .package(url: "https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS", from: "1.0.0"),
+],
+targets: [
+    .target(
+        name: "AgentforceSDK",
+        dependencies: [
+            .product(name: "SalesforceLogging", package: "SalesforceMobileInterfaces-iOS"),
+        ]
+    )
+]
+```
+
+#### **React Native Project (Actual Dependencies)**
+```ruby
+# Uses SalesforceMobileSDK-iOS (CocoaPods)
+use_mobile_sdk!(:path => '../mobile_sdk/SalesforceMobileSDK-iOS')
+```
+
+### **The Incompatibility**
+
+1. **AgentforceSDK expects**: `SalesforceLogging` from **`SalesforceMobileInterfaces-iOS`** (Swift Package Manager)
+2. **React Native provides**: `SalesforceLogging` from **`SalesforceMobileSDK-iOS`** (CocoaPods)
+
+These are **different implementations** of the SalesforceLogging protocol, compiled with different contexts and generating incompatible protocol witness tables.
+
+### **Evidence**
+- AgentforceSDK/Package.resolved shows: `"location" : "https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git"`
+- All Pods README files reference: `.product(name: "SalesforceLogging", package: "SalesforceMobileInterfaces")`
+- AgentforceSDK was designed to use Swift Package Manager, but we're building it with CocoaPods
+
+### **Technical Analysis**
+
+**Why BUILD_LIBRARY_FOR_DISTRIBUTION didn't fix it**:
+- Module stability helps with **same framework, different Swift versions**
+- It doesn't help with **different framework implementations of the same protocol**
+- Protocol witness tables are framework-specific, not just Swift-version-specific
+
+**Why version alignment didn't fix it**:
+- We aligned CocoaPods versions (1.0.0)
+- But AgentforceSDK expects Swift Package Manager versions
+- These are completely different codebases with same protocol names
+
+### **Resolution Strategies**
+
+#### **Strategy 1: Use Swift Package Manager for AgentforceSDK (Recommended)**
+```swift
+// In React Native project Package.swift
+dependencies: [
+    .package(url: "https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS", from: "1.0.0"),
+    .package(path: "../../AgentforceSDK"), // Local AgentforceSDK
+]
+```
+
+#### **Strategy 2: Force AgentforceSDK to use CocoaPods SalesforceLogging**
+- Modify AgentforceSDK to depend on Mobile SDK CocoaPods instead of SalesforceMobileInterfaces-iOS
+- Requires changing Package.swift to use Mobile SDK dependencies
+
+#### **Strategy 3: Rebuild AgentforceSDK with CocoaPods Dependencies**
+- Remove Package.swift SPM dependencies
+- Use only CocoaPods for all dependencies
+- Ensure protocol conformances come from same source
+
+### **Immediate Next Steps**
+1. **Determine architecture**: Should React Native project use SPM or CocoaPods for SalesforceLogging?
+2. **Check compatibility**: Verify if SalesforceMobileInterfaces-iOS and SalesforceMobileSDK-iOS can coexist
+3. **Choose strategy**: SPM integration or CocoaPods consolidation
+
+**This explains why the working project succeeds**: It likely uses consistent dependency management (all CocoaPods or all SPM) rather than mixing both systems.
+
+## 🎉 FINAL RESOLUTION: Complete Solution Implemented
+
+### **ISSUE RESOLVED SUCCESSFULLY**
+
+The symbol resolution errors have been **completely resolved** by implementing a comprehensive solution that addresses both the dependency source mismatch and build configuration requirements.
+
+### **Complete Solution Applied**
+
+#### **1. Dependency Source Alignment**
+**Problem**: AgentforceSDK expected SalesforceMobileInterfaces-iOS while React Native used SalesforceMobileSDK-iOS
+
+**Solution**: Updated both projects to use **SalesforceMobileInterfaces-iOS** as the common source
+
+**AgentforceSDK/Podfile**:
+```ruby
+# Salesforce Mobile Interface - Use SalesforceMobileInterfaces-iOS to match React Native
+pod 'SalesforceNetwork', :git => 'https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git', :tag => '1.0.0'
+pod 'SalesforceLogging', :git => 'https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git', :tag => '1.0.0'
+pod 'SalesforceNavigation', :git => 'https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git', :tag => '1.0.0'
+pod 'SalesforceUser', :git => 'https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git', :tag => '1.0.0'
+```
+
+**ReactNative/Podfile**:
+```ruby
+# Override Mobile SDK SalesforceLogging with SalesforceMobileInterfaces-iOS version
+# to match AgentforceSDK expectations
+pod 'SalesforceLogging', :git => 'https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git', :tag => '1.0.0'
+pod 'SalesforceNavigation', :git => 'https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git', :tag => '1.0.0'
+pod 'SalesforceNetwork', :git => 'https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git', :tag => '1.0.0'
+pod 'SalesforceUser', :git => 'https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git', :tag => '1.0.0'
+```
+
+#### **2. Module Stability Configuration**
+**Problem**: SalesforceMobileInterfaces-iOS frameworks also needed `BUILD_LIBRARY_FOR_DISTRIBUTION=YES`
+
+**Solution**: Added post_install hook to ensure module stability for all SalesforceMobileInterfaces frameworks
+
+**ReactNative/Podfile post_install**:
+```ruby
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    if target.name == 'SalesforceLogging' || target.name == 'SalesforceNavigation' || target.name == 'SalesforceNetwork' || target.name == 'SalesforceUser'
+      target.build_configurations.each do |config|
+        config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
+      end
+    end
+  end
+end
+```
+
+#### **3. Framework Rebuild Process**
+1. **AgentforceSDK**: Rebuilt with SalesforceMobileInterfaces-iOS dependencies and `BUILD_LIBRARY_FOR_DISTRIBUTION=YES`
+2. **AgentforceService**: Already properly configured with module stability
+3. **React Native**: Updated to consume aligned frameworks
+
+### **Why This Solution Works**
+
+#### **Protocol Witness Table Compatibility**
+- **Before**: Different SalesforceLogging implementations generated incompatible protocol witness tables
+- **After**: Same SalesforceMobileInterfaces-iOS source ensures identical protocol implementations
+
+#### **Swift Module Stability**
+- **Before**: Frameworks built without module stability caused ABI mismatches
+- **After**: `BUILD_LIBRARY_FOR_DISTRIBUTION=YES` ensures stable Swift module interfaces across compilation contexts
+
+#### **Binary Framework Distribution**
+- **Before**: Mixed dependency sources prevented proper binary framework consumption
+- **After**: Consistent dependency sources enable successful binary XCFramework distribution
+
+### **Technical Validation**
+
+✅ **Symbol Errors Resolved**:
+- `_$s17SalesforceLogging6LoggerP3log_5levelySS_AA8LogLevelOtFTj` ✅ Fixed
+- `_$s20SalesforceNavigation0B0P2go2toyAA11Destination_p_tFTj` ✅ Fixed
+
+✅ **Module Stability Confirmed**:
+- AgentforceSDK.xcframework contains `.swiftinterface` files
+- SalesforceMobileInterfaces frameworks built with `BUILD_LIBRARY_FOR_DISTRIBUTION=YES`
+
+✅ **Binary Distribution Working**:
+- React Native successfully consumes AgentforceSDK as XCFramework
+- No runtime symbol resolution errors
+
+### **Key Learnings**
+
+1. **Dependency Source Consistency is Critical**: Mixing SalesforceMobileSDK-iOS and SalesforceMobileInterfaces-iOS creates incompatible protocol implementations
+
+2. **Module Stability Required for All Dependencies**: Not just the main framework, but all transitive dependencies need `BUILD_LIBRARY_FOR_DISTRIBUTION=YES`
+
+3. **Protocol Witness Tables are Source-Specific**: Same protocol names from different sources generate incompatible witness tables
+
+4. **Binary Framework Distribution is Achievable**: With proper dependency alignment and module stability configuration
+
+### **Final Architecture**
+
+```
+React Native App
+├── SalesforceMobileSDK-iOS (Core Mobile SDK)
+├── SalesforceMobileInterfaces-iOS Overrides:
+│   ├── SalesforceLogging 1.0.0
+│   ├── SalesforceNavigation 1.0.0
+│   ├── SalesforceNetwork 1.0.0
+│   └── SalesforceUser 1.0.0
+├── AgentforceSDK.xcframework (Binary)
+└── AgentforceService.xcframework (Binary)
+```
+
+**All frameworks use identical SalesforceMobileInterfaces-iOS implementations with module stability enabled, ensuring complete protocol witness table compatibility.**

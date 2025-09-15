@@ -15,6 +15,7 @@ use_frameworks!
 project 'ReactAgentforce.xcodeproj'
 target 'ReactAgentforce' do
   source 'https://github.com/forcedotcom/SalesforceMobileSDK-iOS-Specs.git'
+  source 'https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git'
   source 'https://cdn.cocoapods.org/'
   source "https://github.com/livekit/podspecs.git"
 
@@ -28,7 +29,14 @@ target 'ReactAgentforce' do
 
   use_mobile_sdk!(:path => '../mobile_sdk/SalesforceMobileSDK-iOS')
   pod 'SalesforceReact', :path => '../node_modules/react-native-force'
-  
+
+  # Override Mobile SDK SalesforceLogging with SalesforceMobileInterfaces-iOS version
+  # to match AgentforceSDK expectations
+  pod 'SalesforceLogging', :git => 'https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git', :tag => '1.0.0'
+  pod 'SalesforceNavigation', :git => 'https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git', :tag => '1.0.0'
+  pod 'SalesforceNetwork', :git => 'https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git', :tag => '1.0.0'
+  pod 'SalesforceUser', :git => 'https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git', :tag => '1.0.0'
+
   # Use local XCFramework binary distributions (rebuilt with BUILD_LIBRARY_FOR_DISTRIBUTION=YES)
   pod 'AgentforceSDK', :podspec => '../../AgentforceSDK/AgentforceSDK-binary.podspec'
   pod 'AgentforceService', :podspec => '../../AgentforceService/AgentforceService-binary.podspec'
@@ -40,6 +48,13 @@ pre_install do |installer|
 end
 
 post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    if target.name == 'SalesforceLogging'  || target.name == 'SalesforceNavigation' || target.name == 'SalesforceNetwork' || target.name == 'SalesforceUser'
+      target.build_configurations.each do |config|
+        config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
+      end
+    end
+  end
   # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
   # Comment the following if you do not want the SDK to emit signpost events for instrumentation. Signposts are  enabled for non release version of the app.
   signposts_post_install(installer)

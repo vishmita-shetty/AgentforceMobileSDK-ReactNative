@@ -1365,18 +1365,17 @@ DEPENDENCIES:
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - SalesforceAnalytics (from `../mobile_sdk/SalesforceMobileSDK-iOS`)
+  - SalesforceLogging (from `https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git`, tag `1.0.0`)
+  - SalesforceNavigation (from `https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git`, tag `1.0.0`)
+  - SalesforceNetwork (from `https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git`, tag `1.0.0`)
   - SalesforceReact (from `../node_modules/react-native-force`)
   - SalesforceSDKCommon (from `../mobile_sdk/SalesforceMobileSDK-iOS`)
   - SalesforceSDKCore (from `../mobile_sdk/SalesforceMobileSDK-iOS`)
+  - SalesforceUser (from `https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git`, tag `1.0.0`)
   - SmartStore (from `../mobile_sdk/SalesforceMobileSDK-iOS`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
-  https://github.com/forcedotcom/SalesforceMobileSDK-iOS-Specs/:
-    - SalesforceLogging
-    - SalesforceNavigation
-    - SalesforceNetwork
-    - SalesforceUser
   https://github.com/livekit/podspecs.git:
     - DequeModule
     - InternalCollectionsUtilities
@@ -1514,16 +1513,42 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-screens"
   SalesforceAnalytics:
     :path: "../mobile_sdk/SalesforceMobileSDK-iOS"
+  SalesforceLogging:
+    :git: https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git
+    :tag: 1.0.0
+  SalesforceNavigation:
+    :git: https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git
+    :tag: 1.0.0
+  SalesforceNetwork:
+    :git: https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git
+    :tag: 1.0.0
   SalesforceReact:
     :path: "../node_modules/react-native-force"
   SalesforceSDKCommon:
     :path: "../mobile_sdk/SalesforceMobileSDK-iOS"
   SalesforceSDKCore:
     :path: "../mobile_sdk/SalesforceMobileSDK-iOS"
+  SalesforceUser:
+    :git: https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git
+    :tag: 1.0.0
   SmartStore:
     :path: "../mobile_sdk/SalesforceMobileSDK-iOS"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
+
+CHECKOUT OPTIONS:
+  SalesforceLogging:
+    :git: https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git
+    :tag: 1.0.0
+  SalesforceNavigation:
+    :git: https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git
+    :tag: 1.0.0
+  SalesforceNetwork:
+    :git: https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git
+    :tag: 1.0.0
+  SalesforceUser:
+    :git: https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git
+    :tag: 1.0.0
 
 SPEC CHECKSUMS:
   AgentforceSDK: 795671973c9ad185b29fd756c1cb7d6d613693c3
@@ -1594,19 +1619,19 @@ SPEC CHECKSUMS:
   RNGestureHandler: 1ce686552d81933f0ebd5237353188b16fd04cca
   RNScreens: 9ffe14a19aa4fecfe49ead4cfea952cba63e02f5
   SalesforceAnalytics: dcbedf2a52478f72d6f41453cc8264667059eb3f
-  SalesforceLogging: 174438f5745353c816de5c3188ffaa21be55ff49
-  SalesforceNavigation: c7dfa7a232252295585817d0ce3920c7e1dc7ad6
-  SalesforceNetwork: 4a527f3c192515507c61d259f70e433a2a4f90dd
+  SalesforceLogging: f4129fd359d7d38b9eb11c9d750d1655fc260703
+  SalesforceNavigation: f8ecfb8a15ccef5584f21ab4e5ba9685597eaf9f
+  SalesforceNetwork: ab5fe4eb61358fb31a91fa0115fd223e66fa98d1
   SalesforceReact: 6d17b453ce35820dfd644f8f18ecd6ab16cc7cdc
   SalesforceSDKCommon: 522e0d1295c305d8e121922412b9fe4a752834f3
   SalesforceSDKCore: 80a391e5761d17897c0a75b24407e89498f7eba1
-  SalesforceUser: 5b5614e282f7dc491dedcb92d3a6cf6b61f58fd9
+  SalesforceUser: 227200e9aa7d12f6c1de464ee3d23c29d8dc5084
   SmartStore: 9fb3af7aaaebb9fcdeab32e70a73c940a6b30bd1
   SocketRocket: abac6f5de4d4d62d24e11868d7a2f427e0ef940d
   SQLCipher: 77fbe633cd84db04b07876dd50766b4924b57d61
   SwiftProtobuf: caa61117d9a5eeb60a52375f6685991a1fd4bd7b
   Yoga: 6986e115ef4e300f1f5b4910d5eef51c711c8747
 
-PODFILE CHECKSUM: 3015e1cc87eff84309ccbb1c8a0e3acf29a3147a
+PODFILE CHECKSUM: cf4fff824831e77b57d77f36a2f26eab1d80a354
 
 COCOAPODS: 1.16.2

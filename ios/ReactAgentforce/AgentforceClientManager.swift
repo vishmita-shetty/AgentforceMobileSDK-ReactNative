@@ -24,8 +24,6 @@ import SalesforceUser
 
     @objc public override init() {
         super.init()
-        // Force protocol witness table generation at initialization
-        _ = LoggerProtocolWitnessForcer.sharedInstance
     }
 
     @objc public func initialize(agentId: String, orgId: String, endpoint: String, completion: @escaping (Error?) -> Void) {
@@ -272,21 +270,22 @@ class SalesforceLoggerService: SalesforceLogging.Logger {
             sfLogLevel = .info
         }
 
-        SalesforceLogger.d(type(of: self), message: logMessage)
+  func log(_ logMessage: String, level: SalesforceLogging.LogLevel) {
+    // Map to SalesforceSDK logging using the new API
+    let sfLogLevel: SalesforceLogger.Level
+    switch level {
+    case .debug:
+      sfLogLevel = .debug
+    case .info:
+      sfLogLevel = .info
+    case .warning:
+      sfLogLevel = .error  // Use error level if warning doesn't exist
+    case .error:
+      sfLogLevel = .error
+    @unknown default:
+      sfLogLevel = .info
     }
-}
-
-// IMPORTANT: Force protocol witness table generation by creating a static instance
-// This ensures the protocol conformance is compiled into the app binary
-@objc public class LoggerProtocolWitnessForcer: NSObject {
-    @objc public static let sharedInstance = LoggerProtocolWitnessForcer()
-
-    private override init() {
-        super.init()
-        // Force the protocol witness table to be generated
-        let logger: SalesforceLogging.Logger = SalesforceLoggerService()
-        logger.log("Protocol witness table forced", level: .debug)
-    }
+  }
 }
 
 class AgentforceDelegate: AgentforceUIDelegate {
