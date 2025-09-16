@@ -15,6 +15,7 @@
 		B7168FBE1FACC7EB00A48DB5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B7168FBD1FACC7EB00A48DB5 /* LaunchScreen.storyboard */; };
 		B77BD8AF2113632C0036B284 /* bootconfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = B77BD8AE2113632C0036B284 /* bootconfig.plist */; };
 		FDB1D0E62E771EC3003F916B /* AgentforceClientManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB1D0E52E771EC3003F916B /* AgentforceClientManager.swift */; };
+		FDB1D11B2E794909003F916B /* AgentforceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FDB1D11A2E794909003F916B /* AgentforceManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +36,8 @@
 		B77BD8AE2113632C0036B284 /* bootconfig.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = bootconfig.plist; path = ReactAgentforce/bootconfig.plist; sourceTree = "<group>"; };
 		FDB1D0E42E770FA6003F916B /* ReactAgentforce-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ReactAgentforce-Bridging-Header.h"; sourceTree = "<group>"; };
 		FDB1D0E52E771EC3003F916B /* AgentforceClientManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AgentforceClientManager.swift; path = ReactAgentforce/AgentforceClientManager.swift; sourceTree = "<group>"; };
+		FDB1D1192E794909003F916B /* AgentforceManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AgentforceManager.h; path = ReactAgentforce/AgentforceManager.h; sourceTree = "<group>"; };
+		FDB1D11A2E794909003F916B /* AgentforceManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AgentforceManager.m; path = ReactAgentforce/AgentforceManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +71,8 @@
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				FDB1D0E52E771EC3003F916B /* AgentforceClientManager.swift */,
 				FDB1D0E42E770FA6003F916B /* ReactAgentforce-Bridging-Header.h */,
+				FDB1D1192E794909003F916B /* AgentforceManager.h */,
+				FDB1D11A2E794909003F916B /* AgentforceManager.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -236,9 +241,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ReactAgentforce/Pods-ReactAgentforce-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ReactAgentforce/Pods-ReactAgentforce-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -256,6 +265,7 @@
 				4F3AFF401DC2C79E006FF6B0 /* InitialViewController.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				FDB1D11B2E794909003F916B /* AgentforceManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -492,10 +502,7 @@
 				LDPLUSPLUS = "";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
@@ -658,10 +665,7 @@
 				LD = "";
 				LDPLUSPLUS = "";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;

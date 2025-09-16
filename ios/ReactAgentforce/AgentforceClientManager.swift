@@ -254,22 +254,24 @@ class SalesforceNavigationService: SalesforceNavigation.Navigation {
 }
 
 class SalesforceLoggerService: SalesforceLogging.Logger {
-  func log(_ logMessage: String, level: SalesforceLogging.LogLevel) {
-    // Map to SalesforceSDK logging using the new API
-    let sfLogLevel: SalesforceLogger.Level
-    switch level {
-    case .debug:
-      sfLogLevel = .debug
-    case .info:
-      sfLogLevel = .info
-    case .warning:
-      sfLogLevel = .error  // Use error level if warning doesn't exist
-    case .error:
-      sfLogLevel = .error
-    @unknown default:
-      sfLogLevel = .info
+    func log(_ logMessage: String, level: SalesforceLogging.LogLevel) {
+        // Map to SalesforceSDK logging using the new API
+        let sfLogLevel: SalesforceLogger.Level
+        switch level {
+        case .debug:
+            sfLogLevel = .debug
+        case .info:
+            sfLogLevel = .info
+        case .warning:
+            sfLogLevel = .error  // Use error level if warning doesn't exist
+        case .error:
+            sfLogLevel = .error
+        @unknown default:
+            sfLogLevel = .info
+        }
+
+        SalesforceLogger.d(type(of: self), message: logMessage)
     }
-  }
 }
 
 class AgentforceDelegate: AgentforceUIDelegate {
