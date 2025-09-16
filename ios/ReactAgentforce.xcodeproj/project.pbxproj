@@ -14,8 +14,13 @@
 		69BE961B2AD535C8002E3F6C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 69BE961A2AD535C8002E3F6C /* PrivacyInfo.xcprivacy */; };
 		B7168FBE1FACC7EB00A48DB5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B7168FBD1FACC7EB00A48DB5 /* LaunchScreen.storyboard */; };
 		B77BD8AF2113632C0036B284 /* bootconfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = B77BD8AE2113632C0036B284 /* bootconfig.plist */; };
-		FDB1D0E62E771EC3003F916B /* AgentforceClientManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB1D0E52E771EC3003F916B /* AgentforceClientManager.swift */; };
 		FDB1D11B2E794909003F916B /* AgentforceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FDB1D11A2E794909003F916B /* AgentforceManager.m */; };
+		FDB1D1232E79538D003F916B /* AgentforceNetworkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB1D1202E79538D003F916B /* AgentforceNetworkProvider.swift */; };
+		FDB1D1242E79538D003F916B /* AgentforceLoggingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB1D11E2E79538D003F916B /* AgentforceLoggingService.swift */; };
+		FDB1D1252E79538D003F916B /* AgentforceNavigationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB1D11F2E79538D003F916B /* AgentforceNavigationService.swift */; };
+		FDB1D1262E79538D003F916B /* AgentforceClientManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB1D11D2E79538D003F916B /* AgentforceClientManager.swift */; };
+		FDB1D1272E79538D003F916B /* AgentforceAuthenticationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB1D11C2E79538D003F916B /* AgentforceAuthenticationProvider.swift */; };
+		FDB1D1282E79538D003F916B /* AgentforceUICoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB1D1212E79538D003F916B /* AgentforceUICoordinator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,9 +40,14 @@
 		B7168FBD1FACC7EB00A48DB5 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = "../mobile_sdk/SalesforceMobileSDK-iOS/shared/resources/LaunchScreen.storyboard"; sourceTree = "<group>"; };
 		B77BD8AE2113632C0036B284 /* bootconfig.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = bootconfig.plist; path = ReactAgentforce/bootconfig.plist; sourceTree = "<group>"; };
 		FDB1D0E42E770FA6003F916B /* ReactAgentforce-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ReactAgentforce-Bridging-Header.h"; sourceTree = "<group>"; };
-		FDB1D0E52E771EC3003F916B /* AgentforceClientManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AgentforceClientManager.swift; path = ReactAgentforce/AgentforceClientManager.swift; sourceTree = "<group>"; };
 		FDB1D1192E794909003F916B /* AgentforceManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AgentforceManager.h; path = ReactAgentforce/AgentforceManager.h; sourceTree = "<group>"; };
 		FDB1D11A2E794909003F916B /* AgentforceManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AgentforceManager.m; path = ReactAgentforce/AgentforceManager.m; sourceTree = "<group>"; };
+		FDB1D11C2E79538D003F916B /* AgentforceAuthenticationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentforceAuthenticationProvider.swift; sourceTree = "<group>"; };
+		FDB1D11D2E79538D003F916B /* AgentforceClientManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentforceClientManager.swift; sourceTree = "<group>"; };
+		FDB1D11E2E79538D003F916B /* AgentforceLoggingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentforceLoggingService.swift; sourceTree = "<group>"; };
+		FDB1D11F2E79538D003F916B /* AgentforceNavigationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentforceNavigationService.swift; sourceTree = "<group>"; };
+		FDB1D1202E79538D003F916B /* AgentforceNetworkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentforceNetworkProvider.swift; sourceTree = "<group>"; };
+		FDB1D1212E79538D003F916B /* AgentforceUICoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentforceUICoordinator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,10 +79,10 @@
 				4F3AFF3E1DC2C79E006FF6B0 /* InitialViewController.m */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
-				FDB1D0E52E771EC3003F916B /* AgentforceClientManager.swift */,
 				FDB1D0E42E770FA6003F916B /* ReactAgentforce-Bridging-Header.h */,
 				FDB1D1192E794909003F916B /* AgentforceManager.h */,
 				FDB1D11A2E794909003F916B /* AgentforceManager.m */,
+				FDB1D1222E79538D003F916B /* Agentforce */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -125,6 +135,20 @@
 				9F6052753EB679B86440D2D9 /* Pods_ReactAgentforce.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FDB1D1222E79538D003F916B /* Agentforce */ = {
+			isa = PBXGroup;
+			children = (
+				FDB1D11C2E79538D003F916B /* AgentforceAuthenticationProvider.swift */,
+				FDB1D11D2E79538D003F916B /* AgentforceClientManager.swift */,
+				FDB1D11E2E79538D003F916B /* AgentforceLoggingService.swift */,
+				FDB1D11F2E79538D003F916B /* AgentforceNavigationService.swift */,
+				FDB1D1202E79538D003F916B /* AgentforceNetworkProvider.swift */,
+				FDB1D1212E79538D003F916B /* AgentforceUICoordinator.swift */,
+			);
+			name = Agentforce;
+			path = ReactAgentforce/Agentforce;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -261,7 +285,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FDB1D0E62E771EC3003F916B /* AgentforceClientManager.swift in Sources */,
+				FDB1D1232E79538D003F916B /* AgentforceNetworkProvider.swift in Sources */,
+				FDB1D1242E79538D003F916B /* AgentforceLoggingService.swift in Sources */,
+				FDB1D1252E79538D003F916B /* AgentforceNavigationService.swift in Sources */,
+				FDB1D1262E79538D003F916B /* AgentforceClientManager.swift in Sources */,
+				FDB1D1272E79538D003F916B /* AgentforceAuthenticationProvider.swift in Sources */,
+				FDB1D1282E79538D003F916B /* AgentforceUICoordinator.swift in Sources */,
 				4F3AFF401DC2C79E006FF6B0 /* InitialViewController.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
