@@ -35,6 +35,7 @@ import {
     Alert,
     NativeModules,
     Image,
+    TextInput,
 } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
@@ -58,13 +59,23 @@ interface Props {
 interface State {
     data: Record[],
     showAgentforceModal: boolean,
-    agentforceInitialized: boolean
+    agentforceInitialized: boolean,
+    agentId: string,
+    isAgentIdEditable: boolean,
+    orgId: string
 }
 
 class ContactListScreen extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
-        this.state = { data: [], showAgentforceModal: false, agentforceInitialized: false };
+        this.state = {
+            data: [],
+            showAgentforceModal: false,
+            agentforceInitialized: false,
+            agentId: "0XxEE0000000FlR0AU",
+            isAgentIdEditable: false,
+            orgId: ""
+        };
     }
 
     componentDidMount() {
@@ -101,8 +112,9 @@ class ContactListScreen extends React.Component<Props, State> {
                     (response: any) => {
                         const orgId = response.records[0]?.Id;
                         if (orgId) {
+                            this.setState({ orgId: orgId });
                             const config = {
-                                agentId: "0XxEE0000000FlR0AU", // Replace with actual Agent ID
+                                agentId: this.state.agentId,
                                 orgId: orgId,
                                 endpoint: "https://YOUR_DOMAIN.my.salesforce.com" // Replace with your Salesforce domain
                             };
@@ -135,15 +147,26 @@ class ContactListScreen extends React.Component<Props, State> {
         this.setState({ showAgentforceModal: false });
     }
 
+    toggleAgentIdEdit = () => {
+        this.setState({ isAgentIdEditable: !this.state.isAgentIdEditable });
+    }
+
+    handleAgentIdChange = (text: string) => {
+        this.setState({ agentId: text });
+    }
+
     launchAgentforceSDK = () => {
         if (!this.state.agentforceInitialized) {
             console.log('Agentforce is not initialized yet. Please wait a moment and try again.');
             return;
         }
 
-        const agentId = "0XxEE0000000FlR0AU"; // Replace with actual Agent ID
+        if (!this.state.agentId || this.state.agentId.trim() === '') {
+            Alert.alert('Error', 'Please enter a valid Agent ID before launching Agentforce.');
+            return;
+        }
 
-        AgentforceManager.presentAgentforceChatView(agentId)
+        AgentforceManager.presentAgentforceChatView(this.state.agentId)
             .then(() => {
                 console.log('Agentforce chat view presented successfully');
             })
@@ -155,6 +178,44 @@ class ContactListScreen extends React.Component<Props, State> {
     render() {
         return (
             <View style={styles.container}>
+                <View style={styles.agentIdContainer}>
+                    <Text style={styles.agentIdLabel}>Agent ID:</Text>
+                    {this.state.isAgentIdEditable ? (
+                        <View style={styles.agentIdInputRow}>
+                            <TextInput
+                                style={styles.agentIdInput}
+                                value={this.state.agentId}
+                                onChangeText={this.handleAgentIdChange}
+                                placeholder="Enter Agent ID"
+                                placeholderTextColor="#999"
+                            />
+                            <TouchableOpacity
+                                style={styles.editButton}
+                                onPress={this.toggleAgentIdEdit}
+                            >
+                                <Text style={styles.editButtonText}>✓</Text>
+                            </TouchableOpacity>
+                        </View>
+                    ) : (
+                        <View style={styles.agentIdDisplayRow}>
+                            <Text style={styles.agentIdDisplay}>{this.state.agentId}</Text>
+                            <TouchableOpacity
+                                style={styles.editButton}
+                                onPress={this.toggleAgentIdEdit}
+                            >
+                                <Text style={styles.editButtonText}>✎</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                </View>
+
+                <View style={styles.orgIdContainer}>
+                    <Text style={styles.orgIdLabel}>Organization ID:</Text>
+                    <Text style={styles.orgIdDisplay}>
+                        {this.state.orgId || 'Not available'}
+                    </Text>
+                </View>
+
                 <FlatList
                     data={this.state.data}
                     renderItem={({ item }) => <Text style={styles.item}>{item.Name}</Text>}
@@ -221,6 +282,88 @@ const styles = StyleSheet.create({
     },
     agentforceButtonDisabled: {
         backgroundColor: '#cccccc',
+    },
+    agentIdContainer: {
+        backgroundColor: '#f8f9fa',
+        padding: 15,
+        marginTop: 10,
+        marginHorizontal: 15,
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#e9ecef',
+    },
+    agentIdLabel: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#343a40',
+        marginBottom: 8,
+    },
+    agentIdInputRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    agentIdDisplayRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    agentIdInput: {
+        flex: 1,
+        borderWidth: 1,
+        borderColor: '#ced4da',
+        borderRadius: 6,
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        fontSize: 14,
+        backgroundColor: 'white',
+        marginRight: 8,
+    },
+    agentIdDisplay: {
+        flex: 1,
+        fontSize: 14,
+        color: '#495057',
+        backgroundColor: 'transparent',
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        marginRight: 8,
+        fontFamily: 'monospace',
+    },
+    editButton: {
+        backgroundColor: '#0070f3',
+        width: 32,
+        height: 32,
+        borderRadius: 16,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    editButtonText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    orgIdContainer: {
+        backgroundColor: '#f8f9fa',
+        padding: 15,
+        marginTop: 5,
+        marginHorizontal: 15,
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#e9ecef',
+    },
+    orgIdLabel: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#343a40',
+        marginBottom: 8,
+    },
+    orgIdDisplay: {
+        fontSize: 14,
+        color: '#6c757d',
+        fontFamily: 'monospace',
+        backgroundColor: '#ffffff',
+        padding: 12,
+        borderRadius: 6,
+        borderWidth: 1,
+        borderColor: '#dee2e6',
     },
     modalOverlay: {
         flex: 1,
