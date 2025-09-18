@@ -16,6 +16,7 @@ import SalesforceLogging
 import SalesforceNetwork
 import SalesforceNavigation
 import SalesforceUser
+import SalesforceCache
 
 @objc public class AgentforceClientManager: NSObject {
     private var agentforceClient: AgentforceClient?
@@ -32,6 +33,15 @@ import SalesforceUser
       let networkProvider = SalesforceNetworkProvider()
       let navigationService = SalesforceNavigationService()
       let logger = SalesforceLoggerService()
+
+      // Create cache for data provider
+      let cache = AgentforceCacheProvider()
+
+      // Create our custom data provider
+      let dataProvider = AgentforceDataProvider(
+          cache: cache,
+          network: networkProvider
+      )
 
       // Create basic feature flag settings
       let featureFlagSettings = AgentforceFeatureFlagSettings()
@@ -58,7 +68,7 @@ import SalesforceUser
           enableDebugSettings: true,
           ignoreWelcomeMessage: false,
           forceConfigEndpoint: instanceURL!,
-          dataProvider: nil,
+          dataProvider: dataProvider, // Now using our custom data provider!
           imageProvider: nil,
           instrumentationHandler: nil,
           agentforceFeatureFlagSettings: featureFlagSettings,

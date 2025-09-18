@@ -1266,6 +1266,7 @@ PODS:
     - SalesforceAnalytics/SalesforceAnalytics (= 13.0.2)
   - SalesforceAnalytics/SalesforceAnalytics (13.0.2):
     - SalesforceSDKCommon (~> 13.0.2)
+  - SalesforceCache (1.0.0)
   - SalesforceLogging (1.0.0)
   - SalesforceNavigation (1.0.0)
   - SalesforceNetwork (1.0.0)
@@ -1365,6 +1366,7 @@ DEPENDENCIES:
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - SalesforceAnalytics (from `../mobile_sdk/SalesforceMobileSDK-iOS`)
+  - SalesforceCache (from `https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git`, tag `1.0.0`)
   - SalesforceLogging (from `https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git`, tag `1.0.0`)
   - SalesforceNavigation (from `https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git`, tag `1.0.0`)
   - SalesforceNetwork (from `https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git`, tag `1.0.0`)
@@ -1513,6 +1515,9 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-screens"
   SalesforceAnalytics:
     :path: "../mobile_sdk/SalesforceMobileSDK-iOS"
+  SalesforceCache:
+    :git: https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git
+    :tag: 1.0.0
   SalesforceLogging:
     :git: https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git
     :tag: 1.0.0
@@ -1537,6 +1542,9 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 CHECKOUT OPTIONS:
+  SalesforceCache:
+    :git: https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git
+    :tag: 1.0.0
   SalesforceLogging:
     :git: https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git
     :tag: 1.0.0
@@ -1619,6 +1627,7 @@ SPEC CHECKSUMS:
   RNGestureHandler: 1ce686552d81933f0ebd5237353188b16fd04cca
   RNScreens: 9ffe14a19aa4fecfe49ead4cfea952cba63e02f5
   SalesforceAnalytics: dcbedf2a52478f72d6f41453cc8264667059eb3f
+  SalesforceCache: 2bff32659f761c19e2e721a192802d638150c155
   SalesforceLogging: f4129fd359d7d38b9eb11c9d750d1655fc260703
   SalesforceNavigation: f8ecfb8a15ccef5584f21ab4e5ba9685597eaf9f
   SalesforceNetwork: ab5fe4eb61358fb31a91fa0115fd223e66fa98d1
@@ -1632,6 +1641,6 @@ SPEC CHECKSUMS:
   SwiftProtobuf: e02f51c8c2df5845657aee2d4de9d61bf50ef788
   Yoga: 6986e115ef4e300f1f5b4910d5eef51c711c8747
 
-PODFILE CHECKSUM: c3243c4938c6e5874f71b08973092744636c04ac
+PODFILE CHECKSUM: 10f3588dd2affdcbad68898da1ea5f84121c1625
 
 COCOAPODS: 1.16.2
