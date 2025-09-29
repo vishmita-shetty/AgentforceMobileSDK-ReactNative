@@ -97,10 +97,12 @@ import SalesforceCache
           themeManager: AgentforceDefaultThemeManager()
       )
 
+      let employeeMode = EmployeeAgentConfiguration(user: config.user, forceConfigEndpoint: config.forceConfigEndPoint)
+      
       // Initialize AgentforceClient
       self.agentforceClient = AgentforceClient(
           credentialProvider: credentialProvider,
-          agentforceConfiguration: config
+          mode: .employeeAgent(employeeMode)
       )
 
       completion(nil)
