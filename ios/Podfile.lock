@@ -1,5 +1,5 @@
 PODS:
-  - AgentforceSDK (11.8.5-local):
+  - AgentforceSDK (11.9.1-local):
     - AgentforceService
     - LiveKitClient
     - SalesforceLogging
@@ -10,6 +10,7 @@ PODS:
     - DequeModule
     - InternalCollectionsUtilities
     - LiveKitClient
+    - Messaging-InApp-Core (= 1.9.3-RC5)
     - OrderedCollections
     - SalesforceLogging
     - SalesforceNetwork
@@ -33,6 +34,7 @@ PODS:
     - SwiftProtobuf
   - LiveKitWebRTC (125.6422.11)
   - Logging (1.4.0)
+  - Messaging-InApp-Core (1.9.3-RC5)
   - MobileSync (13.0.2):
     - MobileSync/MobileSync (= 13.0.2)
   - MobileSync/MobileSync (13.0.2):
@@ -1293,11 +1295,7 @@ PODS:
     - SalesforceSDKCore (~> 13.0.2)
     - SQLCipher (~> 4.6.1)
   - SocketRocket (0.7.0)
-  - SQLCipher (4.6.1):
-    - SQLCipher/standard (= 4.6.1)
-  - SQLCipher/common (4.6.1)
-  - SQLCipher/standard (4.6.1):
-    - SQLCipher/common
+  - SQLCipher (4.6.1)
   - SwiftProtobuf (1.31.1)
   - Yoga (0.0.0)
 
@@ -1307,9 +1305,11 @@ DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
+  - FMDB/SQLCipher (~> 2.7.12)
   - fmt (from `../node_modules/react-native/third-party-podspecs/fmt.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
+  - Messaging-InApp-Core (= 1.9.3-RC5)
   - MobileSync (from `../mobile_sdk/SalesforceMobileSDK-iOS`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCT-Folly/Fabric (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
@@ -1370,9 +1370,14 @@ DEPENDENCIES:
   - SalesforceSDKCommon (from `../mobile_sdk/SalesforceMobileSDK-iOS`)
   - SalesforceSDKCore (from `../mobile_sdk/SalesforceMobileSDK-iOS`)
   - SmartStore (from `../mobile_sdk/SalesforceMobileSDK-iOS`)
+  - SQLCipher (~> 4.6.1)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
+  https://git.soma.salesforce.com/asikora/CocoaPods-Specs.git:
+    - Messaging-InApp-Core
+  https://git.soma.salesforce.com/MobilePlatform/CocoaPods-Specs.git:
+    - SQLCipher
   https://github.com/forcedotcom/SalesforceMobileSDK-iOS-Specs/:
     - SalesforceLogging
     - SalesforceNavigation
@@ -1387,7 +1392,6 @@ SPEC REPOS:
     - Logging
     - OrderedCollections
     - SocketRocket
-    - SQLCipher
     - SwiftProtobuf
 
 EXTERNAL SOURCES:
@@ -1534,8 +1538,8 @@ CHECKOUT OPTIONS:
     :tag: 1.0.0
 
 SPEC CHECKSUMS:
-  AgentforceSDK: 8dd699abc72715b1154127a7970ba277267262c6
-  AgentforceService: a8accc1ed8e9731458ec3a085b4478e32d4ecb30
+  AgentforceSDK: 6b1f034560c5f0381c2fd54875a343aadfe2b43e
+  AgentforceService: 76948670882378b77d0bcf6e730ef4b1cebf71ee
   boost: d3f49c53809116a5d38da093a8aa78bf551aed09
   DequeModule: b3a4cb7a72901d2b182b5bf4721f42ba1e149cdf
   DoubleConversion: 76ab83afb40bddeeee456813d9c04f67f78771b5
@@ -1548,6 +1552,7 @@ SPEC CHECKSUMS:
   LiveKitClient: 051bd7a7562c12df4dc0fca5ff70a414a2c11eaf
   LiveKitWebRTC: fd39d4e51ea51db3367f98c8c82cbf33e50b88c2
   Logging: beeb016c9c80cf77042d62e83495816847ef108b
+  Messaging-InApp-Core: ace5b4d4e3e7fb127abfe4427f108c54bc6e707d
   MobileSync: e8e3a3b93327334380b7144ba6f76fcd739dba57
   OrderedCollections: c754ce5f9e42cf22b73afd73582317347903ab6d
   RCT-Folly: 5dc73daec3476616d19e8a53f0156176f7b55461
@@ -1612,10 +1617,10 @@ SPEC CHECKSUMS:
   SalesforceUser: 5b5614e282f7dc491dedcb92d3a6cf6b61f58fd9
   SmartStore: 9fb3af7aaaebb9fcdeab32e70a73c940a6b30bd1
   SocketRocket: abac6f5de4d4d62d24e11868d7a2f427e0ef940d
-  SQLCipher: 77fbe633cd84db04b07876dd50766b4924b57d61
+  SQLCipher: a20f9d1fd0b2ccbb538420a0f3b951169f67d6e6
   SwiftProtobuf: e02f51c8c2df5845657aee2d4de9d61bf50ef788
   Yoga: 6986e115ef4e300f1f5b4910d5eef51c711c8747
 
-PODFILE CHECKSUM: cc240e99ad016a5961d4ea7ce063ad5801e03982
+PODFILE CHECKSUM: c11cba79602c20138334233abf28d10ac9be6a56
 
 COCOAPODS: 1.16.2
