@@ -1309,7 +1309,7 @@ DEPENDENCIES:
   - fmt (from `../node_modules/react-native/third-party-podspecs/fmt.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
-  - Messaging-InApp-Core (= 1.9.3-RC5)
+  - Messaging-InApp-Core (from `./Frameworks/Messaging-InApp-Core/Messaging-InApp-Core-binary.podspec`)
   - MobileSync (from `../mobile_sdk/SalesforceMobileSDK-iOS`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCT-Folly/Fabric (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
@@ -1374,8 +1374,6 @@ DEPENDENCIES:
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
-  https://git.soma.salesforce.com/asikora/CocoaPods-Specs.git:
-    - Messaging-InApp-Core
   https://git.soma.salesforce.com/MobilePlatform/CocoaPods-Specs.git:
     - SQLCipher
   https://github.com/forcedotcom/SalesforceMobileSDK-iOS-Specs/:
@@ -1412,6 +1410,8 @@ EXTERNAL SOURCES:
   hermes-engine:
     :podspec: "../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec"
     :tag: hermes-2024-09-30-RNv0.74.6-6f503f52cbf98b2b37c4d3900e7f1193d6512548
+  Messaging-InApp-Core:
+    :podspec: "./Frameworks/Messaging-InApp-Core/Messaging-InApp-Core-binary.podspec"
   MobileSync:
     :path: "../mobile_sdk/SalesforceMobileSDK-iOS"
   RCT-Folly:
@@ -1552,7 +1552,7 @@ SPEC CHECKSUMS:
   LiveKitClient: 051bd7a7562c12df4dc0fca5ff70a414a2c11eaf
   LiveKitWebRTC: fd39d4e51ea51db3367f98c8c82cbf33e50b88c2
   Logging: beeb016c9c80cf77042d62e83495816847ef108b
-  Messaging-InApp-Core: ace5b4d4e3e7fb127abfe4427f108c54bc6e707d
+  Messaging-InApp-Core: 89faf85670279cd9212977e7f457a4c3281cf851
   MobileSync: e8e3a3b93327334380b7144ba6f76fcd739dba57
   OrderedCollections: c754ce5f9e42cf22b73afd73582317347903ab6d
   RCT-Folly: 5dc73daec3476616d19e8a53f0156176f7b55461
@@ -1621,6 +1621,6 @@ SPEC CHECKSUMS:
   SwiftProtobuf: e02f51c8c2df5845657aee2d4de9d61bf50ef788
   Yoga: 6986e115ef4e300f1f5b4910d5eef51c711c8747
 
-PODFILE CHECKSUM: c11cba79602c20138334233abf28d10ac9be6a56
+PODFILE CHECKSUM: 36786cd15edee6f0969999edfdc27764caf8db6e
 
 COCOAPODS: 1.16.2

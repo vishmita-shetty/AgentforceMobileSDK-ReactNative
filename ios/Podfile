@@ -35,7 +35,7 @@ target 'ReactAgentforce' do
   pod 'Messaging-InApp-Core', :podspec => './Frameworks/Messaging-InApp-Core/Messaging-InApp-Core-binary.podspec'
 
   pod 'FMDB/SQLCipher', '~> 2.7.12'
-  pod 'SQLCipher', '~> 4.6.1', :source => 'https://git.soma.salesforce.com/MobilePlatform/CocoaPods-Specs.git'
+  pod 'SQLCipher', '~> 4.6.1'
 
   # Use embedded binary frameworks for customer distribution
   pod 'AgentforceSDK', :podspec => './Frameworks/AgentforceSDK/AgentforceSDK-binary.podspec'

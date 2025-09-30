@@ -9,9 +9,9 @@
 /* Begin PBXBuildFile section */
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		40DE9C0A9AEF3887E5BC6532 /* Pods_ReactAgentforce.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC49BC3E12368DD23B2654A2 /* Pods_ReactAgentforce.framework */; };
 		4F3AFF401DC2C79E006FF6B0 /* InitialViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F3AFF3E1DC2C79E006FF6B0 /* InitialViewController.m */; };
 		69BE961B2AD535C8002E3F6C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 69BE961A2AD535C8002E3F6C /* PrivacyInfo.xcprivacy */; };
-		A03D336FA815F445DA781124 /* Pods_ReactAgentforce.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8716AF5DADA6F06FEFFE6F30 /* Pods_ReactAgentforce.framework */; };
 		B7168FBE1FACC7EB00A48DB5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B7168FBD1FACC7EB00A48DB5 /* LaunchScreen.storyboard */; };
 		B77BD8AF2113632C0036B284 /* bootconfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = B77BD8AE2113632C0036B284 /* bootconfig.plist */; };
 		FD2E2AE32E7C545E006342CB /* AgentforceDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD2E2AE22E7C545E006342CB /* AgentforceDataProvider.swift */; };
@@ -27,7 +27,6 @@
 
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
-		0BBBEC5493E2DCD72D020BF2 /* Pods-ReactAgentforce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReactAgentforce.release.xcconfig"; path = "Target Support Files/Pods-ReactAgentforce/Pods-ReactAgentforce.release.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* ReactAgentforce.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReactAgentforce.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ReactAgentforce/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = ReactAgentforce/AppDelegate.m; sourceTree = "<group>"; };
@@ -36,11 +35,12 @@
 		4F3AFF3D1DC2C79E006FF6B0 /* InitialViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InitialViewController.h; path = ReactAgentforce/InitialViewController.h; sourceTree = "<group>"; };
 		4F3AFF3E1DC2C79E006FF6B0 /* InitialViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InitialViewController.m; path = ReactAgentforce/InitialViewController.m; sourceTree = "<group>"; };
 		4FF12F8E1DCA93E2004D9EF9 /* ReactAgentforce.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = ReactAgentforce.entitlements; path = ReactAgentforce/ReactAgentforce.entitlements; sourceTree = "<group>"; };
+		6277051DA08CAED6424CEF2C /* Pods-ReactAgentforce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReactAgentforce.release.xcconfig"; path = "Target Support Files/Pods-ReactAgentforce/Pods-ReactAgentforce.release.xcconfig"; sourceTree = "<group>"; };
 		69BE961A2AD535C8002E3F6C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = ReactAgentforce/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		8716AF5DADA6F06FEFFE6F30 /* Pods_ReactAgentforce.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ReactAgentforce.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B7168FBD1FACC7EB00A48DB5 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = "../mobile_sdk/SalesforceMobileSDK-iOS/shared/resources/LaunchScreen.storyboard"; sourceTree = "<group>"; };
 		B77BD8AE2113632C0036B284 /* bootconfig.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = bootconfig.plist; path = ReactAgentforce/bootconfig.plist; sourceTree = "<group>"; };
-		C307AA6576E0CC5FA29B0702 /* Pods-ReactAgentforce.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReactAgentforce.debug.xcconfig"; path = "Target Support Files/Pods-ReactAgentforce/Pods-ReactAgentforce.debug.xcconfig"; sourceTree = "<group>"; };
+		C13CAF5BF69A7DBFCD4A7F25 /* Pods-ReactAgentforce.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReactAgentforce.debug.xcconfig"; path = "Target Support Files/Pods-ReactAgentforce/Pods-ReactAgentforce.debug.xcconfig"; sourceTree = "<group>"; };
+		CC49BC3E12368DD23B2654A2 /* Pods_ReactAgentforce.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ReactAgentforce.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FD2E2AE22E7C545E006342CB /* AgentforceDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentforceDataProvider.swift; sourceTree = "<group>"; };
 		FD2E2AE42E7C6664006342CB /* AgentforceCacheProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentforceCacheProvider.swift; sourceTree = "<group>"; };
 		FDB1D0E42E770FA6003F916B /* ReactAgentforce-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ReactAgentforce-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -59,7 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A03D336FA815F445DA781124 /* Pods_ReactAgentforce.framework in Frameworks */,
+				40DE9C0A9AEF3887E5BC6532 /* Pods_ReactAgentforce.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -104,11 +104,11 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		649BD38BE5E715D6E27891D8 /* Pods */ = {
+		64729AAA49D30FFC1119DE7C /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				C307AA6576E0CC5FA29B0702 /* Pods-ReactAgentforce.debug.xcconfig */,
-				0BBBEC5493E2DCD72D020BF2 /* Pods-ReactAgentforce.release.xcconfig */,
+				C13CAF5BF69A7DBFCD4A7F25 /* Pods-ReactAgentforce.debug.xcconfig */,
+				6277051DA08CAED6424CEF2C /* Pods-ReactAgentforce.release.xcconfig */,
 			);
 			name = Pods;
 			path = Pods;
@@ -119,8 +119,8 @@
 			children = (
 				13B07FAE1A68108700A75B9A /* ReactAgentforce */,
 				83CBBA001A601CBA00E9B192 /* Products */,
-				649BD38BE5E715D6E27891D8 /* Pods */,
-				ECA32505571940B816EABDF0 /* Frameworks */,
+				64729AAA49D30FFC1119DE7C /* Pods */,
+				94CF2CBDD8B2E735BB666D0F /* Frameworks */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -134,10 +134,10 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		ECA32505571940B816EABDF0 /* Frameworks */ = {
+		94CF2CBDD8B2E735BB666D0F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				8716AF5DADA6F06FEFFE6F30 /* Pods_ReactAgentforce.framework */,
+				CC49BC3E12368DD23B2654A2 /* Pods_ReactAgentforce.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -165,12 +165,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "ReactAgentforce" */;
 			buildPhases = (
-				E34DC964C6AA3FF841355A39 /* [CP] Check Pods Manifest.lock */,
+				9219CE532BC4AD07870393EB /* [CP] Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				4AE2B1A92835EDD0CA8CAC2B /* [CP] Embed Pods Frameworks */,
+				5E8798298A6E53F66C858114 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -246,7 +246,7 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
-		4AE2B1A92835EDD0CA8CAC2B /* [CP] Embed Pods Frameworks */ = {
+		5E8798298A6E53F66C858114 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -263,7 +263,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ReactAgentforce/Pods-ReactAgentforce-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		E34DC964C6AA3FF841355A39 /* [CP] Check Pods Manifest.lock */ = {
+		9219CE532BC4AD07870393EB /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -312,7 +312,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C307AA6576E0CC5FA29B0702 /* Pods-ReactAgentforce.debug.xcconfig */;
+			baseConfigurationReference = C13CAF5BF69A7DBFCD4A7F25 /* Pods-ReactAgentforce.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -346,7 +346,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0BBBEC5493E2DCD72D020BF2 /* Pods-ReactAgentforce.release.xcconfig */;
+			baseConfigurationReference = 6277051DA08CAED6424CEF2C /* Pods-ReactAgentforce.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
