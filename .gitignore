@@ -6,4 +6,5 @@ ios/.xcode.env
 /ios/ReactAgentforce.xcworkspace/xcuserdata
 /ios/.claude
 /build
-/ios/Frameworks
+ios/Frameworks/AgentforceSDK
+ios/Frameworks/AgentforceService
