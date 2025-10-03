@@ -96,13 +96,11 @@ import SalesforceCache
           speechRecognizer: nil,
           themeManager: AgentforceDefaultThemeManager()
       )
-
-      let employeeMode = EmployeeAgentConfiguration(user: config.user, forceConfigEndpoint: config.forceConfigEndPoint)
       
       // Initialize AgentforceClient
       self.agentforceClient = AgentforceClient(
           credentialProvider: credentialProvider,
-          mode: .employeeAgent(employeeMode)
+          mode: .fullConfig(config)
       )
 
       completion(nil)
