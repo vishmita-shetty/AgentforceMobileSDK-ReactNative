@@ -11,11 +11,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// Represents a list of choices within an `SMIConversationEntry`.
+/// Experimental Support for Choices for LightningType interactions with Agentforce.
+/// NOTE: As an experimental feature all APIs are subject to change, and this feature may be removed at anytime without warning.
 NS_SWIFT_NAME(ChoicesExperienceTypeResponse)
 @protocol SMIChoicesExperienceTypeResponse <SMIEntryPayload, SMIEntryTypeMessage>
 
-/// The list of choices.
 @property (nonatomic, readonly, strong) NSArray<NSDictionary<NSString *, id> *> *selectedValues;
 
 @end

@@ -39,11 +39,13 @@ NS_SWIFT_NAME(StructuredValueProtocol)
 NS_SWIFT_NAME(StructuredValue)
 @interface SMIStructuredValue : SMISerializable <SMIStructuredValue>
 
+- (instancetype)init NS_UNAVAILABLE;
+
 /// Initializes a new structured value with the provided dictionary.
 ///
 /// @param value A dictionary containing the structured value data. Keys should be NSString objects.
 /// @return An initialized SMIStructuredValue instance.
-- (instancetype)initWithValue:(NSDictionary<NSString *, id> *)value;
+- (instancetype)initWithValue:(NSDictionary<NSString *, id> *)value NS_DESIGNATED_INITIALIZER;
 
 @end
 

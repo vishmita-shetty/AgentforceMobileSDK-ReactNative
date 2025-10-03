@@ -11,14 +11,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// A protocol that represents an option message built with an experienceType format. ``SMIConversationEntry``.
-///
-/// ## Swift
-///
-/// ```swift
-/// protocol OptionExperienceType
-/// ```
-///
+/// Experimental Support for Choices for LightningType interactions with Agentforce.
+/// NOTE: As an experimental feature all APIs are subject to change, and this feature may be removed at anytime without warning.
 NS_SWIFT_NAME(OptionExperienceType)
 @protocol SMIOptionExperienceType <SMIAbstractChoice>
 

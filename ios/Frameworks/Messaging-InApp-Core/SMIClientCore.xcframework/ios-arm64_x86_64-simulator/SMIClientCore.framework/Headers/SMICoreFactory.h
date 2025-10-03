@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <SMIClientCore/SMICoreClient.h>
+#import <SMIClientCore/SMIExperimentalConfiguration.h>
 
 @class SMICoreConfiguration;
 @class SMICoreClient;
@@ -39,6 +40,10 @@ NS_SWIFT_NAME(CoreFactory)
 
 /// The current Core SDK version.
 @property (class, nonatomic, nullable, readonly, strong) NSString *sdkVersion;
+
+/// This class stores configuration for experimental or beta features. It is important to note that all properties and features which are exposed in this class are subject to change.
+/// Experimental features/APIs may be removed without warning at any time.
+@property (class, atomic, readonly, strong) id<SMIExperimentalConfiguration> experimentalConfig;
 
 /// This constructor is unavailable.
 - (instancetype)init NS_UNAVAILABLE;

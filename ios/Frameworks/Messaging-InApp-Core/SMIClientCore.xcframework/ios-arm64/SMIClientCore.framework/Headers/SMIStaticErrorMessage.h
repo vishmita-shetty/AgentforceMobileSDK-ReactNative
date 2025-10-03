@@ -11,16 +11,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// A protocol that represents a an Error Message within a ``SMIConversationEntry``.
-///
-/// ## Swift
-///
-/// ```swift
-/// protocol StaticErrorMessage
-/// ```
-///
-/// Displays an error message from the agent.
-///
+/// Experimental Support for Static LightningType messages with Agentforce.
+/// NOTE: As an experimental feature all APIs are subject to change, and this feature may be removed at anytime without warning.
 NS_SWIFT_NAME(StaticErrorMessage)
 @protocol SMIStaticErrorMessage <SMIEntryPayload, SMIEntryTypeMessage>
 

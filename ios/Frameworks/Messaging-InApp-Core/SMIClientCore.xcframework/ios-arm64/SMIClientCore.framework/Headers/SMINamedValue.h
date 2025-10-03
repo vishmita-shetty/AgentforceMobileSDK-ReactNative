@@ -42,13 +42,14 @@ NS_SWIFT_NAME(NamedValueProtocol)
 /// @see `SMISerializable`
 NS_SWIFT_NAME(NamedValue)
 @interface SMINamedValue : SMISerializable <SMINamedValue>
+- (instancetype)init NS_UNAVAILABLE;
 
 /// Initializes a new named value with the provided name and value.
 ///
 /// @param name The name of the context variable. Must not be nil.
 /// @param value The abstract value associated with the name. Must not be nil.
 /// @return An initialized SMINamedValue instance.
-- (instancetype)initWithName:(NSString *)name value:(id<SMIAbstractValue>)value;
+- (instancetype)initWithName:(NSString *)name value:(id<SMIAbstractValue>)value NS_DESIGNATED_INITIALIZER;
 
 @end
 

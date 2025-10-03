@@ -12,11 +12,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// Represents a form.
+/// Experimental Support for Forms for LightningType interactions with Agentforce.
+/// NOTE: As an experimental feature all APIs are subject to change, and this feature may be removed at anytime without warning.
 NS_SWIFT_NAME(FormExperienceType)
 @protocol SMIFormExperienceType <SMIEntryTypeFormMessage>
 
-/// A message which optionally accompanies a form.
 @property (nonatomic, readonly, strong) NSString *message;
 
 @property (nullable, nonatomic, readonly, strong) id<SMIConfirmExperienceType> confirm;

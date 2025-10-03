@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = 'Messaging-InApp-Core'
-  s.version = '1.9.3-RC5'
+  s.version = '1.9.3-RC7'
   s.summary = 'Service Messaging Infrastructure Client Core Framework'
   s.homepage = 'https://salesforce.com'
   s.license = { :type => 'Salesforce', :text => 'Copyright (c) Salesforce' }

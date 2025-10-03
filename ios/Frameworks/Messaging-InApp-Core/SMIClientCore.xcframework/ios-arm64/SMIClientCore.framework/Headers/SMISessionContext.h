@@ -49,13 +49,14 @@ NS_SWIFT_NAME(SessionContextProtocol)
 /// @see `SMISessionContext` protocol
 /// @see `SMIAbstractSessionContext`
 NS_SWIFT_NAME(SessionContext)
-@interface SMISessionContext: NSObject <SMISessionContext>
+@interface SMISessionContext: SMISerializable <SMISessionContext>
+- (instancetype)init NS_UNAVAILABLE;
 
 /// Initializes a new session context with the provided abstract session context.
 ///
 /// @param sessionContext The abstract session context to wrap. Must not be nil.
 /// @return An initialized SMISessionContext instance with a generated identifier.
-- (instancetype)initWithSessionContext:(id<SMIAbstractSessionContext>)sessionContext;
+- (instancetype)initWithSessionContext:(id<SMIAbstractSessionContext>)sessionContext NS_DESIGNATED_INITIALIZER;
 
 @end
 

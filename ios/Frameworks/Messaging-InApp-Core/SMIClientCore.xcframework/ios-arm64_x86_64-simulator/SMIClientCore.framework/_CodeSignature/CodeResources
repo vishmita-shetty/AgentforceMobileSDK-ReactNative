@@ -70,11 +70,11 @@
 		</data>
 		<key>Headers/SMIChoicesExperienceType.h</key>
 		<data>
-		oTnIt0srgJ7lpUJbkaoUYGUKU/o=
+		6iCJaJg6eRyqyzsrnLZ1EDl04sc=
 		</data>
 		<key>Headers/SMIChoicesExperienceTypeResponse.h</key>
 		<data>
-		P04jVrZzRdywfHJkvdZZfqCbB1U=
+		K3il7Lj5d9f6sroVCxtJjCS2q1c=
 		</data>
 		<key>Headers/SMIChoicesResponse.h</key>
 		<data>
@@ -114,7 +114,7 @@
 		</data>
 		<key>Headers/SMIClientCore.h</key>
 		<data>
-		+xcigkf+E0pXC5sBAi5NsC9Jukk=
+		EzMQUdZwiQlMyIXMPthDMli4ZDM=
 		</data>
 		<key>Headers/SMIComposedStreamingToken.h</key>
 		<data>
@@ -122,7 +122,7 @@
 		</data>
 		<key>Headers/SMIConfirmExperienceType.h</key>
 		<data>
-		kbuHbsqoBFOU5ImWcPg4hdUC2Yk=
+		1bUGS9chJAnNgCN/ZlNS/n4Z0/0=
 		</data>
 		<key>Headers/SMIConversation.h</key>
 		<data>
@@ -178,7 +178,7 @@
 		</data>
 		<key>Headers/SMICoreFactory.h</key>
 		<data>
-		evciSa4Zpfo7Cs83aTgGpThA/aE=
+		wSgBVVgrtstfc6R7yrV9p3Mm8vE=
 		</data>
 		<key>Headers/SMIDataAsset.h</key>
 		<data>
@@ -232,6 +232,10 @@
 		<data>
 		L0W+lYBWW7NWlv2+BkrBUZfWjyM=
 		</data>
+		<key>Headers/SMIExperimentalConfiguration.h</key>
+		<data>
+		OW2nyd0IKIfqsRyhcQSrhpdqbug=
+		</data>
 		<key>Headers/SMIFailureTypes.h</key>
 		<data>
 		DFUdieT4VU3qx/hdic5rI25cT3c=
@@ -258,11 +262,11 @@
 		</data>
 		<key>Headers/SMIFormExperienceType.h</key>
 		<data>
-		awpH9uCxI/wgI7G5e0sBJobheoM=
+		c6kagC6rL29IDizQ9aMZ7hbTb2k=
 		</data>
 		<key>Headers/SMIFormExperienceTypeResponse.h</key>
 		<data>
-		m4FL+rg7rfjsil6s3YXuW8Euawk=
+		cZ9vdR036eivm8zEcaZa7Klnqig=
 		</data>
 		<key>Headers/SMIFormInput.h</key>
 		<data>
@@ -462,7 +466,7 @@
 		</data>
 		<key>Headers/SMINamedValue.h</key>
 		<data>
-		0iAhAOJCbHDW5DjaLJXhBSRs63k=
+		WU5zbo22lVw8lz9YQbqmza4/Kb0=
 		</data>
 		<key>Headers/SMINetworkConnectivityState.h</key>
 		<data>
@@ -478,7 +482,7 @@
 		</data>
 		<key>Headers/SMIOptionExperienceType.h</key>
 		<data>
-		c6/eOd05B5dksUVtWUCx6K/Q5HE=
+		gpfRnVXjZpMUVI5iYlsgqVbWbpY=
 		</data>
 		<key>Headers/SMIPDFAsset.h</key>
 		<data>
@@ -590,27 +594,27 @@
 		</data>
 		<key>Headers/SMISessionContext.h</key>
 		<data>
-		vFrX41E5KrWai0HjXkk3n/zzxKM=
+		A7sL5H/gy5mJmvj0gtqpMxl0fGs=
 		</data>
 		<key>Headers/SMISessionContextSet.h</key>
 		<data>
-		me842WLmf0if5TriD91QI+vwSyk=
+		cWk68V+9uwMzBEBu0bqd7XSHKnY=
 		</data>
 		<key>Headers/SMIStaticCancelAction.h</key>
 		<data>
-		0XkKSqA0BrM33uSUlgK2TQfTYxk=
+		O64nSnLWdF0fCBfj7ZMbPkzx4Kc=
 		</data>
 		<key>Headers/SMIStaticErrorDetails.h</key>
 		<data>
-		Gg+cRL00S3yMYecerwpw1Rtpa7o=
+		E7AT1F6qhKsPGpor2pm8wgGJ730=
 		</data>
 		<key>Headers/SMIStaticErrorMessage.h</key>
 		<data>
-		I36Ps5UGza603ubM+omdLTJuKfo=
+		rbDTzwvA8i00Cl7rc6vTrlc83J0=
 		</data>
 		<key>Headers/SMIStaticExperienceType.h</key>
 		<data>
-		eNNjct7Ml3ccY2dmAlbWHRP+4YM=
+		KPaU7A5gzmCD6IaW78hdeVRxbAk=
 		</data>
 		<key>Headers/SMIStreamingToken.h</key>
 		<data>
@@ -626,7 +630,7 @@
 		</data>
 		<key>Headers/SMIStructuredValue.h</key>
 		<data>
-		hBT6KB9DL8vMPVkHufCgBpkikrc=
+		8VlksDVmDBxUa5hfoO5WXe42FZg=
 		</data>
 		<key>Headers/SMITemplateable.h</key>
 		<data>
@@ -686,7 +690,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		ox4JGkajmXgevpaJSWT+377I4rc=
+		cJlAhheUeNgNQxDucm9sIIKjnUQ=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -762,7 +766,7 @@
 		</data>
 		<key>SMIDataModel.momd/SMIDataModel-v1.9.3.omo</key>
 		<data>
-		z5MjK0U7o2hQ1jhrVvx1S+8bKn4=
+		fihs/EJ/PVJM4nSlI7SwEYfS294=
 		</data>
 		<key>SMIDataModel.momd/VersionInfo.plist</key>
 		<data>
@@ -911,14 +915,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			4c0GqgLVa50PTskopBx+vEx6bj/3mqfQCJnCWhII3Zc=
+			CutIL5dju0FM4kQOf5TsKMA6BWN8g5jPnFxrOYPpac8=
 			</data>
 		</dict>
 		<key>Headers/SMIChoicesExperienceTypeResponse.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			8lq3Rti0xtUgRdDI7O1AHIijm0mb3Rpp7Pprv9zi1UI=
+			1q0g95zGBoKQyihWWcfX0+tCKqrqnJ1BJEUX7yrocmE=
 			</data>
 		</dict>
 		<key>Headers/SMIChoicesResponse.h</key>
@@ -988,7 +992,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			wWFMWEPGVpiOBUzk7FkMvCcpr0+Ny5y1nYPUvbQe8GY=
+			4phgeL2kcg8jOY4ktc2V+o1V4tvLwfJKNRnSJ+xA+PI=
 			</data>
 		</dict>
 		<key>Headers/SMIComposedStreamingToken.h</key>
@@ -1002,7 +1006,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			xWqcCQ06Yr0+4J7f9hHtdsqsCiyO4glbf/RebXM1z8M=
+			VkqIttrpMexwDWelH8P3xV5JJqPfsU+x/fWdO+pFQms=
 			</data>
 		</dict>
 		<key>Headers/SMIConversation.h</key>
@@ -1100,7 +1104,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			u4o4oQqN6/Xwqtsk9W5nua28ejtld8s6v4vYjIeas5c=
+			FbM9HU8gBLSTDUe6QJgPH8QGkGGnBvPmfcX+SJJNQ2g=
 			</data>
 		</dict>
 		<key>Headers/SMIDataAsset.h</key>
@@ -1194,6 +1198,13 @@
 			XcNHLXn+VrO+THhdx+Agrjz0OqnmQBMR0015HABx7LQ=
 			</data>
 		</dict>
+		<key>Headers/SMIExperimentalConfiguration.h</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			YOOlXgleDXo7Y/D6UFhVpvpV3xFhWbhLXa9Ma46iekY=
+			</data>
+		</dict>
 		<key>Headers/SMIFailureTypes.h</key>
 		<dict>
 			<key>hash2</key>
@@ -1240,14 +1251,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			DyB6RCAdp2eCekQb8L+DwJSygvXOGS4IGDSWTNiKeq8=
+			D5LKMzqvRdfudviCc6PD8EsKI81I5XkumYhZrgv4tVQ=
 			</data>
 		</dict>
 		<key>Headers/SMIFormExperienceTypeResponse.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			xppvU6wh+M6KdIWlvgYD6y9VI7YvbXtUkzB3Bom5pMk=
+			GLgkL6tqjfdi/VTILD1jxRg56Bs6zjc06IcmNxnH58E=
 			</data>
 		</dict>
 		<key>Headers/SMIFormInput.h</key>
@@ -1597,7 +1608,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			xokUldSH5ED/Ty9eb0V4Mu710lOLSqThnJkb7NHLNsk=
+			jDF2TU6lXAp6CZwmBiZkW9MASI5JCDZ8qowcP1f4SQo=
 			</data>
 		</dict>
 		<key>Headers/SMINetworkConnectivityState.h</key>
@@ -1625,7 +1636,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			kEiikrjoG8C6KAkRH+qsI2PW4jIrkKvZEhC5NBpxNKo=
+			kCZT/O3XZm0kuDQd6niCsqCbi0s6RG0RBD6NW9+NKnM=
 			</data>
 		</dict>
 		<key>Headers/SMIPDFAsset.h</key>
@@ -1821,42 +1832,42 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			q9oOAoVDkAADGxf7kx9YS2ygxGTEmW2E4KPfONj48zE=
+			YHLuztANKPu3DG6BzwgOyEr19iyuhSiuomb7uthub7M=
 			</data>
 		</dict>
 		<key>Headers/SMISessionContextSet.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			bthiyqZGYxWpMCdDO8bVwIeK3Tlth81Ra9ftBH3DQRg=
+			qnXpOc6mVLG/vFub3+I35p88x5ZIzYBX/vZ0UXdVYQQ=
 			</data>
 		</dict>
 		<key>Headers/SMIStaticCancelAction.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			T4pJi9dRG1Px5KoQDyopXwMmvkVl9Xtd6FJ4NfgY21M=
+			4tu7pRZa9NIMItFHZib1djNdwuePaGlh3uAWmdi7mM0=
 			</data>
 		</dict>
 		<key>Headers/SMIStaticErrorDetails.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			PGfQL8aQ42nIJIpMy0xbNy7NFGPhGBs5j7BqzsQQtDg=
+			EJ0U3uJU5Y/r42r9B466LngbDj1ua5A3dUGMGVZPhBk=
 			</data>
 		</dict>
 		<key>Headers/SMIStaticErrorMessage.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			BxIQWt5190Z6N39lKt2ZCeccBYppDFzj9TLoiIu0mmw=
+			xkVLFloxE663voDb1JET7JP9ygnR2Zo4yfeD8x43zEQ=
 			</data>
 		</dict>
 		<key>Headers/SMIStaticExperienceType.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			r+s1eHfDYrBC1d39Ce86/oE/KTW+JghpQl5OfFzPRnw=
+			ZpB6nbWM7fXVq+zX9ubvNy/VZGoa2xatbzt4rBJBfFs=
 			</data>
 		</dict>
 		<key>Headers/SMIStreamingToken.h</key>
@@ -1884,7 +1895,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			2ByLJDqrtkXAq+tPP3EB32coAQDtBjPdja1TZoPRaWc=
+			3k56vldgj5oRhuk8ekTbIRmNwsbzOeesckib4V45Wns=
 			</data>
 		</dict>
 		<key>Headers/SMITemplateable.h</key>
@@ -2115,7 +2126,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			3J8gEOikQp0riQdrM2/+Y9+3+RlalLOOUneM4VgC5vI=
+			yZnMg7NXGuBiRlCfX/UHhREa1OMY0ww7CmTuesp6rf0=
 			</data>
 		</dict>
 		<key>SMIDataModel.momd/VersionInfo.plist</key>

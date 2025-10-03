@@ -22,6 +22,7 @@
 #import <SMIClientCore/SMITemplatedUrlDelegate.h>
 #import <SMIClientCore/SMICoreConfiguration.h>
 #import <SMIClientCore/SMIRemoteConfiguration.h>
+#import <SMIClientCore/SMIExperimentalConfiguration.h>
 #import <SMIClientCore/SMITranscriptConfiguration.h>
 #import <SMIClientCore/SMIPreChatField.h>
 #import <SMIClientCore/SMIHiddenPreChatField.h>

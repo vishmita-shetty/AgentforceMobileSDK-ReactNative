@@ -44,12 +44,13 @@ NS_SWIFT_NAME(SessionContextSetProtocol)
 /// @see `SMINamedValue`
 NS_SWIFT_NAME(SessionContextSet)
 @interface SMISessionContextSet : SMIAbstractSessionContext <SMISessionContextSet>
+- (instancetype)init NS_UNAVAILABLE;
 
 /// Initializes a new session context set with the provided context variables.
 ///
 /// @param contextVariables An array of named values representing the context variables. Must not be nil.
 /// @return An initialized SMISessionContextSet instance.
-- (instancetype)initWithContextVariables:(NSArray<id<SMINamedValue>> *)contextVariables;
+- (instancetype)initWithContextVariables:(NSArray<id<SMINamedValue>> *)contextVariables NS_DESIGNATED_INITIALIZER;
 
 @end
 
