@@ -122,8 +122,8 @@ class AgentforceClientManager(private val context: Context) {
             // Create Agentforce configuration
             val config = AgentforceConfiguration.builder(credentialProvider)
                 .setUser(user)
-                .setSalesforceDomain("test.salesforce.com")
-                .setAgentId("agent123")
+                .setSalesforceDomain(currentUser.instanceServer)
+                .setAgentId(agentId)
                 .setFeatureFlagSettings(featureFlagSettings)
                 .setNetwork(networkProvider)
                 .setLogger(logger)
@@ -134,6 +134,7 @@ class AgentforceClientManager(private val context: Context) {
             val app = context.applicationContext as Application
 
             // Create client
+            agentforceClient = AgentforceClient()
             agentforceClient?.init(
                 authCredentialProvider = credentialProvider,
                 agentforceMode = agentforceMode,

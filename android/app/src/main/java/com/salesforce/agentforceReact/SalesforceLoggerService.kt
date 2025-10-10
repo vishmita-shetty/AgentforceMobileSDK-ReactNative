@@ -28,7 +28,7 @@ package com.salesforce.agentforceReact
 
 import com.salesforce.androidsdk.util.SalesforceSDKLogger
 import com.salesforce.android.mobile.interfaces.logging.*
-
+import android.util.Log
 /**
  * Logging service implementation that bridges Agentforce logging to Salesforce SDK logging.
  */
@@ -47,6 +47,7 @@ class SalesforceLoggerService : Logger {
      * Note: Maps Agentforce log levels to appropriate Salesforce SDK log levels
      */
     override fun e(message: String) {
+        Log.e(TAG, message)
         SalesforceSDKLogger.e(TAG, message)
     }
 
@@ -54,10 +55,12 @@ class SalesforceLoggerService : Logger {
         message: String,
         exception: Throwable,
     ) {
+        Log.e(TAG, message)
         SalesforceSDKLogger.e(TAG, message)
     }
 
     override fun w(message: String) {
+        Log.w(TAG, message)
         SalesforceSDKLogger.w(TAG, message)
     }
 
@@ -65,10 +68,12 @@ class SalesforceLoggerService : Logger {
         message: String,
         exception: Throwable,
     ) {
+        Log.w(TAG, message)
         SalesforceSDKLogger.w(TAG, message)
     }
 
     override fun i(message: String) {
+        Log.i(TAG, message)
         SalesforceSDKLogger.i(TAG, message)
     }
 
@@ -76,6 +81,7 @@ class SalesforceLoggerService : Logger {
         message: String,
         exception: Throwable,
     ) {
+        Log.i(TAG, message)
         SalesforceSDKLogger.i(TAG, message)
     }
 }

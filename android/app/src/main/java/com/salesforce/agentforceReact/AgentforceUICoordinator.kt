@@ -40,6 +40,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import com.facebook.react.ReactActivity
+import com.facebook.react.bridge.ReactApplicationContext
 
 /**
  * Coordinates UI presentation and lifecycle for Agentforce chat views.
@@ -111,6 +112,15 @@ class AgentforceUICoordinator(private val context: Context) {
         return when (context) {
             is FragmentActivity -> context
             is ReactActivity -> context
+            is ReactApplicationContext -> {
+                // Get the current activity from ReactApplicationContext
+                val currentActivity = context.currentActivity
+                when (currentActivity) {
+                    is FragmentActivity -> currentActivity
+                    is ReactActivity -> currentActivity
+                    else -> null
+                }
+            }
             else -> null
         }
     }
