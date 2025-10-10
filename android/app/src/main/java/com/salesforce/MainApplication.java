@@ -56,6 +56,7 @@ public class MainApplication extends Application implements ReactApplication {
 			// Packages that cannot be autolinked yet can be added manually here, for example:
 			// packages.add(new MyReactNativePackage());
 			packages.add(SalesforceReactSDKManager.getInstance().getReactPackage());
+			packages.add(new com.salesforce.agentforceReact.AgentforceManagerPackage());
 			return packages;
 		}
 

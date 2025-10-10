@@ -1,5 +1,7 @@
 apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
+apply plugin: "kotlin-android"
+apply plugin: "org.jetbrains.kotlin.plugin.compose"
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -82,6 +84,17 @@ android {
 
     buildFeatures {
         buildConfig = true
+        compose = true
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+        coreLibraryDesugaringEnabled true
     }
 
     buildTypes {
@@ -97,6 +110,26 @@ dependencies {
     implementation("com.facebook.react:react-android")
 
     implementation "com.salesforce.mobilesdk:SalesforceReact"
+
+
+    // Salesforce Agentforce SDK
+    api("com.salesforce.android.agentforcesdk:agentforce-sdk:14.0.0")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
+
+    // Jetpack Compose (needed for ComposeView to display chat interface)
+    def composeBom = platform('androidx.compose:compose-bom:2023.10.01')
+    implementation composeBom
+    implementation 'androidx.compose.ui:ui'
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+    implementation 'androidx.compose.runtime:runtime'
+    implementation 'androidx.activity:activity-compose:1.8.0'
+    
+    // Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
+    
+    // JSON parsing
+    implementation "com.google.code.gson:gson:2.10.1"
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
