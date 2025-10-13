@@ -30,22 +30,110 @@ import android.content.Context
 import com.salesforce.android.mobile.interfaces.network.Network
 import com.salesforce.android.mobile.interfaces.network.NetworkRequest
 import com.salesforce.android.mobile.interfaces.network.NetworkResponse
+import com.salesforce.androidsdk.rest.RestClient
+import com.salesforce.androidsdk.rest.RestRequest
+import com.salesforce.androidsdk.rest.RestResponse
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
+import java.util.concurrent.TimeUnit
+import kotlin.coroutines.suspendCoroutine
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 
 /**
  * Network provider implementation using Salesforce REST APIs.
  */
-class SalesforceNetworkProvider(private val context: Context) : Network {
+class SalesforceNetworkProvider(private val restClient: RestClient) : Network {
 
-    /**
-     * Performs network request and returns response.
-     * 
-     * @param request NetworkRequest to execute
-     * @return NetworkResponse with result
-     */
+    companion object {
+        private const val READ_TIMEOUT = 120L
+    }
+
+    init {
+        // Relax the timeout due to the slow testing org.
+        restClient.okHttpClientBuilder?.let {
+            restClient.okHttpClient = it.readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
+                .build()
+        }
+    }
+
     override suspend fun perform(request: NetworkRequest): NetworkResponse {
-        // TODO: Implement network request using Salesforce REST APIs
-        // For now, returning a placeholder implementation
-        throw NotImplementedError("Network provider implementation pending")
+        return suspendCoroutine { continuation ->
+            restClient.sendAsync(
+                request.toRestRequest(),
+                object : RestClient.AsyncRequestCallback {
+                    override fun onSuccess(req: RestRequest?, resp: RestResponse?) {
+                        continuation.resumeWith(Result.success(processResponse(resp, request)))
+                    }
+
+                    override fun onError(exception: Exception?) {
+                        continuation.resumeWith(Result.success(NetworkResponse(request, 404)))
+                    }
+                }
+            )
+        }
+    }
+
+    fun processResponse(resp: RestResponse?, request: NetworkRequest): NetworkResponse {
+        return NetworkResponse(
+            request,
+            resp?.statusCode ?: NetworkResponse.STATUS_CODE_UNKNOWN,
+            resp?.allHeaders ?: emptyMap(),
+            resp?.asBytes()
+        )
     }
 }
 
+val NetworkRequest.Method.restMethod: RestRequest.RestMethod
+    get() {
+        return when (this) {
+            NetworkRequest.Method.GET -> RestRequest.RestMethod.GET
+            NetworkRequest.Method.POST -> RestRequest.RestMethod.POST
+            NetworkRequest.Method.PUT -> RestRequest.RestMethod.PUT
+            NetworkRequest.Method.DELETE -> RestRequest.RestMethod.DELETE
+            NetworkRequest.Method.HEAD -> RestRequest.RestMethod.HEAD
+            NetworkRequest.Method.PATCH -> RestRequest.RestMethod.PATCH
+        }
+    }
+
+fun NetworkRequest.toRestRequest(): RestRequest {
+    val method = method.restMethod
+    return RestRequest(
+        method,
+        relativeUri,
+        if (body != null && body!!.isNotEmpty()) {
+            // parse content type if exists
+            when (contentType == null) {
+                false -> body!!.toRequestBody(contentType!!.toMediaType(), 0, body!!.size)
+                true -> body!!.toRequestBody(null, 0, body!!.size)
+            }
+        } else {
+            null
+        },
+        additionalHttpHeaders
+    )
+}
+
+/**
+ * Generate the relative uri for the RestRequest treated as path
+ */
+val NetworkRequest.relativeUri: String
+    get() {
+        var uri = this.path
+
+        if (queryParams.isNotEmpty()) {
+            val queryString = queryParams
+                .map {
+                    "${it.key}=${
+                        URLEncoder.encode(
+                            it.value.toString(),
+                            StandardCharsets.UTF_8.name()
+                        )
+                    }"
+                }
+                .joinToString("&")
+            uri += "?$queryString"
+        }
+
+        return uri
+    }

@@ -26,18 +26,18 @@
  */
 package com.salesforce.agentforceReact;
 
-import android.os.Handler;
-import android.os.Looper;
-
-import androidx.annotation.NonNull;
-
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.bridge.Arguments;
+
+import androidx.annotation.NonNull;
+
+import android.os.Handler;
+import android.os.Looper;
 
 /**
  * React Native bridge module for Agentforce functionality.
@@ -50,6 +50,11 @@ public class AgentforceManagerModule extends ReactContextBaseJavaModule {
     private static final String MODULE_NAME = "AgentforceManager";
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private AgentforceClientManager agentforceClient;
+    
+    // Cache for configuration to avoid unnecessary re-initialization
+    private String cachedAgentId;
+    private String cachedOrgId;
+    private String cachedEndpoint;
 
     public AgentforceManagerModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -83,20 +88,40 @@ public class AgentforceManagerModule extends ReactContextBaseJavaModule {
                     return;
                 }
 
-                agentforceClient = new AgentforceClientManager(getReactApplicationContext());
-                agentforceClient.initialize(agentId, orgId, endpoint, new AgentforceClientManager.InitializationCallback() {
-                    @Override
-                    public void onSuccess() {
-                        WritableMap result = Arguments.createMap();
-                        result.putBoolean("success", true);
-                        promise.resolve(result);
-                    }
+                // Check if configuration has changed
+                boolean configChanged = !agentId.equals(cachedAgentId) 
+                    || !orgId.equals(cachedOrgId) 
+                    || !endpoint.equals(cachedEndpoint);
 
-                    @Override
-                    public void onError(Exception error) {
-                        promise.reject("INIT_ERROR", error.getMessage(), error);
-                    }
-                });
+                // Only create new client if configuration changed or client doesn't exist
+                if (agentforceClient == null || configChanged) {
+                    // Cache the new configuration
+                    cachedAgentId = agentId;
+                    cachedOrgId = orgId;
+                    cachedEndpoint = endpoint;
+
+                    agentforceClient = new AgentforceClientManager(getReactApplicationContext());
+                    agentforceClient.initialize(agentId, orgId, endpoint, getCurrentActivity(), new AgentforceClientManager.InitializationCallback() {
+                        @Override
+                        public void onSuccess() {
+                            WritableMap result = Arguments.createMap();
+                            result.putBoolean("success", true);
+                            result.putBoolean("reinitialized", configChanged);
+                            promise.resolve(result);
+                        }
+
+                        @Override
+                        public void onError(Exception error) {
+                            promise.reject("INIT_ERROR", error.getMessage(), error);
+                        }
+                    });
+                } else {
+                    // Configuration hasn't changed, reuse existing client
+                    WritableMap result = Arguments.createMap();
+                    result.putBoolean("success", true);
+                    result.putBoolean("reinitialized", false);
+                    promise.resolve(result);
+                }
             } catch (Exception e) {
                 promise.reject("INIT_EXCEPTION", e.getMessage(), e);
             }
@@ -118,7 +143,10 @@ public class AgentforceManagerModule extends ReactContextBaseJavaModule {
                     return;
                 }
 
-                agentforceClient.presentChatView(agentId, new AgentforceClientManager.PresentationCallback() {
+                // Get the current activity from React context
+                android.app.Activity currentActivity = getCurrentActivity();
+                
+                agentforceClient.presentChatView(agentId, currentActivity, new AgentforceClientManager.PresentationCallback() {
                     @Override
                     public void onSuccess() {
                         WritableMap result = Arguments.createMap();

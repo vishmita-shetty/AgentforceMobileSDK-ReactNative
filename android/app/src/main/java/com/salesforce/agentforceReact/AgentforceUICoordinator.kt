@@ -37,7 +37,7 @@ import android.view.ViewGroup
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.facebook.react.ReactActivity
 import com.facebook.react.bridge.ReactApplicationContext
@@ -53,11 +53,11 @@ class AgentforceUICoordinator(private val context: Context) {
 
     companion object {
         private const val TAG = "AgentforceUICoordinator"
-        private const val DIALOG_TAG = "AgentforceChatDialog"
+        private const val FRAGMENT_TAG = "AgentforceChatFragment"
     }
 
     private val mainHandler = Handler(Looper.getMainLooper())
-    private var currentDialog: DialogFragment? = null
+    private var currentFragment: Fragment? = null
 
     /**
      * Presents the Agentforce chat view.
@@ -74,11 +74,16 @@ class AgentforceUICoordinator(private val context: Context) {
                 val activity = getFragmentActivity()
                     ?: throw IllegalStateException("No fragment activity found")
 
-                // Create and show dialog fragment with Composable
-                val dialog = AgentforceChatDialogFragment.newInstance(chatComposable)
-                currentDialog = dialog
+                // Create fragment with Composable
+                val fragment = AgentforceChatFragment.newInstance(chatComposable)
+                currentFragment = fragment
 
-                dialog.show(activity.supportFragmentManager, DIALOG_TAG)
+                // Add fragment to container (assumes android.R.id.content as container)
+                activity.supportFragmentManager.beginTransaction()
+                    .replace(android.R.id.content, fragment, FRAGMENT_TAG)
+                    .addToBackStack(null)
+                    .commit()
+                    
                 callback.onSuccess()
             } catch (e: Exception) {
                 Log.e(TAG, "Error presenting chat view", e)
@@ -95,8 +100,17 @@ class AgentforceUICoordinator(private val context: Context) {
     fun dismissChatView(callback: AgentforceClientManager.DismissCallback) {
         mainHandler.post {
             try {
-                currentDialog?.dismissAllowingStateLoss()
-                currentDialog = null
+                val activity = getFragmentActivity()
+                    ?: throw IllegalStateException("No fragment activity found")
+                    
+                // Remove fragment
+                currentFragment?.let { fragment ->
+                    activity.supportFragmentManager.beginTransaction()
+                        .remove(fragment)
+                        .commitAllowingStateLoss()
+                }
+                
+                currentFragment = null
                 callback.onSuccess()
             } catch (e: Exception) {
                 Log.e(TAG, "Error dismissing chat view", e)
@@ -126,30 +140,29 @@ class AgentforceUICoordinator(private val context: Context) {
     }
 
     /**
-     * Dialog fragment for displaying the Agentforce chat interface.
+     * Fragment for displaying the Agentforce chat interface.
      *
      * This fragment wraps a Jetpack Compose Composable in a ComposeView
      * to display it in the traditional Android View system.
      */
-    class AgentforceChatDialogFragment : DialogFragment() {
+    class AgentforceChatFragment : Fragment() {
 
         companion object {
-            private const val TAG = "AgentforceChatDialog"
+            private const val TAG = "AgentforceChatFragment"
 
             // We store the composable as a static variable since it can't be serialized
-            // This is safe for dialog fragments that are created and used immediately
+            // This is safe for fragments that are created and used immediately
             private var chatComposable: (@Composable () -> Unit)? = null
 
-            fun newInstance(composable: @Composable () -> Unit): AgentforceChatDialogFragment {
+            fun newInstance(composable: @Composable () -> Unit): AgentforceChatFragment {
                 chatComposable = composable
-                return AgentforceChatDialogFragment()
+                return AgentforceChatFragment()
             }
         }
 
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            // Use full-screen dialog style
-            setStyle(STYLE_NORMAL, android.R.style.Theme_Material_Light_NoActionBar_Fullscreen)
+        override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String?>, grantResults: IntArray) {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+            AgentforceClientPermissions.handlePermissionResult(requestCode, permissions, grantResults)
         }
 
         override fun onCreateView(

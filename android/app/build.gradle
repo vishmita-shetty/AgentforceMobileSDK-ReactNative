@@ -2,6 +2,7 @@ apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
 apply plugin: "kotlin-android"
 apply plugin: "org.jetbrains.kotlin.plugin.compose"
+apply plugin: 'kotlinx-serialization'
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -24,6 +25,7 @@ react {
     //   If you add flavors like lite, prod, etc. you'll have to list your debuggableVariants.
     // debuggableVariants = ["liteDebug", "prodDebug"]
     /* Bundling */
+    debuggableVariants = []
     //   A list containing the node command and its flags. Default is just 'node'.
     // nodeExecutableAndArgs = ["node"]
     //
@@ -106,15 +108,15 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
 
     implementation "com.salesforce.mobilesdk:SalesforceReact"
 
-
     // Salesforce Agentforce SDK
     api("com.salesforce.android.agentforcesdk:agentforce-sdk:14.0.0")
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 
     // Jetpack Compose (needed for ComposeView to display chat interface)
     def composeBom = platform('androidx.compose:compose-bom:2023.10.01')
@@ -130,6 +132,7 @@ dependencies {
     
     // JSON parsing
     implementation "com.google.code.gson:gson:2.10.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3"
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
