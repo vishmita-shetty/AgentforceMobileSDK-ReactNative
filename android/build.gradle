@@ -22,7 +22,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven { url('https://opensource.salesforce.com/AgentforceMobileSDK-Android/agentforce-sdk-repository') }
     }
 
     dependencies {
@@ -30,6 +29,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:compose-compiler-gradle-plugin:$kotlin_version"
         classpath "com.facebook.react:react-native-gradle-plugin"
+        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
     }
 }
 
@@ -37,8 +37,9 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        maven { url('https://opensource.salesforce.com/AgentforceMobileSDK-Android/agentforce-sdk-repository') }
+        // Required for AgentforceSDK
         maven { url('https://jitpack.io') }
+        maven { url('https://opensource.salesforce.com/AgentforceMobileSDK-Android/agentforce-sdk-repository') }
         maven { url('https://s3.amazonaws.com/salesforce-async-messaging-experimental/public/android') }
     }
 }

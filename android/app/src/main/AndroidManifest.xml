@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:installLocation="internalOnly">
 
 	<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
@@ -52,6 +53,28 @@
             </intent-filter>
         </activity>
         -->
+		<!-- Override the FileProvider definitions from libraries -->
+		<provider
+			android:name="androidx.core.content.FileProvider"
+			android:authorities="${applicationId}.fileprovider"
+			android:exported="false"
+			android:grantUriPermissions="true"
+			tools:replace="android:authorities">
+			<meta-data
+				android:name="android.support.FILE_PROVIDER_PATHS"
+				android:resource="@xml/file_paths"
+				tools:replace="android:resource" />
+		</provider>
+
+		<provider
+			android:name="com.salesforce.android.agentforcesdkimpl.utils.AgentforcePDFFileProvider"
+			android:authorities="${applicationId}.pdffileprovider"
+			android:exported="false"
+			android:grantUriPermissions="true">
+			<meta-data
+				android:name="android.support.FILE_PROVIDER_PATHS"
+				android:resource="@xml/pdf_file_paths" />
+		</provider>
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity"/>
 	</application>
 </manifest>

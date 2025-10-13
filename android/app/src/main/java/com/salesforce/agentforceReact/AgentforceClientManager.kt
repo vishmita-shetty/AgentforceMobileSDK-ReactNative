@@ -25,6 +25,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 package com.salesforce.agentforceReact
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.util.Log
@@ -32,12 +33,14 @@ import com.salesforce.android.agentforcesdkimpl.AgentforceClient
 import com.salesforce.android.agentforcesdkimpl.AgentforceUIDelegate
 import com.salesforce.android.agentforcesdkimpl.configuration.AgentforceConfiguration
 import com.salesforce.android.agentforcesdkimpl.configuration.AgentforceMode
+import com.salesforce.android.agentforcesdkimpl.configuration.EmployeeAgentConfiguration
 import com.salesforce.android.agentforcesdkimpl.utils.AgentforceFeatureFlagSettings
 import com.salesforce.android.mobile.interfaces.user.Community
 import com.salesforce.android.mobile.interfaces.user.Org
 import com.salesforce.android.mobile.interfaces.user.User
 import com.salesforce.androidsdk.accounts.UserAccount
 import com.salesforce.androidsdk.accounts.UserAccountManager
+import com.salesforce.androidsdk.app.SalesforceSDKManager
 
 /**
  * Manager class for Agentforce SDK integration.
@@ -90,6 +93,7 @@ class AgentforceClientManager(private val context: Context) {
         agentId: String,
         orgId: String,
         endpoint: String,
+        activity: Activity?,
         callback: InitializationCallback
     ) {
         try {
@@ -100,11 +104,20 @@ class AgentforceClientManager(private val context: Context) {
 
             // Create protocol implementations
             val credentialProvider = AgentforceCredentialProvider()
-            val networkProvider = SalesforceNetworkProvider(context)
+            val networkProvider = SalesforceNetworkProvider(SalesforceSDKManager.getInstance().clientManager.peekRestClient())
             val logger = SalesforceLoggerService()
 
             // Create feature flag settings
             val featureFlagSettings = AgentforceFeatureFlagSettings.builder()
+                .enableMultiAgent(true)
+                .enableMultiModalInput(true)
+                .enablePDFUpload(true)
+                .enableLongPauseSpeechTranscription(true)
+                .setupFlags(mapOf(
+                    "enableLightningTypeStreaming" to true
+                ))
+                .enableTheming(true)
+                .enableOnboarding(false)
                 .build()
 
             // Get the current Salesforce instance URL
@@ -119,8 +132,12 @@ class AgentforceClientManager(private val context: Context) {
                 )
             )
 
+            // Get the Permissions
+            val permissions = activity?.let { AgentforceClientPermissions(it) }
+            val app = context.applicationContext as Application
             // Create Agentforce configuration
             val config = AgentforceConfiguration.builder(credentialProvider)
+                .setApplication(app)
                 .setUser(user)
                 .setSalesforceDomain(currentUser.instanceServer)
                 .setAgentId(agentId)
@@ -128,10 +145,17 @@ class AgentforceClientManager(private val context: Context) {
                 .setNetwork(networkProvider)
                 .setLogger(logger)
                 .setSalesforceDomain(instanceUrl)
+                .setPermission(permissions)
+                .setCameraUriProvider(AgentforceClientCameraUriProvider(app))
+                .setDataProvider(AgentforceClientDataProvider(networkProvider))
                 .build()
 
-            val agentforceMode = AgentforceMode.FullConfig(config)
-            val app = context.applicationContext as Application
+            val agentforceMode = AgentforceMode.EmployeeAgent(
+                agentforceConfiguration = config,
+                employeeAgentConfiguration = EmployeeAgentConfiguration.builder(user,
+                    forceConfigEndpoint = currentUser.instanceServer)
+                    .build()
+            )
 
             // Create client
             agentforceClient = AgentforceClient()
@@ -140,8 +164,6 @@ class AgentforceClientManager(private val context: Context) {
                 agentforceMode = agentforceMode,
                 application = app
             )
-            // Initialize UI coordinator
-            uiCoordinator = AgentforceUICoordinator(context)
 
             callback.onSuccess()
         } catch (e: Exception) {
@@ -154,14 +176,17 @@ class AgentforceClientManager(private val context: Context) {
      * Presents the Agentforce chat view for the specified agent.
      * 
      * @param agentId The agent identifier to start a conversation with
+     * @param currentActivity The current activity to present the chat view in (optional, will try to get from context if null)
      * @param callback Callback for presentation result
      */
-    fun presentChatView(agentId: String, callback: PresentationCallback) {
+    fun presentChatView(agentId: String, currentActivity: android.app.Activity? = null, callback: PresentationCallback) {
         try {
             val client = agentforceClient
                 ?: throw IllegalStateException("AgentforceClient not initialized")
-            val coordinator = uiCoordinator
-                ?: throw IllegalStateException("UI Coordinator not initialized")
+            
+            // Use provided activity or fall back to stored context
+            val activityContext = currentActivity ?: context
+            val coordinator = AgentforceUICoordinator(activityContext)
 
             // Start conversation
             val conversation = client.startAgentforceConversation(agentId)
@@ -183,6 +208,9 @@ class AgentforceClientManager(private val context: Context) {
                     }
                 )
             }, callback)
+            
+            // Store the coordinator for dismiss operations
+            uiCoordinator = coordinator
         } catch (e: Exception) {
             Log.e(TAG, "Error presenting chat view", e)
             callback.onError(e)
