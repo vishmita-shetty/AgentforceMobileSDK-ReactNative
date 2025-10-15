@@ -24,7 +24,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.salesforce;
+package com.salesforce.android.reactagentforce;
 
 import android.app.Application;
 
@@ -56,6 +56,7 @@ public class MainApplication extends Application implements ReactApplication {
 			// Packages that cannot be autolinked yet can be added manually here, for example:
 			// packages.add(new MyReactNativePackage());
 			packages.add(SalesforceReactSDKManager.getInstance().getReactPackage());
+			packages.add(new AgentforceManagerPackage());
 			return packages;
 		}
 
