@@ -24,40 +24,65 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.salesforce.agentforceReact;
+package com.salesforce.android.reactagentforce
 
-import androidx.annotation.NonNull;
-
-import com.facebook.react.ReactPackage;
-import com.facebook.react.bridge.NativeModule;
-import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.uimanager.ViewManager;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import com.salesforce.androidsdk.util.SalesforceSDKLogger
+import com.salesforce.android.mobile.interfaces.logging.*
+import android.util.Log
 /**
- * React Native package that provides the Agentforce native module.
- * 
- * This package needs to be registered in MainApplication.java to make
- * the AgentforceManager module available to React Native.
+ * Logging service implementation that bridges Agentforce logging to Salesforce SDK logging.
  */
-public class AgentforceManagerPackage implements ReactPackage {
+class SalesforceLoggerService : Logger {
 
-    @NonNull
-    @Override
-    public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactContext) {
-        List<NativeModule> modules = new ArrayList<>();
-        modules.add(new AgentforceManagerModule(reactContext));
-        return modules;
+    companion object {
+        private const val TAG = "AgentforceLogger"
     }
 
-    @NonNull
-    @Override
-    public List<ViewManager> createViewManagers(@NonNull ReactApplicationContext reactContext) {
-        return Collections.emptyList();
+    /**
+     * Log a message with specified level.
+     * 
+     * @param logMessage The message to log
+     * @param level The logging level
+     * 
+     * Note: Maps Agentforce log levels to appropriate Salesforce SDK log levels
+     */
+    override fun e(message: String) {
+        Log.e(TAG, message)
+        SalesforceSDKLogger.e(TAG, message)
+    }
+
+    override fun e(
+        message: String,
+        exception: Throwable,
+    ) {
+        Log.e(TAG, message)
+        SalesforceSDKLogger.e(TAG, message)
+    }
+
+    override fun w(message: String) {
+        Log.w(TAG, message)
+        SalesforceSDKLogger.w(TAG, message)
+    }
+
+    override fun w(
+        message: String,
+        exception: Throwable,
+    ) {
+        Log.w(TAG, message)
+        SalesforceSDKLogger.w(TAG, message)
+    }
+
+    override fun i(message: String) {
+        Log.i(TAG, message)
+        SalesforceSDKLogger.i(TAG, message)
+    }
+
+    override fun i(
+        message: String,
+        exception: Throwable,
+    ) {
+        Log.i(TAG, message)
+        SalesforceSDKLogger.i(TAG, message)
     }
 }
-
 

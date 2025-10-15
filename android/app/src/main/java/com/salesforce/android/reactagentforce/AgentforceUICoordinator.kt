@@ -24,8 +24,9 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.salesforce.agentforceReact
+package com.salesforce.android.reactagentforce
 
+import android.R
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
@@ -80,7 +81,7 @@ class AgentforceUICoordinator(private val context: Context) {
 
                 // Add fragment to container (assumes android.R.id.content as container)
                 activity.supportFragmentManager.beginTransaction()
-                    .replace(android.R.id.content, fragment, FRAGMENT_TAG)
+                    .replace(R.id.content, fragment, FRAGMENT_TAG)
                     .addToBackStack(null)
                     .commit()
                     

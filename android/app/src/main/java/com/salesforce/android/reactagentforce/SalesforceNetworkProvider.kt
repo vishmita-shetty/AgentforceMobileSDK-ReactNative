@@ -24,9 +24,8 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.salesforce.agentforceReact
+package com.salesforce.android.reactagentforce
 
-import android.content.Context
 import com.salesforce.android.mobile.interfaces.network.Network
 import com.salesforce.android.mobile.interfaces.network.NetworkRequest
 import com.salesforce.android.mobile.interfaces.network.NetworkResponse

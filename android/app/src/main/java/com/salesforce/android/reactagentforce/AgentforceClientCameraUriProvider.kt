@@ -24,40 +24,50 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.salesforce.agentforceReact
+package com.salesforce.android.reactagentforce
 
-import com.salesforce.android.agentforceservice.*
-import com.salesforce.androidsdk.accounts.UserAccountManager
+import android.content.Context
+import android.net.Uri
+import androidx.core.content.FileProvider
+import com.salesforce.android.agentforceservice.AgentforceCameraUriProvider
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 /**
- * Provides authentication credentials for Agentforce SDK using Salesforce authentication.
+ * Implementation of AgentforceCameraUriProvider that creates temporary files
+ * for camera image captures and returns a properly formatted FileProvider URI
  */
-class AgentforceCredentialProvider : AgentforceAuthCredentialProvider {
+class AgentforceClientCameraUriProvider(private val context: Context) : AgentforceCameraUriProvider {
 
-    /**
-     * Returns OAuth credentials from the currently authenticated Salesforce user.
-     * 
-     * @return AgentforceAuthCredentials containing access token, org ID, and user ID
-     * @throws IllegalStateException if no authenticated user is found
-     */
-    override fun getAuthCredentials(): AgentforceAuthCredentials {
-        val userAccountManager = UserAccountManager.getInstance()
-        val currentUser = userAccountManager.currentUser
-            ?: throw IllegalStateException("No authenticated user found. Please ensure the user is logged in to Salesforce.")
+    override fun getUri(): Uri {
+        // Create a unique filename for the photo
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
+        val imageFileName = "JPEG_${timeStamp}_"
 
-        val accessToken = currentUser.authToken
-            ?: throw IllegalStateException("No access token available")
-        val orgId = currentUser.orgId
-            ?: throw IllegalStateException("No organization ID available")
-        val userId = currentUser.userId
-            ?: throw IllegalStateException("No user ID available")
+        // Create a temporary file in the cache directory
+        val cacheDir = context.cacheDir
+        val photoFile = File.createTempFile(
+            imageFileName,
+            ".jpg",
+            cacheDir
+        )
 
-        return AgentforceAuthCredentials.OAuth(
-            authToken = accessToken,
-            orgId = orgId,
-            userId = userId
+        // Get a content URI using the app's FileProvider
+        return FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.fileprovider",
+            photoFile
         )
     }
+
+    override fun clearCachedImages() {
+        val cacheDir = context.cacheDir
+        cacheDir.listFiles()?.forEach { file ->
+            if (file.name.startsWith("JPEG_")) {
+                file.delete()
+            }
+        }
+    }
 }
-
-

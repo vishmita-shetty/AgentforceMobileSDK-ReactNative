@@ -24,13 +24,12 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.salesforce.agentforceReact
+package com.salesforce.android.reactagentforce
 import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.util.Log
 import com.salesforce.android.agentforcesdkimpl.AgentforceClient
-import com.salesforce.android.agentforcesdkimpl.AgentforceUIDelegate
 import com.salesforce.android.agentforcesdkimpl.configuration.AgentforceConfiguration
 import com.salesforce.android.agentforcesdkimpl.configuration.AgentforceMode
 import com.salesforce.android.agentforcesdkimpl.configuration.EmployeeAgentConfiguration
@@ -179,7 +178,7 @@ class AgentforceClientManager(private val context: Context) {
      * @param currentActivity The current activity to present the chat view in (optional, will try to get from context if null)
      * @param callback Callback for presentation result
      */
-    fun presentChatView(agentId: String, currentActivity: android.app.Activity? = null, callback: PresentationCallback) {
+    fun presentChatView(agentId: String, currentActivity: Activity? = null, callback: PresentationCallback) {
         try {
             val client = agentforceClient
                 ?: throw IllegalStateException("AgentforceClient not initialized")

@@ -24,10 +24,10 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.salesforce.agentforceReact
+package com.salesforce.android.reactagentforce
 
-import com.salesforce.agentforceReact.data.ObjectRepresentationList
-import com.salesforce.agentforceReact.data.RecordUI
+import com.salesforce.android.reactagentforce.data.ObjectRepresentationList
+import com.salesforce.android.reactagentforce.data.RecordUI
 import com.salesforce.android.agentforcesdkimpl.data.DataProvider
 import com.salesforce.android.agentforcesdkimpl.data.models.ObjectRepresentation
 import com.salesforce.android.agentforcesdkimpl.data.models.UIAPIRecord

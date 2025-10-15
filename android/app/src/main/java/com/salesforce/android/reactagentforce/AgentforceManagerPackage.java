@@ -24,50 +24,40 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.salesforce.agentforceReact
+package com.salesforce.android.reactagentforce;
 
-import android.content.Context
-import android.net.Uri
-import androidx.core.content.FileProvider
-import com.salesforce.android.agentforceservice.AgentforceCameraUriProvider
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import androidx.annotation.NonNull;
+
+import com.facebook.react.ReactPackage;
+import com.facebook.react.bridge.NativeModule;
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.uimanager.ViewManager;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
- * Implementation of AgentforceCameraUriProvider that creates temporary files
- * for camera image captures and returns a properly formatted FileProvider URI
+ * React Native package that provides the Agentforce native module.
+ * 
+ * This package needs to be registered in MainApplication.java to make
+ * the AgentforceManager module available to React Native.
  */
-class AgentforceClientCameraUriProvider(private val context: Context) : AgentforceCameraUriProvider {
+public class AgentforceManagerPackage implements ReactPackage {
 
-    override fun getUri(): Uri {
-        // Create a unique filename for the photo
-        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
-        val imageFileName = "JPEG_${timeStamp}_"
-
-        // Create a temporary file in the cache directory
-        val cacheDir = context.cacheDir
-        val photoFile = File.createTempFile(
-            imageFileName,
-            ".jpg",
-            cacheDir
-        )
-
-        // Get a content URI using the app's FileProvider
-        return FileProvider.getUriForFile(
-            context,
-            "${context.packageName}.fileprovider",
-            photoFile
-        )
+    @NonNull
+    @Override
+    public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactContext) {
+        List<NativeModule> modules = new ArrayList<>();
+        modules.add(new AgentforceManagerModule(reactContext));
+        return modules;
     }
 
-    override fun clearCachedImages() {
-        val cacheDir = context.cacheDir
-        cacheDir.listFiles()?.forEach { file ->
-            if (file.name.startsWith("JPEG_")) {
-                file.delete()
-            }
-        }
+    @NonNull
+    @Override
+    public List<ViewManager> createViewManagers(@NonNull ReactApplicationContext reactContext) {
+        return Collections.emptyList();
     }
 }
+
+

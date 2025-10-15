@@ -71,13 +71,11 @@ def enableProguardInReleaseBuilds = false
 def jscFlavor = 'org.webkit:android-jsc:+'
 
 android {
-    namespace = "com.salesforce"
-
+    namespace = "com.salesforce.android.reactagentforce"
     compileSdk rootProject.ext.compileSdk
 
-    namespace "com.salesforce"
     defaultConfig {
-        applicationId "com.salesforce"
+        applicationId "com.salesforce.android.reactagentforce"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

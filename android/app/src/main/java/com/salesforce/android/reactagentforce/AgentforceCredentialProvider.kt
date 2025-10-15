@@ -24,65 +24,40 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.salesforce.agentforceReact
+package com.salesforce.android.reactagentforce
 
-import com.salesforce.androidsdk.util.SalesforceSDKLogger
-import com.salesforce.android.mobile.interfaces.logging.*
-import android.util.Log
+import com.salesforce.android.agentforceservice.*
+import com.salesforce.androidsdk.accounts.UserAccountManager
+
 /**
- * Logging service implementation that bridges Agentforce logging to Salesforce SDK logging.
+ * Provides authentication credentials for Agentforce SDK using Salesforce authentication.
  */
-class SalesforceLoggerService : Logger {
-
-    companion object {
-        private const val TAG = "AgentforceLogger"
-    }
+class AgentforceCredentialProvider : AgentforceAuthCredentialProvider {
 
     /**
-     * Log a message with specified level.
+     * Returns OAuth credentials from the currently authenticated Salesforce user.
      * 
-     * @param logMessage The message to log
-     * @param level The logging level
-     * 
-     * Note: Maps Agentforce log levels to appropriate Salesforce SDK log levels
+     * @return AgentforceAuthCredentials containing access token, org ID, and user ID
+     * @throws IllegalStateException if no authenticated user is found
      */
-    override fun e(message: String) {
-        Log.e(TAG, message)
-        SalesforceSDKLogger.e(TAG, message)
-    }
+    override fun getAuthCredentials(): AgentforceAuthCredentials {
+        val userAccountManager = UserAccountManager.getInstance()
+        val currentUser = userAccountManager.currentUser
+            ?: throw IllegalStateException("No authenticated user found. Please ensure the user is logged in to Salesforce.")
 
-    override fun e(
-        message: String,
-        exception: Throwable,
-    ) {
-        Log.e(TAG, message)
-        SalesforceSDKLogger.e(TAG, message)
-    }
+        val accessToken = currentUser.authToken
+            ?: throw IllegalStateException("No access token available")
+        val orgId = currentUser.orgId
+            ?: throw IllegalStateException("No organization ID available")
+        val userId = currentUser.userId
+            ?: throw IllegalStateException("No user ID available")
 
-    override fun w(message: String) {
-        Log.w(TAG, message)
-        SalesforceSDKLogger.w(TAG, message)
-    }
-
-    override fun w(
-        message: String,
-        exception: Throwable,
-    ) {
-        Log.w(TAG, message)
-        SalesforceSDKLogger.w(TAG, message)
-    }
-
-    override fun i(message: String) {
-        Log.i(TAG, message)
-        SalesforceSDKLogger.i(TAG, message)
-    }
-
-    override fun i(
-        message: String,
-        exception: Throwable,
-    ) {
-        Log.i(TAG, message)
-        SalesforceSDKLogger.i(TAG, message)
+        return AgentforceAuthCredentials.OAuth(
+            authToken = accessToken,
+            orgId = orgId,
+            userId = userId
+        )
     }
 }
+
 
