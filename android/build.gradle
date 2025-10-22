@@ -39,7 +39,7 @@ allprojects {
         mavenCentral()
         // Required for AgentforceSDK
         maven { url('https://jitpack.io') }
-        maven { url('https://opensource.salesforce.com/AgentforceMobileSDK-Android/agentforce-sdk-repository') }
+        maven { url('https://opensource.salesforce.com/AgentforceMobileSDK-Android/agentforce-sdk-repository-experimental')}
         maven { url('https://s3.amazonaws.com/salesforce-async-messaging-experimental/public/android') }
     }
 }
