@@ -114,7 +114,7 @@ dependencies {
     implementation "com.salesforce.mobilesdk:SalesforceReact"
 
     // Salesforce Agentforce SDK
-    api("com.salesforce.android.agentforcesdk:agentforce-sdk:14.0.0")
+    api("com.salesforce.android.agentforcesdk:agentforce-sdk:14.20.0-experimental")
 
     // Jetpack Compose (needed for ComposeView to display chat interface)
     def composeBom = platform('androidx.compose:compose-bom:2023.10.01')
