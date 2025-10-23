@@ -72,9 +72,9 @@ class ContactListScreen extends React.Component<Props, State> {
             data: [],
             showAgentforceModal: false,
             agentforceInitialized: false,
-            agentId: "0XxEE0000001fkH0AQ",
+            agentId: "0XxEE0000001CDd0AM",
             isAgentIdEditable: false,
-            orgId: ""
+            orgId: "00DEE000000XQRx"
         };
     }
 
