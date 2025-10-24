@@ -4,19 +4,33 @@ This is a complete ReactNative application with embedded AgentforceSDK and Agent
 
 ## Quick Start
 
-### Setup
+### iOS Setup
 ```bash
 # Install all dependencies (Node modules, Mobile SDK, and CocoaPods)
 node installios.js
 ```
 
-### Run the app
+### iOS Run
 ```bash
 # Open the workspace in Xcode
 open ios/ReactAgentforce.xcworkspace
 ```
 - Select your target device/simulator in Xcode
 - Press Cmd+R to build and run
+
+### Android Setup
+```bash
+# Install all dependencies (Node modules and Mobile SDK)
+node installandroid.js
+```
+
+### Android Run
+```bash
+# Run the app on connected device or emulator
+npx react-native run-android
+```
+- Make sure you have an Android device connected via USB (with USB debugging enabled) or an Android emulator running
+- Check connected devices with: `adb devices`
 
 ## React Native Integration
 
@@ -77,4 +91,4 @@ npm start
 ```
 
 ### Testing
-Build and run the iOS simulator to test the complete Agentforce integration.
+Build and run the iOS simulator or Android emulator to test the complete Agentforce integration.
