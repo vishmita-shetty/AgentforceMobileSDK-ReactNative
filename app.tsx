@@ -38,9 +38,14 @@ import {
     TextInput,
 } from 'react-native';
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer, RouteProp } from '@react-navigation/native';
+import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
 import { oauth, net } from 'react-native-force';
+
+type RootStackParamList = {
+    'React Native Agentforce Integration': undefined;
+    ContactDetail: { contact: Record };
+};
 
 interface AgentforceManagerType {
   initializeAgentforce(config: {
@@ -61,11 +66,18 @@ interface Response {
 }
 
 interface Record {
-    Id: String,
-    Name: String
+    Id: string,
+    Name: string,
+    Email?: string,
+    Phone?: string,
+    MobilePhone?: string,
+    Title?: string,
+    Department?: string,
+    Account?: { Name: string }
 }
 
 interface Props {
+    navigation: StackNavigationProp<RootStackParamList, 'React Native Agentforce Integration'>;
 }
 
 interface Agent {
@@ -128,7 +140,7 @@ class ContactListScreen extends React.Component<Props, State> {
 
     fetchData() {
         var that = this;
-        net.query('SELECT Id, Name FROM Contact LIMIT 100',
+        net.query('SELECT Id, Name, Email, Phone, MobilePhone, Title, Department, Account.Name FROM Contact LIMIT 100',
             (response: Response) => that.setState({ data: response.records }),
             (error) => console.log('Failed to query:' + error)
         );
@@ -422,7 +434,14 @@ class ContactListScreen extends React.Component<Props, State> {
 
                 <FlatList
                     data={this.state.data}
-                    renderItem={({ item }) => <Text style={styles.item}>{item.Name}</Text>}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity
+                            style={styles.item}
+                            onPress={() => this.props.navigation.navigate('ContactDetail', { contact: item })}
+                        >
+                            <Text style={styles.itemText}>{item.Name}</Text>
+                        </TouchableOpacity>
+                    )}
                     keyExtractor={(item, index) => 'key_' + index}
                 />
 
@@ -454,8 +473,13 @@ const styles = StyleSheet.create({
     },
     item: {
         padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#e0e0e0',
+        backgroundColor: 'white',
+    },
+    itemText: {
         fontSize: 18,
-        height: 44,
+        color: '#212529',
     },
     agentsContainer: {
         backgroundColor: '#f8f9fa',
@@ -697,15 +721,106 @@ const styles = StyleSheet.create({
         marginRight: 8,
         minHeight: 40,
     },
+    detailContainer: {
+        flex: 1,
+        backgroundColor: '#f8f9fa',
+        padding: 15,
+    },
+    detailSection: {
+        backgroundColor: 'white',
+        padding: 15,
+        marginBottom: 10,
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#e9ecef',
+    },
+    detailLabel: {
+        fontSize: 12,
+        fontWeight: '600',
+        color: '#6c757d',
+        marginBottom: 4,
+        textTransform: 'uppercase',
+    },
+    detailValue: {
+        fontSize: 16,
+        color: '#212529',
+    },
 });
 
-const Stack = createStackNavigator();
+interface ContactDetailProps {
+    route: RouteProp<RootStackParamList, 'ContactDetail'>;
+}
+
+class ContactDetailScreen extends React.Component<ContactDetailProps> {
+    render() {
+        const { contact } = this.props.route.params;
+
+        return (
+            <View style={styles.detailContainer}>
+                <View style={styles.detailSection}>
+                    <Text style={styles.detailLabel}>Name</Text>
+                    <Text style={styles.detailValue}>{contact.Name}</Text>
+                </View>
+
+                <View style={styles.detailSection}>
+                    <Text style={styles.detailLabel}>Record ID</Text>
+                    <Text style={styles.detailValue}>{contact.Id}</Text>
+                </View>
+
+                {contact.Email && (
+                    <View style={styles.detailSection}>
+                        <Text style={styles.detailLabel}>Email</Text>
+                        <Text style={styles.detailValue}>{contact.Email}</Text>
+                    </View>
+                )}
+
+                {contact.Phone && (
+                    <View style={styles.detailSection}>
+                        <Text style={styles.detailLabel}>Phone</Text>
+                        <Text style={styles.detailValue}>{contact.Phone}</Text>
+                    </View>
+                )}
+
+                {contact.MobilePhone && (
+                    <View style={styles.detailSection}>
+                        <Text style={styles.detailLabel}>Mobile</Text>
+                        <Text style={styles.detailValue}>{contact.MobilePhone}</Text>
+                    </View>
+                )}
+
+                {contact.Title && (
+                    <View style={styles.detailSection}>
+                        <Text style={styles.detailLabel}>Title</Text>
+                        <Text style={styles.detailValue}>{contact.Title}</Text>
+                    </View>
+                )}
+
+                {contact.Department && (
+                    <View style={styles.detailSection}>
+                        <Text style={styles.detailLabel}>Department</Text>
+                        <Text style={styles.detailValue}>{contact.Department}</Text>
+                    </View>
+                )}
+
+                {contact.Account?.Name && (
+                    <View style={styles.detailSection}>
+                        <Text style={styles.detailLabel}>Account</Text>
+                        <Text style={styles.detailValue}>{contact.Account.Name}</Text>
+                    </View>
+                )}
+            </View>
+        );
+    }
+}
+
+const Stack = createStackNavigator<RootStackParamList>();
 
 function App(): JSX.Element {
     return (
         <NavigationContainer>
             <Stack.Navigator>
                 <Stack.Screen name="React Native Agentforce Integration" component={ContactListScreen} />
+                <Stack.Screen name="ContactDetail" component={ContactDetailScreen} options={{ title: 'Contact Details' }} />
             </Stack.Navigator>
         </NavigationContainer>
     );
