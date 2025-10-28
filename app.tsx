@@ -565,7 +565,7 @@ const styles = StyleSheet.create({
         padding: 12,
         borderRadius: 4,
         alignItems: 'center',
-        marginRight: 4,
+        marginRight: 8,
     },
     saveButtonText: {
         color: 'white',
@@ -578,7 +578,6 @@ const styles = StyleSheet.create({
         padding: 12,
         borderRadius: 4,
         alignItems: 'center',
-        marginLeft: 4,
     },
     cancelButtonText: {
         color: 'white',
@@ -697,71 +696,6 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         marginRight: 8,
         minHeight: 40,
-    },
-    modalOverlay: {
-        flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    modalContent: {
-        backgroundColor: 'white',
-        margin: 20,
-        borderRadius: 20,
-        padding: 30,
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
-        minWidth: 300,
-    },
-    modalTitle: {
-        fontSize: 22,
-        fontWeight: 'bold',
-        marginBottom: 15,
-        textAlign: 'center',
-        color: '#333',
-    },
-    modalMessage: {
-        fontSize: 16,
-        textAlign: 'center',
-        marginBottom: 25,
-        color: '#666',
-        lineHeight: 22,
-    },
-    modalButtons: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '100%',
-    },
-    modalButton: {
-        flex: 1,
-        paddingVertical: 12,
-        paddingHorizontal: 20,
-        borderRadius: 10,
-        marginHorizontal: 5,
-    },
-    cancelButton: {
-        backgroundColor: '#f1f1f1',
-        borderWidth: 1,
-        borderColor: '#ddd',
-    },
-    confirmButton: {
-        backgroundColor: '#0070f3',
-    },
-    cancelButtonText: {
-        color: '#666',
-        fontSize: 16,
-        fontWeight: '600',
-        textAlign: 'center',
-    },
-    confirmButtonText: {
-        color: 'white',
-        fontSize: 16,
-        fontWeight: '600',
-        textAlign: 'center',
     },
 });
 
