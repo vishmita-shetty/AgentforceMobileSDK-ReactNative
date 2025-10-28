@@ -36,6 +36,7 @@ import {
     NativeModules,
     Image,
     TextInput,
+    Clipboard,
 } from 'react-native';
 
 import { NavigationContainer, RouteProp } from '@react-navigation/native';
@@ -745,6 +746,27 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#212529',
     },
+    recordIdRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
+    },
+    recordIdValue: {
+        flex: 1,
+    },
+    copyButton: {
+        backgroundColor: '#0070f3',
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 4,
+        borderWidth: 1,
+        borderColor: '#0070f3',
+    },
+    copyButtonText: {
+        color: 'white',
+        fontSize: 12,
+        fontWeight: '600',
+    },
 });
 
 interface ContactDetailProps {
@@ -752,6 +774,11 @@ interface ContactDetailProps {
 }
 
 class ContactDetailScreen extends React.Component<ContactDetailProps> {
+    copyToClipboard = (text: string) => {
+        Clipboard.setString(text);
+        Alert.alert('Copied', 'Record ID copied to clipboard');
+    }
+
     render() {
         const { contact } = this.props.route.params;
 
@@ -764,7 +791,15 @@ class ContactDetailScreen extends React.Component<ContactDetailProps> {
 
                 <View style={styles.detailSection}>
                     <Text style={styles.detailLabel}>Record ID</Text>
-                    <Text style={styles.detailValue}>{contact.Id}</Text>
+                    <View style={styles.recordIdRow}>
+                        <Text style={[styles.detailValue, styles.recordIdValue]}>{contact.Id}</Text>
+                        <TouchableOpacity
+                            style={styles.copyButton}
+                            onPress={() => this.copyToClipboard(contact.Id)}
+                        >
+                            <Text style={styles.copyButtonText}>📋 Copy</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
 
                 {contact.Email && (
