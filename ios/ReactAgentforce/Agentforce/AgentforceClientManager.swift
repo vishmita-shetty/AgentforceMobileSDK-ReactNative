@@ -44,7 +44,7 @@ import SalesforceCache
         super.init()
     }
 
-    @objc public func initialize(agentId: String, orgId: String, endpoint: String, completion: @escaping (Error?) -> Void) {
+    @objc public func initialize(agents: [[String: Any]], orgId: String, endpoint: String, completion: @escaping (Error?) -> Void) {
       // Create protocol implementations
       let credentialProvider = SalesforceCredentialProvider()
       let networkProvider = SalesforceNetworkProvider()
@@ -60,8 +60,28 @@ import SalesforceCache
           network: networkProvider
       )
 
-      // Create basic feature flag settings
-      let featureFlagSettings = AgentforceFeatureFlagSettings()
+      // Convert agents array to AgentInfo objects
+      let agentInfos = agents.compactMap { agentDict -> AgentInfo? in
+          guard let agentId = agentDict["id"] as? String,
+                let label = agentDict["label"] as? String else {
+              return nil
+          }
+          let isDefault = agentDict["isDefault"] as? Bool
+          return AgentInfo(
+              agentType: nil,
+              agentId: agentId,
+              description: nil,
+              label: label,
+              isDefault: isDefault,
+              stopRecPrompts: nil,
+              stopWelcomePrompts: nil
+          )
+      }
+
+      // Create feature flag settings with multi-agent enabled
+      let featureFlagSettings = AgentforceFeatureFlagSettings(
+          multiAgent: true  // Enable multi-agent mode
+      )
 
       // Create configuration with all required parameters
       // Get the current Salesforce instance URL
@@ -81,6 +101,7 @@ import SalesforceCache
             firstName: currentUser.idData.firstName,
             avatarURL: currentUser.idData.pictureUrl
         ),
+          availableAgents: agentInfos,  // Pass available agents
           agentforceCopier: nil,
           enableDebugSettings: true,
           ignoreWelcomeMessage: false,
@@ -96,7 +117,7 @@ import SalesforceCache
           speechRecognizer: nil,
           themeManager: AgentforceDefaultThemeManager()
       )
-      
+
       // Initialize AgentforceClient
       self.agentforceClient = AgentforceClient(
           credentialProvider: credentialProvider,
@@ -113,8 +134,9 @@ import SalesforceCache
         }
 
         do {
-            // Start conversation
-            let conversation = agentforceClient.startAgentforceConversation(forAgentId: agentId)
+            // Start conversation - pass nil if agentId is empty to trigger agent picker
+            let agentIdOrNil = agentId.isEmpty ? nil : agentId
+            let conversation = agentforceClient.startAgentforceConversation(forAgentId: agentIdOrNil)
 
             // Set additional context if provided
             if let userContext = userContext, !userContext.isEmpty {

@@ -45,20 +45,20 @@ RCT_EXPORT_METHOD(initializeAgentforce:(NSDictionary *)config
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         @try {
-            NSString *agentId = config[@"agentId"];
+            NSArray *agents = config[@"agents"];
             NSString *orgId = config[@"orgId"];
             NSString *endpoint = config[@"endpoint"];
 
-            if (!agentId || !orgId || !endpoint) {
+            if (!agents || !orgId || !endpoint) {
                 reject(@"INVALID_CONFIG", @"Missing required configuration parameters", nil);
                 return;
             }
 
             self.agentforceClient = [[AgentforceClientManager alloc] init];
-            [self.agentforceClient initializeWithAgentId:agentId
-                                                   orgId:orgId
-                                                endpoint:endpoint
-                                              completion:^(NSError * _Nullable error) {
+            [self.agentforceClient initializeWithAgents:agents
+                                                  orgId:orgId
+                                               endpoint:endpoint
+                                             completion:^(NSError * _Nullable error) {
                 if (error) {
                     reject(@"INIT_ERROR", error.localizedDescription, error);
                 } else {

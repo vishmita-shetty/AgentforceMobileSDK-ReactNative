@@ -42,7 +42,19 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { oauth, net } from 'react-native-force';
 
-const { AgentforceManager } = NativeModules;
+interface AgentforceManagerType {
+  initializeAgentforce(config: {
+    agents: Array<{id: string, label: string, isDefault: boolean}>,
+    orgId: string,
+    endpoint: string
+  }): Promise<{success: boolean}>;
+
+  presentAgentforceChatView(agentId: string, userContext: string): Promise<{success: boolean}>;
+
+  dismissAgentforceChatView(): Promise<{success: boolean}>;
+}
+
+const { AgentforceManager } = NativeModules as { AgentforceManager: AgentforceManagerType };
 
 interface Response {
     records: Record[]
@@ -56,12 +68,21 @@ interface Record {
 interface Props {
 }
 
+interface Agent {
+    id: string,
+    label: string,
+    isDefault: boolean
+}
+
 interface State {
     data: Record[],
     showAgentforceModal: boolean,
     agentforceInitialized: boolean,
-    agentId: string,
-    isAgentIdEditable: boolean,
+    agents: Agent[],
+    isAddingAgent: boolean,
+    newAgentId: string,
+    newAgentLabel: string,
+    editingAgentIndex: number | null,
     orgId: string,
     userContext: string,
     isUserContextEditable: boolean
@@ -74,8 +95,13 @@ class ContactListScreen extends React.Component<Props, State> {
             data: [],
             showAgentforceModal: false,
             agentforceInitialized: false,
-            agentId: "0XxEE0000001CDd0AM",
-            isAgentIdEditable: false,
+            agents: [
+                { id: "0XxEE0000001CDd0AM", label: "Default Agent", isDefault: true }
+            ],
+            isAddingAgent: false,
+            newAgentId: "",
+            newAgentLabel: "",
+            editingAgentIndex: null,
             orgId: "00DEE000000XQRx",
             userContext: "",
             isUserContextEditable: false
@@ -118,7 +144,7 @@ class ContactListScreen extends React.Component<Props, State> {
                         if (orgId) {
                             this.setState({ orgId: orgId });
                             const config = {
-                                agentId: this.state.agentId,
+                                agents: this.state.agents,
                                 orgId: orgId,
                                 endpoint: "https://YOUR_DOMAIN.my.salesforce.com" // Replace with your Salesforce domain
                             };
@@ -151,14 +177,6 @@ class ContactListScreen extends React.Component<Props, State> {
         this.setState({ showAgentforceModal: false });
     }
 
-    toggleAgentIdEdit = () => {
-        this.setState({ isAgentIdEditable: !this.state.isAgentIdEditable });
-    }
-
-    handleAgentIdChange = (text: string) => {
-        this.setState({ agentId: text });
-    }
-
     toggleUserContextEdit = () => {
         this.setState({ isUserContextEditable: !this.state.isUserContextEditable });
     }
@@ -167,18 +185,122 @@ class ContactListScreen extends React.Component<Props, State> {
         this.setState({ userContext: text });
     }
 
-    launchAgentforceSDK = () => {
+    reinitializeAgentforce = () => {
+        if (!this.state.orgId) {
+            console.log('Cannot reinitialize: orgId not available');
+            return;
+        }
+
+        const config = {
+            agents: this.state.agents,
+            orgId: this.state.orgId,
+            endpoint: "https://YOUR_DOMAIN.my.salesforce.com"
+        };
+
+        AgentforceManager.initializeAgentforce(config)
+            .then(() => {
+                console.log('Agentforce re-initialized with updated agents');
+            })
+            .catch((error: any) => {
+                console.error('Failed to re-initialize Agentforce:', error);
+            });
+    }
+
+    startAddingAgent = () => {
+        this.setState({ isAddingAgent: true, newAgentId: "", newAgentLabel: "" });
+    }
+
+    cancelAddingAgent = () => {
+        this.setState({ isAddingAgent: false, newAgentId: "", newAgentLabel: "", editingAgentIndex: null });
+    }
+
+    saveNewAgent = () => {
+        if (!this.state.newAgentId || !this.state.newAgentLabel) {
+            Alert.alert('Error', 'Please enter both Agent ID and Label');
+            return;
+        }
+
+        const newAgent: Agent = {
+            id: this.state.newAgentId,
+            label: this.state.newAgentLabel,
+            isDefault: this.state.agents.length === 0
+        };
+
+        if (this.state.editingAgentIndex !== null) {
+            // Editing existing agent
+            const updatedAgents = [...this.state.agents];
+            updatedAgents[this.state.editingAgentIndex] = { ...newAgent, isDefault: updatedAgents[this.state.editingAgentIndex].isDefault };
+            this.setState({
+                agents: updatedAgents,
+                isAddingAgent: false,
+                newAgentId: "",
+                newAgentLabel: "",
+                editingAgentIndex: null
+            }, () => {
+                this.reinitializeAgentforce();
+            });
+        } else {
+            // Adding new agent
+            this.setState({
+                agents: [...this.state.agents, newAgent],
+                isAddingAgent: false,
+                newAgentId: "",
+                newAgentLabel: ""
+            }, () => {
+                this.reinitializeAgentforce();
+            });
+        }
+    }
+
+    editAgent = (index: number) => {
+        const agent = this.state.agents[index];
+        this.setState({
+            isAddingAgent: true,
+            newAgentId: agent.id,
+            newAgentLabel: agent.label,
+            editingAgentIndex: index
+        });
+    }
+
+    deleteAgent = (index: number) => {
+        if (this.state.agents.length === 1) {
+            Alert.alert('Error', 'Cannot delete the last agent');
+            return;
+        }
+
+        const updatedAgents = this.state.agents.filter((_, i) => i !== index);
+        // If we deleted the default agent, make the first one default
+        if (this.state.agents[index].isDefault && updatedAgents.length > 0) {
+            updatedAgents[0].isDefault = true;
+        }
+        this.setState({ agents: updatedAgents }, () => {
+            this.reinitializeAgentforce();
+        });
+    }
+
+    setDefaultAgent = (index: number) => {
+        const updatedAgents = this.state.agents.map((agent, i) => ({
+            ...agent,
+            isDefault: i === index
+        }));
+        this.setState({ agents: updatedAgents }, () => {
+            this.reinitializeAgentforce();
+        });
+    }
+
+    launchAgentforceSDK = (agentId?: string) => {
         if (!this.state.agentforceInitialized) {
             console.log('Agentforce is not initialized yet. Please wait a moment and try again.');
             return;
         }
 
-        if (!this.state.agentId || this.state.agentId.trim() === '') {
-            Alert.alert('Error', 'Please enter a valid Agent ID before launching Agentforce.');
-            return;
-        }
+        // If agentId is provided, use it; otherwise pass empty string to show agent picker
+        const selectedAgentId = agentId || "";
+        const context = this.state.userContext || "";  // Ensure it's never undefined
 
-        AgentforceManager.presentAgentforceChatView(this.state.agentId, this.state.userContext)
+        console.log('Calling presentAgentforceChatView with agentId:', selectedAgentId, 'context:', context);
+
+        AgentforceManager.presentAgentforceChatView(selectedAgentId, context)
             .then(() => {
                 console.log('Agentforce chat view presented successfully');
             })
@@ -190,34 +312,71 @@ class ContactListScreen extends React.Component<Props, State> {
     render() {
         return (
             <View style={styles.container}>
-                <View style={styles.agentIdContainer}>
-                    <Text style={styles.agentIdLabel}>Agent ID:</Text>
-                    {this.state.isAgentIdEditable ? (
-                        <View style={styles.agentIdInputRow}>
+                <View style={styles.agentsContainer}>
+                    <Text style={styles.agentsLabel}>Agents:</Text>
+                    {this.state.agents.map((agent, index) => (
+                        <View key={index} style={styles.agentRow}>
+                            <View style={styles.agentInfo}>
+                                <Text style={styles.agentLabel}>{agent.label}</Text>
+                                <Text style={styles.agentId}>{agent.id}</Text>
+                                {agent.isDefault && <Text style={styles.defaultBadge}>DEFAULT</Text>}
+                            </View>
+                            <View style={styles.agentActions}>
+                                {!agent.isDefault && (
+                                    <TouchableOpacity
+                                        style={styles.actionButton}
+                                        onPress={() => this.setDefaultAgent(index)}
+                                    >
+                                        <Text style={styles.actionButtonText}>Set Default</Text>
+                                    </TouchableOpacity>
+                                )}
+                                <TouchableOpacity
+                                    style={styles.actionButton}
+                                    onPress={() => this.editAgent(index)}
+                                >
+                                    <Text style={styles.actionButtonText}>Edit</Text>
+                                </TouchableOpacity>
+                                {this.state.agents.length > 1 && (
+                                    <TouchableOpacity
+                                        style={styles.deleteButton}
+                                        onPress={() => this.deleteAgent(index)}
+                                    >
+                                        <Text style={styles.deleteButtonText}>Delete</Text>
+                                    </TouchableOpacity>
+                                )}
+                            </View>
+                        </View>
+                    ))}
+
+                    {this.state.isAddingAgent ? (
+                        <View style={styles.addAgentForm}>
                             <TextInput
-                                style={styles.agentIdInput}
-                                value={this.state.agentId}
-                                onChangeText={this.handleAgentIdChange}
-                                placeholder="Enter Agent ID"
+                                style={styles.input}
+                                value={this.state.newAgentLabel}
+                                onChangeText={(text) => this.setState({ newAgentLabel: text })}
+                                placeholder="Agent Label"
                                 placeholderTextColor="#999"
                             />
-                            <TouchableOpacity
-                                style={styles.editButton}
-                                onPress={this.toggleAgentIdEdit}
-                            >
-                                <Text style={styles.editButtonText}>✓</Text>
-                            </TouchableOpacity>
+                            <TextInput
+                                style={styles.input}
+                                value={this.state.newAgentId}
+                                onChangeText={(text) => this.setState({ newAgentId: text })}
+                                placeholder="Agent ID"
+                                placeholderTextColor="#999"
+                            />
+                            <View style={styles.formButtons}>
+                                <TouchableOpacity style={styles.saveButton} onPress={this.saveNewAgent}>
+                                    <Text style={styles.saveButtonText}>Save</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.cancelButton} onPress={this.cancelAddingAgent}>
+                                    <Text style={styles.cancelButtonText}>Cancel</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     ) : (
-                        <View style={styles.agentIdDisplayRow}>
-                            <Text style={styles.agentIdDisplay}>{this.state.agentId}</Text>
-                            <TouchableOpacity
-                                style={styles.editButton}
-                                onPress={this.toggleAgentIdEdit}
-                            >
-                                <Text style={styles.editButtonText}>✎</Text>
-                            </TouchableOpacity>
-                        </View>
+                        <TouchableOpacity style={styles.addButton} onPress={this.startAddingAgent}>
+                            <Text style={styles.addButtonText}>+ Add Agent</Text>
+                        </TouchableOpacity>
                     )}
                 </View>
 
@@ -269,7 +428,7 @@ class ContactListScreen extends React.Component<Props, State> {
 
                 <TouchableOpacity
                     style={[styles.agentforceButton, !this.state.agentforceInitialized && styles.agentforceButtonDisabled]}
-                    onPress={this.launchAgentforceSDK}
+                    onPress={() => this.launchAgentforceSDK()}
                     disabled={!this.state.agentforceInitialized}
                 >
                     {this.state.agentforceInitialized ? (
@@ -297,6 +456,133 @@ const styles = StyleSheet.create({
         padding: 10,
         fontSize: 18,
         height: 44,
+    },
+    agentsContainer: {
+        backgroundColor: '#f8f9fa',
+        padding: 15,
+        marginTop: 10,
+        marginHorizontal: 15,
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#e9ecef',
+    },
+    agentsLabel: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#343a40',
+        marginBottom: 12,
+    },
+    agentRow: {
+        backgroundColor: 'white',
+        padding: 12,
+        borderRadius: 6,
+        marginBottom: 8,
+        borderWidth: 1,
+        borderColor: '#dee2e6',
+    },
+    agentInfo: {
+        marginBottom: 8,
+    },
+    agentLabel: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#212529',
+        marginBottom: 4,
+    },
+    agentId: {
+        fontSize: 12,
+        color: '#6c757d',
+        fontFamily: 'monospace',
+    },
+    defaultBadge: {
+        fontSize: 10,
+        fontWeight: 'bold',
+        color: '#0070f3',
+        marginTop: 4,
+    },
+    agentActions: {
+        flexDirection: 'row',
+        gap: 8,
+    },
+    actionButton: {
+        backgroundColor: '#0070f3',
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 4,
+    },
+    actionButtonText: {
+        color: 'white',
+        fontSize: 12,
+        fontWeight: '600',
+    },
+    deleteButton: {
+        backgroundColor: '#dc3545',
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 4,
+    },
+    deleteButtonText: {
+        color: 'white',
+        fontSize: 12,
+        fontWeight: '600',
+    },
+    addButton: {
+        backgroundColor: '#28a745',
+        padding: 12,
+        borderRadius: 6,
+        alignItems: 'center',
+        marginTop: 8,
+    },
+    addButtonText: {
+        color: 'white',
+        fontSize: 14,
+        fontWeight: '600',
+    },
+    addAgentForm: {
+        backgroundColor: 'white',
+        padding: 12,
+        borderRadius: 6,
+        marginTop: 8,
+        borderWidth: 1,
+        borderColor: '#dee2e6',
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: '#ced4da',
+        borderRadius: 4,
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        fontSize: 14,
+        marginBottom: 8,
+    },
+    formButtons: {
+        flexDirection: 'row',
+        width: '100%',
+    },
+    saveButton: {
+        flex: 1,
+        backgroundColor: '#28a745',
+        padding: 12,
+        borderRadius: 4,
+        alignItems: 'center',
+        marginRight: 8,
+    },
+    saveButtonText: {
+        color: 'white',
+        fontWeight: '600',
+        fontSize: 15,
+    },
+    cancelButton: {
+        flex: 1,
+        backgroundColor: '#6c757d',
+        padding: 12,
+        borderRadius: 4,
+        alignItems: 'center',
+    },
+    cancelButtonText: {
+        color: 'white',
+        fontWeight: '600',
+        fontSize: 15,
     },
     agentforceButton: {
         position: 'absolute',
@@ -327,50 +613,6 @@ const styles = StyleSheet.create({
     },
     agentforceButtonDisabled: {
         backgroundColor: '#cccccc',
-    },
-    agentIdContainer: {
-        backgroundColor: '#f8f9fa',
-        padding: 15,
-        marginTop: 10,
-        marginHorizontal: 15,
-        borderRadius: 8,
-        borderWidth: 1,
-        borderColor: '#e9ecef',
-    },
-    agentIdLabel: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: '#343a40',
-        marginBottom: 8,
-    },
-    agentIdInputRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    agentIdDisplayRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    agentIdInput: {
-        flex: 1,
-        borderWidth: 1,
-        borderColor: '#ced4da',
-        borderRadius: 6,
-        paddingHorizontal: 12,
-        paddingVertical: 8,
-        fontSize: 14,
-        backgroundColor: 'white',
-        marginRight: 8,
-    },
-    agentIdDisplay: {
-        flex: 1,
-        fontSize: 14,
-        color: '#495057',
-        backgroundColor: 'transparent',
-        paddingHorizontal: 12,
-        paddingVertical: 8,
-        marginRight: 8,
-        fontFamily: 'monospace',
     },
     editButton: {
         backgroundColor: '#0070f3',
@@ -454,71 +696,6 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         marginRight: 8,
         minHeight: 40,
-    },
-    modalOverlay: {
-        flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    modalContent: {
-        backgroundColor: 'white',
-        margin: 20,
-        borderRadius: 20,
-        padding: 30,
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
-        minWidth: 300,
-    },
-    modalTitle: {
-        fontSize: 22,
-        fontWeight: 'bold',
-        marginBottom: 15,
-        textAlign: 'center',
-        color: '#333',
-    },
-    modalMessage: {
-        fontSize: 16,
-        textAlign: 'center',
-        marginBottom: 25,
-        color: '#666',
-        lineHeight: 22,
-    },
-    modalButtons: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '100%',
-    },
-    modalButton: {
-        flex: 1,
-        paddingVertical: 12,
-        paddingHorizontal: 20,
-        borderRadius: 10,
-        marginHorizontal: 5,
-    },
-    cancelButton: {
-        backgroundColor: '#f1f1f1',
-        borderWidth: 1,
-        borderColor: '#ddd',
-    },
-    confirmButton: {
-        backgroundColor: '#0070f3',
-    },
-    cancelButtonText: {
-        color: '#666',
-        fontSize: 16,
-        fontWeight: '600',
-        textAlign: 'center',
-    },
-    confirmButtonText: {
-        color: 'white',
-        fontSize: 16,
-        fontWeight: '600',
-        textAlign: 'center',
     },
 });
 
