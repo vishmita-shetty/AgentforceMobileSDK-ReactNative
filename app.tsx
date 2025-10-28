@@ -62,7 +62,9 @@ interface State {
     agentforceInitialized: boolean,
     agentId: string,
     isAgentIdEditable: boolean,
-    orgId: string
+    orgId: string,
+    userContext: string,
+    isUserContextEditable: boolean
 }
 
 class ContactListScreen extends React.Component<Props, State> {
@@ -74,7 +76,9 @@ class ContactListScreen extends React.Component<Props, State> {
             agentforceInitialized: false,
             agentId: "0XxEE0000001CDd0AM",
             isAgentIdEditable: false,
-            orgId: "00DEE000000XQRx"
+            orgId: "00DEE000000XQRx",
+            userContext: "",
+            isUserContextEditable: false
         };
     }
 
@@ -155,6 +159,14 @@ class ContactListScreen extends React.Component<Props, State> {
         this.setState({ agentId: text });
     }
 
+    toggleUserContextEdit = () => {
+        this.setState({ isUserContextEditable: !this.state.isUserContextEditable });
+    }
+
+    handleUserContextChange = (text: string) => {
+        this.setState({ userContext: text });
+    }
+
     launchAgentforceSDK = () => {
         if (!this.state.agentforceInitialized) {
             console.log('Agentforce is not initialized yet. Please wait a moment and try again.');
@@ -166,7 +178,7 @@ class ContactListScreen extends React.Component<Props, State> {
             return;
         }
 
-        AgentforceManager.presentAgentforceChatView(this.state.agentId)
+        AgentforceManager.presentAgentforceChatView(this.state.agentId, this.state.userContext)
             .then(() => {
                 console.log('Agentforce chat view presented successfully');
             })
@@ -214,6 +226,39 @@ class ContactListScreen extends React.Component<Props, State> {
                     <Text style={styles.orgIdDisplay}>
                         {this.state.orgId || 'Not available'}
                     </Text>
+                </View>
+
+                <View style={styles.userContextContainer}>
+                    <Text style={styles.userContextLabel}>Record ID:</Text>
+                    {this.state.isUserContextEditable ? (
+                        <View style={styles.userContextInputRow}>
+                            <TextInput
+                                style={styles.userContextInput}
+                                value={this.state.userContext}
+                                onChangeText={this.handleUserContextChange}
+                                placeholder="Enter Salesforce Record ID"
+                                placeholderTextColor="#999"
+                            />
+                            <TouchableOpacity
+                                style={styles.editButton}
+                                onPress={this.toggleUserContextEdit}
+                            >
+                                <Text style={styles.editButtonText}>✓</Text>
+                            </TouchableOpacity>
+                        </View>
+                    ) : (
+                        <View style={styles.userContextDisplayRow}>
+                            <Text style={styles.userContextDisplay}>
+                                {this.state.userContext || 'No record ID set'}
+                            </Text>
+                            <TouchableOpacity
+                                style={styles.editButton}
+                                onPress={this.toggleUserContextEdit}
+                            >
+                                <Text style={styles.editButtonText}>✎</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
                 </View>
 
                 <FlatList
@@ -364,6 +409,51 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         borderWidth: 1,
         borderColor: '#dee2e6',
+    },
+    userContextContainer: {
+        backgroundColor: '#f8f9fa',
+        padding: 15,
+        marginTop: 5,
+        marginHorizontal: 15,
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#e9ecef',
+    },
+    userContextLabel: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#343a40',
+        marginBottom: 8,
+    },
+    userContextInputRow: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+    },
+    userContextDisplayRow: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+    },
+    userContextInput: {
+        flex: 1,
+        borderWidth: 1,
+        borderColor: '#ced4da',
+        borderRadius: 6,
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        fontSize: 14,
+        backgroundColor: 'white',
+        marginRight: 8,
+        minHeight: 40,
+    },
+    userContextDisplay: {
+        flex: 1,
+        fontSize: 14,
+        color: '#495057',
+        backgroundColor: 'transparent',
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        marginRight: 8,
+        minHeight: 40,
     },
     modalOverlay: {
         flex: 1,

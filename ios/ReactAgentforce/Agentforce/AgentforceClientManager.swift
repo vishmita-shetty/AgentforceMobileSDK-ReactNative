@@ -106,7 +106,7 @@ import SalesforceCache
       completion(nil)
     }
 
-    @MainActor @objc public func presentChatView(agentId: String, completion: @escaping (Error?) -> Void) {
+    @MainActor @objc public func presentChatView(agentId: String, userContext: String?, completion: @escaping (Error?) -> Void) {
         guard let agentforceClient = self.agentforceClient else {
             completion(NSError(domain: "AgentforceManager", code: 1, userInfo: [NSLocalizedDescriptionKey: "AgentforceClient not initialized"]))
             return
@@ -115,6 +115,22 @@ import SalesforceCache
         do {
             // Start conversation
             let conversation = agentforceClient.startAgentforceConversation(forAgentId: agentId)
+
+            // Set additional context if provided
+            if let userContext = userContext, !userContext.isEmpty {
+                Task {
+                    do {
+                        let recordIdContext = RecordIdContextVariable(userContext)
+                        if let variable = recordIdContext.variable {
+                            try await conversation.setAdditionalContext(context: [variable])
+                            print("Successfully set record ID context: \(userContext)")
+                        }
+                    } catch {
+                        print("Warning: Failed to set record ID context: \(error)")
+                        // Continue even if setting context fails
+                    }
+                }
+            }
 
             // Create delegate through UI coordinator
             let delegate = uiCoordinator.createDelegate()

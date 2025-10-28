@@ -72,6 +72,7 @@ RCT_EXPORT_METHOD(initializeAgentforce:(NSDictionary *)config
 }
 
 RCT_EXPORT_METHOD(presentAgentforceChatView:(NSString *)agentId
+                  userContext:(NSString *)userContext
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
@@ -83,7 +84,8 @@ RCT_EXPORT_METHOD(presentAgentforceChatView:(NSString *)agentId
             }
 
             [self.agentforceClient presentChatViewWithAgentId:agentId
-                                                   completion:^(NSError * _Nullable error) {
+                                                   userContext:userContext
+                                                    completion:^(NSError * _Nullable error) {
                 if (error) {
                     reject(@"PRESENT_ERROR", error.localizedDescription, error);
                 } else {
