@@ -26,6 +26,7 @@
  */
 package com.salesforce.android.reactagentforce
 
+import android.util.Log
 import com.salesforce.android.mobile.interfaces.network.Network
 import com.salesforce.android.mobile.interfaces.network.NetworkRequest
 import com.salesforce.android.mobile.interfaces.network.NetworkResponse
@@ -45,6 +46,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 class SalesforceNetworkProvider(private val restClient: RestClient) : Network {
 
     companion object {
+        private const val TAG = "SalesforceNetworkProvider"
         private const val READ_TIMEOUT = 120L
     }
 
@@ -57,16 +59,39 @@ class SalesforceNetworkProvider(private val restClient: RestClient) : Network {
     }
 
     override suspend fun perform(request: NetworkRequest): NetworkResponse {
+        Log.d(TAG, "Network Request: ${request.method} ${request.path}")
+        Log.d(TAG, "Headers: ${request.additionalHttpHeaders}")
+        if (request.queryParams.isNotEmpty()) {
+            Log.d(TAG, "Query params: ${request.queryParams}")
+        }
+
         return suspendCoroutine { continuation ->
             restClient.sendAsync(
                 request.toRestRequest(),
                 object : RestClient.AsyncRequestCallback {
                     override fun onSuccess(req: RestRequest?, resp: RestResponse?) {
+                        Log.d(TAG, "Network Success: ${resp?.statusCode} ${request.path}")
                         continuation.resumeWith(Result.success(processResponse(resp, request)))
                     }
 
                     override fun onError(exception: Exception?) {
-                        continuation.resumeWith(Result.success(NetworkResponse(request, 404)))
+                        Log.e(TAG, "Network Error: ${request.method} ${request.path}", exception)
+
+                        // Try to extract actual status code from exception
+                        val statusCode = when {
+                            exception?.message?.contains("400") == true -> 400
+                            exception?.message?.contains("401") == true -> 401
+                            exception?.message?.contains("403") == true -> 403
+                            exception?.message?.contains("404") == true -> 404
+                            exception?.message?.contains("500") == true -> 500
+                            else -> {
+                                Log.e(TAG, "Unable to determine status code from exception, defaulting to 404")
+                                404
+                            }
+                        }
+
+                        Log.e(TAG, "Returning status code: $statusCode")
+                        continuation.resumeWith(Result.success(NetworkResponse(request, statusCode)))
                     }
                 }
             )

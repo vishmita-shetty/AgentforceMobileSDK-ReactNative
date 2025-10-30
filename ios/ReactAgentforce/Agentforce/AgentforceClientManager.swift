@@ -38,8 +38,10 @@ import SalesforceCache
 @objc public class AgentforceClientManager: NSObject {
     private var agentforceClient: AgentforceClient?
     private var uiCoordinator: AgentforceUICoordinator
+    private weak var eventEmitter: NSObject?
 
-    @objc public override init() {
+    @objc public init(eventEmitter: NSObject) {
+        self.eventEmitter = eventEmitter
         self.uiCoordinator = AgentforceUICoordinator()
         super.init()
     }
@@ -48,8 +50,23 @@ import SalesforceCache
       // Create protocol implementations
       let credentialProvider = SalesforceCredentialProvider()
       let networkProvider = SalesforceNetworkProvider()
-      let navigationService = SalesforceNavigationService()
       let logger = SalesforceLoggerService()
+
+      // Create navigation service with callback to emit events to React Native
+      let navigationService = SalesforceNavigationService { [weak self] recordId, recordType in
+          guard let self = self, let emitter = self.eventEmitter else { return }
+
+          // Create event data dictionary
+          var eventData: [String: Any] = ["id": recordId]
+          if let type = recordType {
+              eventData["type"] = type
+          }
+
+          // Call emitNavigationEvent on the event emitter
+          if emitter.responds(to: Selector(("emitNavigationEvent:"))) {
+              emitter.perform(Selector(("emitNavigationEvent:")), with: eventData)
+          }
+      }
 
       // Create cache for data provider
       let cache = AgentforceCacheProvider()

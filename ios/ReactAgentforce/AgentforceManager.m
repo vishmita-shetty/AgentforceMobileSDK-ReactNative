@@ -39,6 +39,16 @@ RCT_EXPORT_MODULE();
     return YES;
 }
 
+- (NSArray<NSString *> *)supportedEvents
+{
+    return @[@"agentforceNavigation"];
+}
+
+- (void)emitNavigationEvent:(NSDictionary *)eventData
+{
+    [self sendEventWithName:@"agentforceNavigation" body:eventData];
+}
+
 RCT_EXPORT_METHOD(initializeAgentforce:(NSDictionary *)config
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
@@ -54,7 +64,7 @@ RCT_EXPORT_METHOD(initializeAgentforce:(NSDictionary *)config
                 return;
             }
 
-            self.agentforceClient = [[AgentforceClientManager alloc] init];
+            self.agentforceClient = [[AgentforceClientManager alloc] initWithEventEmitter:self];
             [self.agentforceClient initializeWithAgents:agents
                                                   orgId:orgId
                                                endpoint:endpoint

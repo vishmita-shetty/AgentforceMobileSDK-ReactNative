@@ -34,30 +34,44 @@ import {
     Modal,
     Alert,
     NativeModules,
+    NativeEventEmitter,
     Image,
     TextInput,
     Clipboard,
+    ScrollView,
 } from 'react-native';
 
 import { NavigationContainer, RouteProp } from '@react-navigation/native';
 import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
 import { oauth, net } from 'react-native-force';
 
+interface Agent {
+    id: string,
+    label: string,
+    isDefault: boolean
+}
+
 type RootStackParamList = {
-    'React Native Agentforce Integration': undefined;
+    'React Native Agentforce': undefined;
     ContactDetail: { contact: Record };
+    Settings: {
+        agents: Agent[];
+        orgId: string;
+        userContext: string;
+        onSave: (agents: Agent[], orgId: string, userContext: string) => void;
+    };
 };
 
 interface AgentforceManagerType {
-  initializeAgentforce(config: {
-    agents: Array<{id: string, label: string, isDefault: boolean}>,
-    orgId: string,
-    endpoint: string
-  }): Promise<{success: boolean}>;
+    initializeAgentforce(config: {
+        agents: Array<{ id: string, label: string, isDefault: boolean }>,
+        orgId: string,
+        endpoint: string
+    }): Promise<{ success: boolean }>;
 
-  presentAgentforceChatView(agentId: string, userContext: string): Promise<{success: boolean}>;
+    presentAgentforceChatView(agentId: string, userContext: string): Promise<{ success: boolean }>;
 
-  dismissAgentforceChatView(): Promise<{success: boolean}>;
+    dismissAgentforceChatView(): Promise<{ success: boolean }>;
 }
 
 const { AgentforceManager } = NativeModules as { AgentforceManager: AgentforceManagerType };
@@ -78,13 +92,7 @@ interface Record {
 }
 
 interface Props {
-    navigation: StackNavigationProp<RootStackParamList, 'React Native Agentforce Integration'>;
-}
-
-interface Agent {
-    id: string,
-    label: string,
-    isDefault: boolean
+    navigation: StackNavigationProp<RootStackParamList, 'React Native Agentforce'>;
 }
 
 interface State {
@@ -102,6 +110,9 @@ interface State {
 }
 
 class ContactListScreen extends React.Component<Props, State> {
+    private eventEmitter: NativeEventEmitter;
+    private navigationEventSubscription: any;
+
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -109,7 +120,7 @@ class ContactListScreen extends React.Component<Props, State> {
             showAgentforceModal: false,
             agentforceInitialized: false,
             agents: [
-                { id: "0XxEE0000001CDd0AM", label: "Default Agent", isDefault: true }
+                { id: "0XxEE0000001fkH0AQ", label: "Default Agent", isDefault: true }
             ],
             isAddingAgent: false,
             newAgentId: "",
@@ -119,10 +130,49 @@ class ContactListScreen extends React.Component<Props, State> {
             userContext: "",
             isUserContextEditable: false
         };
+        this.eventEmitter = new NativeEventEmitter(AgentforceManager);
     }
 
     componentDidMount() {
         var that = this;
+
+        // Set up header button
+        this.props.navigation.setOptions({
+            headerRight: () => (
+                <TouchableOpacity
+                    onPress={this.navigateToSettings}
+                    style={{ marginRight: 15 }}
+                >
+                    <Text style={{ fontSize: 16, color: '#0070f3', fontWeight: '600' }}>Settings</Text>
+                </TouchableOpacity>
+            ),
+        });
+
+        // Set up navigation event listener
+        this.navigationEventSubscription = this.eventEmitter.addListener(
+            'agentforceNavigation',
+            (event: { id: string; type?: string }) => {
+                // Search for the contact in our data
+                const contact = this.state.data.find((c) => c.Id === event.id);
+
+                // Check if this is a Contact record
+                if (event.type === 'Contact') {
+                    if (contact) {
+                        // Dismiss the Agentforce chat view, then navigate
+                        AgentforceManager.dismissAgentforceChatView()
+                            .then(() => {
+                                this.props.navigation.navigate('ContactDetail', { contact });
+                            })
+                            .catch((error: any) => {
+                                console.error('Failed to dismiss Agentforce chat:', error);
+                            });
+                    } else {
+                        Alert.alert('Contact Not Found', 'This contact is not in the loaded list.');
+                    }
+                }
+            }
+        );
+
         oauth.getAuthCredentials(
             () => {
                 that.fetchData();
@@ -322,9 +372,210 @@ class ContactListScreen extends React.Component<Props, State> {
             });
     }
 
+    navigateToSettings = () => {
+        this.props.navigation.navigate('Settings', {
+            agents: this.state.agents,
+            orgId: this.state.orgId,
+            userContext: this.state.userContext,
+            onSave: (agents: Agent[], orgId: string, userContext: string) => {
+                this.setState({ agents, orgId, userContext }, () => {
+                    this.reinitializeAgentforce();
+                });
+            }
+        });
+    }
+
+    componentWillUnmount() {
+        // Clean up the navigation event listener
+        if (this.navigationEventSubscription) {
+            this.navigationEventSubscription.remove();
+        }
+    }
+
+    renderContactItem = ({ item }: { item: Record }) => (
+        <TouchableOpacity
+            style={styles.contactCard}
+            onPress={() => this.props.navigation.navigate('ContactDetail', { contact: item })}
+        >
+            <View style={styles.contactAvatar}>
+                <Text style={styles.contactAvatarText}>
+                    {item.Name.substring(0, 2).toUpperCase()}
+                </Text>
+            </View>
+            <View style={styles.contactInfo}>
+                <Text style={styles.contactName}>{item.Name}</Text>
+                {item.Title && <Text style={styles.contactTitle}>{item.Title}</Text>}
+                {item.Account?.Name && <Text style={styles.contactCompany}>{item.Account.Name}</Text>}
+            </View>
+            <Text style={styles.contactChevron}>›</Text>
+        </TouchableOpacity>
+    )
+
+    renderListHeader = () => (
+        <View style={styles.listHeader}>
+            <Text style={styles.listHeaderTitle}>Contacts</Text>
+            <Text style={styles.listHeaderSubtitle}>{this.state.data.length} contacts</Text>
+        </View>
+    )
+
     render() {
         return (
             <View style={styles.container}>
+                <FlatList
+                    style={styles.contactList}
+                    data={this.state.data}
+                    renderItem={this.renderContactItem}
+                    keyExtractor={(item, index) => 'key_' + index}
+                    ListHeaderComponent={this.renderListHeader}
+                    contentContainerStyle={styles.listContent}
+                />
+
+                <TouchableOpacity
+                    style={[styles.agentforceButton, !this.state.agentforceInitialized && styles.agentforceButtonDisabled]}
+                    onPress={() => {
+                        // Pass the default agent ID explicitly
+                        const defaultAgent = this.state.agents.find(a => a.isDefault);
+                        this.launchAgentforceSDK(defaultAgent?.id);
+                    }}
+                    disabled={!this.state.agentforceInitialized}
+                >
+                    {this.state.agentforceInitialized ? (
+                        <Image
+                            source={require('./agentforce-icon.png')}
+                            style={styles.agentforceButtonIcon}
+                        />
+                    ) : (
+                        <Text style={styles.agentforceButtonText}>Initializing...</Text>
+                    )}
+                </TouchableOpacity>
+
+            </View>
+        );
+    }
+}
+
+interface SettingsProps {
+    navigation: StackNavigationProp<RootStackParamList, 'Settings'>;
+    route: RouteProp<RootStackParamList, 'Settings'>;
+}
+
+interface SettingsState {
+    agents: Agent[];
+    orgId: string;
+    userContext: string;
+    isAddingAgent: boolean;
+    newAgentId: string;
+    newAgentLabel: string;
+    editingAgentIndex: number | null;
+    isUserContextEditable: boolean;
+}
+
+class SettingsScreen extends React.Component<SettingsProps, SettingsState> {
+    constructor(props: SettingsProps) {
+        super(props);
+        this.state = {
+            agents: props.route.params.agents,
+            orgId: props.route.params.orgId,
+            userContext: props.route.params.userContext,
+            isAddingAgent: false,
+            newAgentId: "",
+            newAgentLabel: "",
+            editingAgentIndex: null,
+            isUserContextEditable: false
+        };
+    }
+
+    componentWillUnmount() {
+        // Save settings when leaving the screen
+        this.props.route.params.onSave(
+            this.state.agents,
+            this.state.orgId,
+            this.state.userContext
+        );
+    }
+
+    startAddingAgent = () => {
+        this.setState({ isAddingAgent: true, newAgentId: "", newAgentLabel: "" });
+    }
+
+    cancelAddingAgent = () => {
+        this.setState({ isAddingAgent: false, newAgentId: "", newAgentLabel: "", editingAgentIndex: null });
+    }
+
+    saveNewAgent = () => {
+        if (!this.state.newAgentId || !this.state.newAgentLabel) {
+            Alert.alert('Error', 'Please enter both Agent ID and Label');
+            return;
+        }
+
+        const newAgent: Agent = {
+            id: this.state.newAgentId,
+            label: this.state.newAgentLabel,
+            isDefault: this.state.agents.length === 0
+        };
+
+        if (this.state.editingAgentIndex !== null) {
+            const updatedAgents = [...this.state.agents];
+            updatedAgents[this.state.editingAgentIndex] = { ...newAgent, isDefault: updatedAgents[this.state.editingAgentIndex].isDefault };
+            this.setState({
+                agents: updatedAgents,
+                isAddingAgent: false,
+                newAgentId: "",
+                newAgentLabel: "",
+                editingAgentIndex: null
+            });
+        } else {
+            this.setState({
+                agents: [...this.state.agents, newAgent],
+                isAddingAgent: false,
+                newAgentId: "",
+                newAgentLabel: ""
+            });
+        }
+    }
+
+    editAgent = (index: number) => {
+        const agent = this.state.agents[index];
+        this.setState({
+            isAddingAgent: true,
+            newAgentId: agent.id,
+            newAgentLabel: agent.label,
+            editingAgentIndex: index
+        });
+    }
+
+    deleteAgent = (index: number) => {
+        if (this.state.agents.length === 1) {
+            Alert.alert('Error', 'Cannot delete the last agent');
+            return;
+        }
+
+        const updatedAgents = this.state.agents.filter((_, i) => i !== index);
+        if (this.state.agents[index].isDefault && updatedAgents.length > 0) {
+            updatedAgents[0].isDefault = true;
+        }
+        this.setState({ agents: updatedAgents });
+    }
+
+    setDefaultAgent = (index: number) => {
+        const updatedAgents = this.state.agents.map((agent, i) => ({
+            ...agent,
+            isDefault: i === index
+        }));
+        this.setState({ agents: updatedAgents });
+    }
+
+    toggleUserContextEdit = () => {
+        this.setState({ isUserContextEditable: !this.state.isUserContextEditable });
+    }
+
+    handleUserContextChange = (text: string) => {
+        this.setState({ userContext: text });
+    }
+
+    render() {
+        return (
+            <ScrollView style={styles.settingsContainer}>
                 <View style={styles.agentsContainer}>
                     <Text style={styles.agentsLabel}>Agents:</Text>
                     {this.state.agents.map((agent, index) => (
@@ -432,36 +683,7 @@ class ContactListScreen extends React.Component<Props, State> {
                         </View>
                     )}
                 </View>
-
-                <FlatList
-                    data={this.state.data}
-                    renderItem={({ item }) => (
-                        <TouchableOpacity
-                            style={styles.item}
-                            onPress={() => this.props.navigation.navigate('ContactDetail', { contact: item })}
-                        >
-                            <Text style={styles.itemText}>{item.Name}</Text>
-                        </TouchableOpacity>
-                    )}
-                    keyExtractor={(item, index) => 'key_' + index}
-                />
-
-                <TouchableOpacity
-                    style={[styles.agentforceButton, !this.state.agentforceInitialized && styles.agentforceButtonDisabled]}
-                    onPress={() => this.launchAgentforceSDK()}
-                    disabled={!this.state.agentforceInitialized}
-                >
-                    {this.state.agentforceInitialized ? (
-                        <Image
-                            source={require('./agentforce-icon.png')}
-                            style={styles.agentforceButtonIcon}
-                        />
-                    ) : (
-                        <Text style={styles.agentforceButtonText}>Initializing...</Text>
-                    )}
-                </TouchableOpacity>
-
-            </View>
+            </ScrollView>
         );
     }
 }
@@ -469,8 +691,88 @@ class ContactListScreen extends React.Component<Props, State> {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 22,
+        backgroundColor: '#f8f9fa',
+    },
+    contactList: {
+        flex: 1,
+        backgroundColor: '#f8f9fa',
+    },
+    listContent: {
+        paddingBottom: 100,
+    },
+    listHeader: {
         backgroundColor: 'white',
+        paddingHorizontal: 20,
+        paddingTop: 20,
+        paddingBottom: 15,
+        borderBottomWidth: 1,
+        borderBottomColor: '#e9ecef',
+    },
+    listHeaderTitle: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: '#212529',
+        marginBottom: 4,
+    },
+    listHeaderSubtitle: {
+        fontSize: 14,
+        color: '#6c757d',
+    },
+    contactCard: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'white',
+        padding: 15,
+        marginHorizontal: 15,
+        marginTop: 10,
+        borderRadius: 12,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+        elevation: 2,
+    },
+    contactAvatar: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        backgroundColor: '#0070f3',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 15,
+    },
+    contactAvatarText: {
+        color: 'white',
+        fontSize: 18,
+        fontWeight: '600',
+    },
+    contactInfo: {
+        flex: 1,
+    },
+    contactName: {
+        fontSize: 17,
+        fontWeight: '600',
+        color: '#212529',
+        marginBottom: 3,
+    },
+    contactTitle: {
+        fontSize: 14,
+        color: '#6c757d',
+        marginBottom: 2,
+    },
+    contactCompany: {
+        fontSize: 13,
+        color: '#868e96',
+    },
+    contactChevron: {
+        fontSize: 24,
+        color: '#ced4da',
+        fontWeight: '300',
+    },
+    settingsContainer: {
+        flex: 1,
+        backgroundColor: 'white',
+        padding: 15,
     },
     item: {
         padding: 10,
@@ -854,8 +1156,20 @@ function App(): JSX.Element {
     return (
         <NavigationContainer>
             <Stack.Navigator>
-                <Stack.Screen name="React Native Agentforce Integration" component={ContactListScreen} />
-                <Stack.Screen name="ContactDetail" component={ContactDetailScreen} options={{ title: 'Contact Details' }} />
+                <Stack.Screen
+                    name="React Native Agentforce"
+                    component={ContactListScreen}
+                />
+                <Stack.Screen
+                    name="Settings"
+                    component={SettingsScreen}
+                    options={{ title: 'Settings' }}
+                />
+                <Stack.Screen
+                    name="ContactDetail"
+                    component={ContactDetailScreen}
+                    options={{ title: 'Contact Details' }}
+                />
             </Stack.Navigator>
         </NavigationContainer>
     );

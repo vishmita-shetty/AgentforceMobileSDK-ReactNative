@@ -23,8 +23,9 @@
  */
 
 #import <React/RCTBridgeModule.h>
+#import <React/RCTEventEmitter.h>
 #import <UIKit/UIKit.h>
 
-@interface AgentforceManager : NSObject <RCTBridgeModule>
+@interface AgentforceManager : RCTEventEmitter <RCTBridgeModule>
 
 @end

@@ -59,8 +59,6 @@ pre_install do |installer|
             end
         end
     end
-    # Mobile SDK pre install
-    mobile_sdk_pre_install(installer)
 end
 
 post_install do |installer|

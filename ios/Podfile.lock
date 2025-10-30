@@ -1226,7 +1226,94 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNGestureHandler (2.28.0):
+  - RNGestureHandler (2.21.0):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Codegen
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
+  - RNReanimated (3.16.7):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Codegen
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - RNReanimated/reanimated (= 3.16.7)
+    - RNReanimated/worklets (= 3.16.7)
+    - Yoga
+  - RNReanimated/reanimated (3.16.7):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Codegen
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - RNReanimated/reanimated/apple (= 3.16.7)
+    - Yoga
+  - RNReanimated/reanimated/apple (3.16.7):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Codegen
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
+  - RNReanimated/worklets (3.16.7):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1376,6 +1463,7 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCMaskedView (from `../node_modules/@react-native-masked-view/masked-view`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - SalesforceCache (from `https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git`, tag `1.0.0`)
   - SalesforceReact (from `../node_modules/react-native-force`)
@@ -1385,7 +1473,7 @@ DEPENDENCIES:
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
-  https://github.com/forcedotcom/SalesforceMobileSDK-iOS-Specs.git:
+  https://github.com/forcedotcom/SalesforceMobileSDK-iOS-Specs/:
     - MobileSync
     - SalesforceAnalytics
     - SalesforceLogging
@@ -1525,6 +1613,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-masked-view/masked-view"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNReanimated:
+    :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
   SalesforceCache:
@@ -1561,7 +1651,7 @@ SPEC CHECKSUMS:
   LiveKitClient: 051bd7a7562c12df4dc0fca5ff70a414a2c11eaf
   LiveKitWebRTC: fd39d4e51ea51db3367f98c8c82cbf33e50b88c2
   Logging: beeb016c9c80cf77042d62e83495816847ef108b
-  Messaging-InApp-Core: d2a0639467b446e0a1d96ed21377951e2edb10a7
+  Messaging-InApp-Core: bd21af248f159a609717e8b414dea3d8ced70038
   MobileSync: 9521203ebc4da320d96c136ffebf360ef6d685e3
   OrderedCollections: c754ce5f9e42cf22b73afd73582317347903ab6d
   RCT-Folly: 5dc73daec3476616d19e8a53f0156176f7b55461
@@ -1613,7 +1703,8 @@ SPEC CHECKSUMS:
   React-utils: e45cd7466d8fd9f1a88611fb8e9d38b92ef05b76
   ReactCommon: 82c202f4ec2759b2e8461a5a524e3d0e9ec14b1e
   RNCMaskedView: d7d429af166e632081fc0933bebad668e8e700b7
-  RNGestureHandler: 1ce686552d81933f0ebd5237353188b16fd04cca
+  RNGestureHandler: f99e3c0f8ad0ef65141473ddb658c73842566999
+  RNReanimated: f2535088b354179d404fc30eeafb131466a6a615
   RNScreens: 9ffe14a19aa4fecfe49ead4cfea952cba63e02f5
   SalesforceAnalytics: 2b1f07fdbf41cf43a067253241de1c11d71ddec3
   SalesforceCache: 2bff32659f761c19e2e721a192802d638150c155
@@ -1630,6 +1721,6 @@ SPEC CHECKSUMS:
   SwiftProtobuf: 81e341191afbddd64aa031bd12862dccfab2f639
   Yoga: 6986e115ef4e300f1f5b4910d5eef51c711c8747
 
-PODFILE CHECKSUM: 1b81ebc72cd943e21b74374438531ba29411fc8e
+PODFILE CHECKSUM: 919a06cf957e6b45b852f9598d87b5c4cf1f7bdc
 
 COCOAPODS: 1.16.2

@@ -29,11 +29,14 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.util.Log
+import com.facebook.react.bridge.ReadableArray
+import com.facebook.react.bridge.ReadableMap
 import com.salesforce.android.agentforcesdkimpl.AgentforceClient
 import com.salesforce.android.agentforcesdkimpl.configuration.AgentforceConfiguration
 import com.salesforce.android.agentforcesdkimpl.configuration.AgentforceMode
 import com.salesforce.android.agentforcesdkimpl.configuration.EmployeeAgentConfiguration
 import com.salesforce.android.agentforcesdkimpl.utils.AgentforceFeatureFlagSettings
+import com.salesforce.android.agentforceservice.conversationservice.data.AgentforcePageContext
 import com.salesforce.android.mobile.interfaces.user.Community
 import com.salesforce.android.mobile.interfaces.user.Org
 import com.salesforce.android.mobile.interfaces.user.User
@@ -43,11 +46,14 @@ import com.salesforce.androidsdk.app.SalesforceSDKManager
 
 /**
  * Manager class for Agentforce SDK integration.
- * 
+ *
  * This class handles initialization of the Agentforce SDK and presentation
  * of the chat interface within a React Native application.
  */
-class AgentforceClientManager(private val context: Context) {
+class AgentforceClientManager(
+    private val context: Context,
+    private val eventEmitter: AgentforceManagerModule? = null
+) {
 
     companion object {
         private const val TAG = "AgentforceClientManager"
@@ -55,6 +61,7 @@ class AgentforceClientManager(private val context: Context) {
 
     private var agentforceClient: AgentforceClient? = null
     private var uiCoordinator: AgentforceUICoordinator? = null
+    private var navigationService: SalesforceNavigationService? = null
 
     /**
      * Callback interface for initialization operations
@@ -82,14 +89,14 @@ class AgentforceClientManager(private val context: Context) {
 
     /**
      * Initializes the Agentforce SDK with the provided configuration.
-     * 
-     * @param agentId The Agentforce agent identifier
+     *
+     * @param agents Array of agent configurations (id, label, isDefault)
      * @param orgId The Salesforce organization ID
      * @param endpoint The Salesforce endpoint URL
      * @param callback Callback for initialization result
      */
     fun initialize(
-        agentId: String,
+        agents: ReadableArray,
         orgId: String,
         endpoint: String,
         activity: Activity?,
@@ -101,10 +108,34 @@ class AgentforceClientManager(private val context: Context) {
             val currentUser: UserAccount = userAccountManager.currentUser
                 ?: throw IllegalStateException("No authenticated user found")
 
+            // Extract default agent ID from agents array
+            var defaultAgentId: String? = null
+            for (i in 0 until agents.size()) {
+                val agent = agents.getMap(i)
+                if (agent.getBoolean("isDefault")) {
+                    defaultAgentId = agent.getString("id")
+                    break
+                }
+            }
+
+            // If no default found, use first agent
+            if (defaultAgentId == null && agents.size() > 0) {
+                defaultAgentId = agents.getMap(0).getString("id")
+            }
+
+            if (defaultAgentId == null) {
+                throw IllegalStateException("No valid agent found")
+            }
+
             // Create protocol implementations
             val credentialProvider = AgentforceCredentialProvider()
             val networkProvider = SalesforceNetworkProvider(SalesforceSDKManager.getInstance().clientManager.peekRestClient())
             val logger = SalesforceLoggerService()
+
+            // Create navigation service with callback to event emitter
+            navigationService = SalesforceNavigationService { recordId, recordType ->
+                eventEmitter?.emitNavigationEvent(recordId, recordType ?: "")
+            }
 
             // Create feature flag settings
             val featureFlagSettings = AgentforceFeatureFlagSettings.builder()
@@ -113,7 +144,8 @@ class AgentforceClientManager(private val context: Context) {
                 .enablePDFUpload(true)
                 .enableLongPauseSpeechTranscription(true)
                 .setupFlags(mapOf(
-                    "enableLightningTypeStreaming" to true
+                    "enableLightningTypeStreaming" to true,
+                    "enableNavAndQuickFollowUpAction" to true  // Enable record navigation
                 ))
                 .enableTheming(true)
                 .enableOnboarding(false)
@@ -134,27 +166,25 @@ class AgentforceClientManager(private val context: Context) {
             // Get the Permissions
             val permissions = activity?.let { AgentforceClientPermissions(it) }
             val app = context.applicationContext as Application
+
             // Create Agentforce configuration
             val config = AgentforceConfiguration.builder(credentialProvider)
                 .setApplication(app)
                 .setUser(user)
-                .setSalesforceDomain(currentUser.instanceServer)
-                .setAgentId(agentId)
+                .setSalesforceDomain(instanceUrl)
+                .setAgentId(defaultAgentId)
                 .setFeatureFlagSettings(featureFlagSettings)
                 .setNetwork(networkProvider)
                 .setLogger(logger)
-                .setSalesforceDomain(instanceUrl)
                 .setPermission(permissions)
                 .setCameraUriProvider(AgentforceClientCameraUriProvider(app))
                 .setDataProvider(AgentforceClientDataProvider(networkProvider))
+                .setNavigation(navigationService)
                 .build()
 
-            val agentforceMode = AgentforceMode.EmployeeAgent(
-                agentforceConfiguration = config,
-                employeeAgentConfiguration = EmployeeAgentConfiguration.builder(user,
-                    forceConfigEndpoint = currentUser.instanceServer)
-                    .build()
-            )
+            // Use FullConfig mode instead of EmployeeAgent to ensure navigation is preserved
+            // Note: EmployeeAgent mode has a bug where it doesn't copy the navigation setting
+            val agentforceMode = AgentforceMode.FullConfig(config)
 
             // Create client
             agentforceClient = AgentforceClient()
@@ -172,23 +202,44 @@ class AgentforceClientManager(private val context: Context) {
     }
 
     /**
-     * Presents the Agentforce chat view for the specified agent.
-     * 
-     * @param agentId The agent identifier to start a conversation with
+     * Presents the Agentforce chat view for the specified agent with optional context.
+     *
+     * @param agentId The agent identifier to start a conversation with (empty for agent picker)
+     * @param userContext The user context (record ID) to pass to the agent
      * @param currentActivity The current activity to present the chat view in (optional, will try to get from context if null)
      * @param callback Callback for presentation result
      */
-    fun presentChatView(agentId: String, currentActivity: Activity? = null, callback: PresentationCallback) {
+    fun presentChatView(
+        agentId: String,
+        userContext: String,
+        currentActivity: Activity? = null,
+        callback: PresentationCallback
+    ) {
         try {
             val client = agentforceClient
                 ?: throw IllegalStateException("AgentforceClient not initialized")
-            
+
             // Use provided activity or fall back to stored context
             val activityContext = currentActivity ?: context
             val coordinator = AgentforceUICoordinator(activityContext)
 
-            // Start conversation
-            val conversation = client.startAgentforceConversation(agentId)
+            // Start conversation with optional agent ID (empty string triggers agent picker)
+            val conversation = if (agentId.isNotEmpty()) {
+                client.startAgentforceConversation(agentId)
+            } else {
+                client.startAgentforceConversation()
+            }
+
+            // Set record context if userContext is provided
+            if (userContext.isNotEmpty()) {
+                val contextManager = client.getCurrentContextManager()
+                contextManager?.updatePageContext(
+                    AgentforcePageContext(
+                        recordId = userContext,
+                        apiName = "Contact"  // Default to Contact, could be made configurable
+                    )
+                )
+            }
 
             // Present the chat view by passing a Composable lambda
             coordinator.presentChatView({
@@ -197,7 +248,7 @@ class AgentforceClientManager(private val context: Context) {
                     onClose = {
                         dismissChatView(object : DismissCallback {
                             override fun onSuccess() {
-                                Log.d(TAG, "Chat view closed")
+                                // Chat dismissed successfully
                             }
 
                             override fun onError(error: Exception) {
@@ -207,7 +258,7 @@ class AgentforceClientManager(private val context: Context) {
                     }
                 )
             }, callback)
-            
+
             // Store the coordinator for dismiss operations
             uiCoordinator = coordinator
         } catch (e: Exception) {

@@ -35,7 +35,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.displayCutoutPadding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
@@ -176,10 +180,17 @@ class AgentforceUICoordinator(private val context: Context) {
                 // Dispose the composition when the view is detached
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
 
-                // Set the Composable content
+                // Set the Composable content with top padding only (status bar + camera cutout)
                 setContent {
-                    chatComposable?.invoke() ?: run {
-                        Log.e(TAG, "No chat composable available")
+                    // Wrap content with Box to add padding only at top (not bottom)
+                    Box(
+                        modifier = Modifier
+                            .statusBarsPadding()
+                            .displayCutoutPadding()
+                    ) {
+                        chatComposable?.invoke() ?: run {
+                            Log.e(TAG, "No chat composable available")
+                        }
                     }
                 }
             }
