@@ -4,7 +4,7 @@ require Pod::Executable.execute_command('node', ['-p',
     "react-native/scripts/react_native_pods.rb",
     {paths: [process.argv[1]]},
   )', __dir__]).strip
-require_relative '../mobile_sdk/SalesforceMobileSDK-iOS/mobilesdk_pods'
+mobile_sdk_repo = 'https://github.com/forcedotcom/SalesforceMobileSDK-iOS.git'
 
 platform :ios, '17.0'
 prepare_react_native_project!
@@ -25,9 +25,16 @@ target 'ReactAgentforce' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  use_mobile_sdk!(:path => '../mobile_sdk/SalesforceMobileSDK-iOS')
+  # Salesforce Mobile SDK pods
+  pod 'SalesforceSDKCore'
+  pod 'MobileSync'
   pod 'SalesforceReact', :path => '../node_modules/react-native-force'
+  mobile_sdk_release_tag = 'v13.0.2'
+  pod 'SmartStore', :git => mobile_sdk_repo, :tag => mobile_sdk_release_tag
 
+  pod 'DequeModule'
+  pod 'InternalCollectionsUtilities'
+  pod 'OrderedCollections'
   # Necessary for the AgentforceDataProvider implementation
   pod 'SalesforceCache', :git => 'https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git', :tag => '1.0.0'
 
@@ -37,9 +44,11 @@ target 'ReactAgentforce' do
   pod 'FMDB/SQLCipher', '~> 2.7.12'
   pod 'SQLCipher', '~> 4.6.1'
 
-  # Use embedded binary frameworks for customer distribution
-  pod 'AgentforceSDK', :podspec => './Frameworks/AgentforceSDK/AgentforceSDK-binary.podspec'
-  pod 'AgentforceService', :podspec => './Frameworks/AgentforceService/AgentforceService-binary.podspec'
+  $artifactory_url = 'https://rpm.repo.local.sfdc.net/artifactory/api/pods/cocoapods-mobe'
+
+  # Use local AgentforceSDK and AgentforceService
+  pod "AgentforceSDK", '~> 14.2.0', :source => $artifactory_url
+  pod 'AgentforceService', '~> 4.1.0', :source => $artifactory_url
 end
 
 pre_install do |installer|
@@ -69,7 +78,7 @@ post_install do |installer|
 
   # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
   # Comment the following if you do not want the SDK to emit signpost events for instrumentation. Signposts are  enabled for non release version of the app.
-  signposts_post_install(installer)
+  # signposts_post_install(installer) # Commented out - function not available without mobile SDK helper
 
   $config = use_native_modules!
 
@@ -81,6 +90,5 @@ post_install do |installer|
       # :ccache_enabled => true
   )
 
-  # Mobile SDK post install
-  mobile_sdk_post_install(installer)
+  # Post-install hook - no mobile SDK specific setup needed
 end

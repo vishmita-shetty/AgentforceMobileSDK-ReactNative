@@ -1,17 +1,23 @@
 PODS:
-  - AgentforceSDK (11.9.2-local):
-    - AgentforceService
-    - LiveKitClient
+  - AgentforceSDK (14.2.0):
+    - AgentforceSDK/Binary (= 14.2.0)
+    - AgentforceService (~> 4)
     - SalesforceLogging
     - SalesforceNavigation
     - SalesforceNetwork
     - SalesforceUser
-  - AgentforceService (3.6.1-local):
-    - DequeModule
-    - InternalCollectionsUtilities
+  - AgentforceSDK/Binary (14.2.0):
+    - AgentforceService (~> 4)
+    - SalesforceLogging
+    - SalesforceNavigation
+    - SalesforceNetwork
+    - SalesforceUser
+  - AgentforceService (4.1.0):
+    - AgentforceService/Binary (= 4.1.0)
+    - LiveKitClient
+  - AgentforceService/Binary (4.1.0):
     - LiveKitClient
     - Messaging-InApp-Core
-    - OrderedCollections
     - SalesforceLogging
     - SalesforceNetwork
   - boost (1.83.0)
@@ -1241,93 +1247,6 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNReanimated (3.16.7):
-    - DoubleConversion
-    - glog
-    - hermes-engine
-    - RCT-Folly (= 2024.01.01.00)
-    - RCTRequired
-    - RCTTypeSafety
-    - React-Codegen
-    - React-Core
-    - React-debug
-    - React-Fabric
-    - React-featureflags
-    - React-graphics
-    - React-ImageManager
-    - React-NativeModulesApple
-    - React-RCTFabric
-    - React-rendererdebug
-    - React-utils
-    - ReactCommon/turbomodule/bridging
-    - ReactCommon/turbomodule/core
-    - RNReanimated/reanimated (= 3.16.7)
-    - RNReanimated/worklets (= 3.16.7)
-    - Yoga
-  - RNReanimated/reanimated (3.16.7):
-    - DoubleConversion
-    - glog
-    - hermes-engine
-    - RCT-Folly (= 2024.01.01.00)
-    - RCTRequired
-    - RCTTypeSafety
-    - React-Codegen
-    - React-Core
-    - React-debug
-    - React-Fabric
-    - React-featureflags
-    - React-graphics
-    - React-ImageManager
-    - React-NativeModulesApple
-    - React-RCTFabric
-    - React-rendererdebug
-    - React-utils
-    - ReactCommon/turbomodule/bridging
-    - ReactCommon/turbomodule/core
-    - RNReanimated/reanimated/apple (= 3.16.7)
-    - Yoga
-  - RNReanimated/reanimated/apple (3.16.7):
-    - DoubleConversion
-    - glog
-    - hermes-engine
-    - RCT-Folly (= 2024.01.01.00)
-    - RCTRequired
-    - RCTTypeSafety
-    - React-Codegen
-    - React-Core
-    - React-debug
-    - React-Fabric
-    - React-featureflags
-    - React-graphics
-    - React-ImageManager
-    - React-NativeModulesApple
-    - React-RCTFabric
-    - React-rendererdebug
-    - React-utils
-    - ReactCommon/turbomodule/bridging
-    - ReactCommon/turbomodule/core
-    - Yoga
-  - RNReanimated/worklets (3.16.7):
-    - DoubleConversion
-    - glog
-    - hermes-engine
-    - RCT-Folly (= 2024.01.01.00)
-    - RCTRequired
-    - RCTTypeSafety
-    - React-Codegen
-    - React-Core
-    - React-debug
-    - React-Fabric
-    - React-featureflags
-    - React-graphics
-    - React-ImageManager
-    - React-NativeModulesApple
-    - React-RCTFabric
-    - React-rendererdebug
-    - React-utils
-    - ReactCommon/turbomodule/bridging
-    - ReactCommon/turbomodule/core
-    - Yoga
   - RNScreens (3.37.0):
     - DoubleConversion
     - glog
@@ -1391,17 +1310,20 @@ PODS:
   - Yoga (0.0.0)
 
 DEPENDENCIES:
-  - AgentforceSDK (from `./Frameworks/AgentforceSDK/AgentforceSDK-binary.podspec`)
-  - AgentforceService (from `./Frameworks/AgentforceService/AgentforceService-binary.podspec`)
+  - AgentforceSDK (~> 14.2.0)
+  - AgentforceService (~> 4.1.0)
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
+  - DequeModule
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FMDB/SQLCipher (~> 2.7.12)
   - fmt (from `../node_modules/react-native/third-party-podspecs/fmt.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
+  - InternalCollectionsUtilities
   - Messaging-InApp-Core (from `./Frameworks/Messaging-InApp-Core/Messaging-InApp-Core-binary.podspec`)
-  - MobileSync (from `../mobile_sdk/SalesforceMobileSDK-iOS`)
+  - MobileSync
+  - OrderedCollections
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCT-Folly/Fabric (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTDeprecation (from `../node_modules/react-native/ReactApple/Libraries/RCTFoundation/RCTDeprecation`)
@@ -1454,23 +1376,27 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCMaskedView (from `../node_modules/@react-native-masked-view/masked-view`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
-  - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
-  - SalesforceAnalytics (from `../mobile_sdk/SalesforceMobileSDK-iOS`)
   - SalesforceCache (from `https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git`, tag `1.0.0`)
   - SalesforceReact (from `../node_modules/react-native-force`)
-  - SalesforceSDKCommon (from `../mobile_sdk/SalesforceMobileSDK-iOS`)
-  - SalesforceSDKCore (from `../mobile_sdk/SalesforceMobileSDK-iOS`)
-  - SmartStore (from `../mobile_sdk/SalesforceMobileSDK-iOS`)
+  - SalesforceSDKCore
+  - SmartStore (from `https://github.com/forcedotcom/SalesforceMobileSDK-iOS.git`, tag `v13.0.2`)
   - SQLCipher (~> 4.6.1)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
   https://github.com/forcedotcom/SalesforceMobileSDK-iOS-Specs.git:
+    - MobileSync
+    - SalesforceAnalytics
     - SalesforceLogging
     - SalesforceNavigation
     - SalesforceNetwork
+    - SalesforceSDKCommon
+    - SalesforceSDKCore
     - SalesforceUser
+  https://rpm.repo.local.sfdc.net/artifactory/api/pods/cocoapods-mobe:
+    - AgentforceSDK
+    - AgentforceService
   trunk:
     - DequeModule
     - FMDB
@@ -1484,10 +1410,6 @@ SPEC REPOS:
     - SwiftProtobuf
 
 EXTERNAL SOURCES:
-  AgentforceSDK:
-    :podspec: "./Frameworks/AgentforceSDK/AgentforceSDK-binary.podspec"
-  AgentforceService:
-    :podspec: "./Frameworks/AgentforceService/AgentforceService-binary.podspec"
   boost:
     :podspec: "../node_modules/react-native/third-party-podspecs/boost.podspec"
   DoubleConversion:
@@ -1503,8 +1425,6 @@ EXTERNAL SOURCES:
     :tag: hermes-2024-09-30-RNv0.74.6-6f503f52cbf98b2b37c4d3900e7f1193d6512548
   Messaging-InApp-Core:
     :podspec: "./Frameworks/Messaging-InApp-Core/Messaging-InApp-Core-binary.podspec"
-  MobileSync:
-    :path: "../mobile_sdk/SalesforceMobileSDK-iOS"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTDeprecation:
@@ -1605,23 +1525,16 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-masked-view/masked-view"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
-  RNReanimated:
-    :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
-  SalesforceAnalytics:
-    :path: "../mobile_sdk/SalesforceMobileSDK-iOS"
   SalesforceCache:
     :git: https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git
     :tag: 1.0.0
   SalesforceReact:
     :path: "../node_modules/react-native-force"
-  SalesforceSDKCommon:
-    :path: "../mobile_sdk/SalesforceMobileSDK-iOS"
-  SalesforceSDKCore:
-    :path: "../mobile_sdk/SalesforceMobileSDK-iOS"
   SmartStore:
-    :path: "../mobile_sdk/SalesforceMobileSDK-iOS"
+    :git: https://github.com/forcedotcom/SalesforceMobileSDK-iOS.git
+    :tag: v13.0.2
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -1629,10 +1542,13 @@ CHECKOUT OPTIONS:
   SalesforceCache:
     :git: https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git
     :tag: 1.0.0
+  SmartStore:
+    :git: https://github.com/forcedotcom/SalesforceMobileSDK-iOS.git
+    :tag: v13.0.2
 
 SPEC CHECKSUMS:
-  AgentforceSDK: a190730e756969aa709bebdb6493154f53508622
-  AgentforceService: bfcd981ffc4076c71e0413e88bf015faf455da06
+  AgentforceSDK: 43675f8634f55163451e5f4ed5470d5cd834cf5a
+  AgentforceService: e53001d0caa7f4edbe9326509da6f48d239c5514
   boost: d3f49c53809116a5d38da093a8aa78bf551aed09
   DequeModule: b3a4cb7a72901d2b182b5bf4721f42ba1e149cdf
   DoubleConversion: 76ab83afb40bddeeee456813d9c04f67f78771b5
@@ -1645,8 +1561,8 @@ SPEC CHECKSUMS:
   LiveKitClient: 051bd7a7562c12df4dc0fca5ff70a414a2c11eaf
   LiveKitWebRTC: fd39d4e51ea51db3367f98c8c82cbf33e50b88c2
   Logging: beeb016c9c80cf77042d62e83495816847ef108b
-  Messaging-InApp-Core: a4b08c7dbb62b68ac7dad90b647724d28edaab41
-  MobileSync: e8e3a3b93327334380b7144ba6f76fcd739dba57
+  Messaging-InApp-Core: d2a0639467b446e0a1d96ed21377951e2edb10a7
+  MobileSync: 9521203ebc4da320d96c136ffebf360ef6d685e3
   OrderedCollections: c754ce5f9e42cf22b73afd73582317347903ab6d
   RCT-Folly: 5dc73daec3476616d19e8a53f0156176f7b55461
   RCTDeprecation: c4e6e3f6d44f76c45a964b40fa3eb2475259c027
@@ -1698,16 +1614,15 @@ SPEC CHECKSUMS:
   ReactCommon: 82c202f4ec2759b2e8461a5a524e3d0e9ec14b1e
   RNCMaskedView: d7d429af166e632081fc0933bebad668e8e700b7
   RNGestureHandler: 1ce686552d81933f0ebd5237353188b16fd04cca
-  RNReanimated: f2535088b354179d404fc30eeafb131466a6a615
   RNScreens: 9ffe14a19aa4fecfe49ead4cfea952cba63e02f5
-  SalesforceAnalytics: dcbedf2a52478f72d6f41453cc8264667059eb3f
+  SalesforceAnalytics: 2b1f07fdbf41cf43a067253241de1c11d71ddec3
   SalesforceCache: 2bff32659f761c19e2e721a192802d638150c155
   SalesforceLogging: 174438f5745353c816de5c3188ffaa21be55ff49
   SalesforceNavigation: c7dfa7a232252295585817d0ce3920c7e1dc7ad6
   SalesforceNetwork: 4a527f3c192515507c61d259f70e433a2a4f90dd
   SalesforceReact: 6d17b453ce35820dfd644f8f18ecd6ab16cc7cdc
-  SalesforceSDKCommon: 522e0d1295c305d8e121922412b9fe4a752834f3
-  SalesforceSDKCore: 80a391e5761d17897c0a75b24407e89498f7eba1
+  SalesforceSDKCommon: 345d59d671936c92102d225ee24606055526df7f
+  SalesforceSDKCore: eda937bf61db75ad1e28fe6f610b4ac910c0c987
   SalesforceUser: 5b5614e282f7dc491dedcb92d3a6cf6b61f58fd9
   SmartStore: 9fb3af7aaaebb9fcdeab32e70a73c940a6b30bd1
   SocketRocket: abac6f5de4d4d62d24e11868d7a2f427e0ef940d
@@ -1715,6 +1630,6 @@ SPEC CHECKSUMS:
   SwiftProtobuf: 81e341191afbddd64aa031bd12862dccfab2f639
   Yoga: 6986e115ef4e300f1f5b4910d5eef51c711c8747
 
-PODFILE CHECKSUM: c77ad8f11f9269a62dcbdd5433d52371c5c3fbda
+PODFILE CHECKSUM: 1b81ebc72cd943e21b74374438531ba29411fc8e
 
 COCOAPODS: 1.16.2
