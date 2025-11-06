@@ -20,7 +20,27 @@ if (fs.existsSync(targetDir)) {
 }
 
 console.log('Adding .xcode.env');
-const nodePath = execSync('command -v node', { encoding: 'utf-8' }).trim();
+// Use process.execPath which is the most reliable way to get Node.js path
+// This works even with nvm, fnm, or other Node version managers
+let nodePath = process.execPath;
+// Fallback to which/command -v if process.execPath doesn't work
+if (!nodePath || !fs.existsSync(nodePath)) {
+    try {
+        nodePath = execSync('which node', { encoding: 'utf-8' }).trim();
+    } catch (e) {
+        try {
+            nodePath = execSync('command -v node', { encoding: 'utf-8' }).trim();
+        } catch (e2) {
+            console.error('Could not find Node.js path. Please set NODE_BINARY manually in ios/.xcode.env');
+            process.exit(1);
+        }
+    }
+}
+if (!fs.existsSync(nodePath)) {
+    console.error(`Node.js path ${nodePath} does not exist. Please set NODE_BINARY manually in ios/.xcode.env`);
+    process.exit(1);
+}
+console.log(`Setting NODE_BINARY to ${nodePath}`);
 execSync(`echo export NODE_BINARY=${nodePath} > .xcode.env`, {stdio:[0,1,2], cwd:'ios'});
 
 console.log('Installing pod dependencies');

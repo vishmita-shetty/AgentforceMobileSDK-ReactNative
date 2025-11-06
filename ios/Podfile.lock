@@ -1473,7 +1473,7 @@ DEPENDENCIES:
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
-  https://github.com/forcedotcom/SalesforceMobileSDK-iOS-Specs/:
+  https://github.com/forcedotcom/SalesforceMobileSDK-iOS-Specs.git:
     - MobileSync
     - SalesforceAnalytics
     - SalesforceLogging
@@ -1651,7 +1651,7 @@ SPEC CHECKSUMS:
   LiveKitClient: 051bd7a7562c12df4dc0fca5ff70a414a2c11eaf
   LiveKitWebRTC: fd39d4e51ea51db3367f98c8c82cbf33e50b88c2
   Logging: beeb016c9c80cf77042d62e83495816847ef108b
-  Messaging-InApp-Core: bd21af248f159a609717e8b414dea3d8ced70038
+  Messaging-InApp-Core: b9c0ee4537f3e63fba2a26f6e5820ba695a68f48
   MobileSync: 9521203ebc4da320d96c136ffebf360ef6d685e3
   OrderedCollections: c754ce5f9e42cf22b73afd73582317347903ab6d
   RCT-Folly: 5dc73daec3476616d19e8a53f0156176f7b55461
@@ -1721,6 +1721,6 @@ SPEC CHECKSUMS:
   SwiftProtobuf: 81e341191afbddd64aa031bd12862dccfab2f639
   Yoga: 6986e115ef4e300f1f5b4910d5eef51c711c8747
 
-PODFILE CHECKSUM: 919a06cf957e6b45b852f9598d87b5c4cf1f7bdc
+PODFILE CHECKSUM: 6845734d140e1a40ddc813136e87e3c511c277bd
 
 COCOAPODS: 1.16.2

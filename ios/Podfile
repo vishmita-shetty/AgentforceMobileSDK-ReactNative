@@ -1,9 +1,5 @@
 # Resolve react_native_pods.rb with node to allow for hoisting
-require Pod::Executable.execute_command('node', ['-p',
-  'require.resolve(
-    "react-native/scripts/react_native_pods.rb",
-    {paths: [process.argv[1]]},
-  )', __dir__]).strip
+require File.join(File.dirname(`node --print "require.resolve('react-native/package.json')"`), "scripts/react_native_pods")
 mobile_sdk_repo = 'https://github.com/forcedotcom/SalesforceMobileSDK-iOS.git'
 
 platform :ios, '17.0'
