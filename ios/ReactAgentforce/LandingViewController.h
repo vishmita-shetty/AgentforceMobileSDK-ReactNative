@@ -24,13 +24,11 @@
 
 #import <UIKit/UIKit.h>
 
-// @class LandingViewController;
+@class AppDelegate;
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface LandingViewController : UIViewController
 
-@property (nonatomic, strong) UIWindow *window;
-@property (nonatomic, strong) NSDictionary *launchOptions;
-
-- (void)proceedToApp;
+@property (nonatomic, weak) AppDelegate *appDelegate;
 
 @end
+

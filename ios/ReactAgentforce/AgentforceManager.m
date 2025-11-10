@@ -25,6 +25,8 @@
 #import "AgentforceManager.h"
 #import "ReactAgentforce-Swift.h"
 #import <React/RCTLog.h>
+#import "AppDelegate.h"
+#import "LandingViewController.h"
 
 @interface AgentforceManager()
 @property (nonatomic, strong) AgentforceClientManager *agentforceClient;
@@ -127,6 +129,26 @@ RCT_EXPORT_METHOD(dismissAgentforceChatView:(RCTPromiseResolveBlock)resolve
             }];
         } @catch (NSException *exception) {
             reject(@"DISMISS_EXCEPTION", exception.reason, nil);
+        }
+    });
+}
+
+RCT_EXPORT_METHOD(showLandingPage:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        @try {
+            AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+            if (appDelegate && appDelegate.window) {
+                LandingViewController *landingVC = [[LandingViewController alloc] initWithNibName:nil bundle:nil];
+                landingVC.appDelegate = appDelegate;
+                appDelegate.window.rootViewController = landingVC;
+                resolve(@{@"success": @YES});
+            } else {
+                reject(@"NO_APP_DELEGATE", @"Unable to access AppDelegate", nil);
+            }
+        } @catch (NSException *exception) {
+            reject(@"SHOW_LANDING_EXCEPTION", exception.reason, nil);
         }
     });
 }
