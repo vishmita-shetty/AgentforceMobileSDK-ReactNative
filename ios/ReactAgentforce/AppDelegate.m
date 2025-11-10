@@ -24,6 +24,7 @@
 
 #import "AppDelegate.h"
 #import "InitialViewController.h"
+#import "LandingViewController.h"
 #import <React/RCTRootView.h>
 #import <React/RCTBundleURLProvider.h>
 #import <SalesforceSDKCore/SFSDKAppConfig.h>
@@ -56,11 +57,11 @@
     return self;
 }
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    self.launchOptions = launchOptions;
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     [self initializeAppViewState];
-    
+
     // If you wish to register for push notifications, uncomment the line below.  Note that,
     // if you want to receive push notifications from Salesforce, you will also need to
     // implement the application:didRegisterForRemoteNotificationsWithDeviceToken: method (below).
@@ -69,9 +70,9 @@
     //Uncomment the code below to see how you can customize the color, textcolor, font and fontsize of the navigation bar
 //    [self customizeLoginView];
     
-    [SFSDKAuthHelper loginIfRequired:^{
-        [self setupRootViewController];
-    }];
+    // Don't automatically proceed to login - wait for user to tap button on landing page
+    // Login will be triggered when proceedToApp is called
+
     return YES;
 }
 
@@ -141,7 +142,10 @@
         return;
     }
 
-    self.window.rootViewController = [[InitialViewController alloc] initWithNibName:nil bundle:nil];
+    // Show landing page instead of InitialViewController
+    LandingViewController *landingVC = [[LandingViewController alloc] initWithNibName:nil bundle:nil];
+    landingVC.appDelegate = self;
+    self.window.rootViewController = landingVC;
     [self.window makeKeyAndVisible];
 }
 
@@ -172,4 +176,13 @@
         postResetBlock();
     }
 }
+
+- (void)proceedToApp {
+    // This method is called when user taps the "Launch App" button on the landing page
+    // Proceed with login flow and then setup React Native
+    [SFSDKAuthHelper loginIfRequired:^{
+        [self setupRootViewController];
+    }];
+}
+
 @end

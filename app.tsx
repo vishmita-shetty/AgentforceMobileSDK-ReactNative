@@ -72,6 +72,8 @@ interface AgentforceManagerType {
     presentAgentforceChatView(agentId: string, userContext: string): Promise<{ success: boolean }>;
 
     dismissAgentforceChatView(): Promise<{ success: boolean }>;
+
+    showLandingPage(): Promise<{ success: boolean }>;
 }
 
 const { AgentforceManager } = NativeModules as { AgentforceManager: AgentforceManagerType };
@@ -136,8 +138,16 @@ class ContactListScreen extends React.Component<Props, State> {
     componentDidMount() {
         var that = this;
 
-        // Set up header button
+        // Set up header buttons
         this.props.navigation.setOptions({
+            headerLeft: () => (
+                <TouchableOpacity
+                    onPress={this.navigateToLandingPage}
+                    style={{ marginLeft: 15 }}
+                >
+                    <Text style={{ fontSize: 16, color: '#0070f3', fontWeight: '600' }}>Home</Text>
+                </TouchableOpacity>
+            ),
             headerRight: () => (
                 <TouchableOpacity
                     onPress={this.navigateToSettings}
@@ -385,6 +395,17 @@ class ContactListScreen extends React.Component<Props, State> {
         });
     }
 
+    navigateToLandingPage = () => {
+        AgentforceManager.showLandingPage()
+            .then(() => {
+                console.log('Navigated to landing page successfully');
+            })
+            .catch((error: any) => {
+                console.error('Failed to navigate to landing page:', error);
+                Alert.alert('Error', 'Failed to navigate to landing page: ' + error.message);
+            });
+    }
+
     componentWillUnmount() {
         // Clean up the navigation event listener
         if (this.navigationEventSubscription) {
@@ -419,17 +440,61 @@ class ContactListScreen extends React.Component<Props, State> {
     )
 
     render() {
+        // NOTE: Contact list code is preserved below but not displayed
+        // Uncomment the FlatList section to show contacts in the future
+
         return (
             <View style={styles.container}>
-                <FlatList
-                    style={styles.contactList}
-                    data={this.state.data}
-                    renderItem={this.renderContactItem}
-                    keyExtractor={(item, index) => 'key_' + index}
-                    ListHeaderComponent={this.renderListHeader}
-                    contentContainerStyle={styles.listContent}
-                />
+                <ScrollView
+                    contentContainerStyle={styles.welcomeContainer}
+                    showsVerticalScrollIndicator={false}
+                >
+                    <View style={styles.welcomeContent}>
+                        <View style={styles.iconContainer}>
+                            <Image
+                                source={require('./agentforce-icon.png')}
+                                style={styles.welcomeIcon}
+                            />
+                        </View>
 
+                        <Text style={styles.welcomeTitle}>Welcome to Agentforce</Text>
+                        <Text style={styles.welcomeSubtitle}>
+                            Your intelligent assistant is ready to help
+                        </Text>
+
+                        <View style={styles.featureCard}>
+                            <Text style={styles.featureEmoji}>💬</Text>
+                            <Text style={styles.featureTitle}>Chat Support</Text>
+                            <Text style={styles.featureDescription}>
+                                Get instant help with your questions
+                            </Text>
+                        </View>
+
+                        <View style={styles.featureCard}>
+                            <Text style={styles.featureEmoji}>⚡</Text>
+                            <Text style={styles.featureTitle}>Quick Responses</Text>
+                            <Text style={styles.featureDescription}>
+                                Fast and accurate answers anytime
+                            </Text>
+                        </View>
+
+                        <View style={styles.featureCard}>
+                            <Text style={styles.featureEmoji}>🎯</Text>
+                            <Text style={styles.featureTitle}>Smart Assistance</Text>
+                            <Text style={styles.featureDescription}>
+                                Powered by AI to help you succeed
+                            </Text>
+                        </View>
+
+                        {!this.state.agentforceInitialized && (
+                            <View style={styles.statusContainer}>
+                                <Text style={styles.statusText}>Initializing Agentforce...</Text>
+                            </View>
+                        )}
+                    </View>
+                </ScrollView>
+
+                {/* Agentforce Chat Button - Floating Action Button */}
                 <TouchableOpacity
                     style={[styles.agentforceButton, !this.state.agentforceInitialized && styles.agentforceButtonDisabled]}
                     onPress={() => {
@@ -448,7 +513,17 @@ class ContactListScreen extends React.Component<Props, State> {
                         <Text style={styles.agentforceButtonText}>Initializing...</Text>
                     )}
                 </TouchableOpacity>
-
+                {/* Contact List - Hidden but code preserved for future use */}
+                {/*
+                <FlatList
+                    style={styles.contactList}
+                    data={this.state.data}
+                    renderItem={this.renderContactItem}
+                    keyExtractor={(item, index) => 'key_' + index}
+                    ListHeaderComponent={this.renderListHeader}
+                    contentContainerStyle={styles.listContent}
+                />
+                */}
             </View>
         );
     }
@@ -692,6 +767,88 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#f8f9fa',
+    },
+    welcomeContainer: {
+        flexGrow: 1,
+        padding: 20,
+        paddingTop: 40,
+    },
+    welcomeContent: {
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    iconContainer: {
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+        backgroundColor: 'white',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 30,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 5,
+    },
+    welcomeIcon: {
+        width: 80,
+        height: 80,
+        resizeMode: 'contain',
+    },
+    welcomeTitle: {
+        fontSize: 32,
+        fontWeight: 'bold',
+        color: '#212529',
+        marginBottom: 12,
+        textAlign: 'center',
+    },
+    welcomeSubtitle: {
+        fontSize: 18,
+        color: '#6c757d',
+        textAlign: 'center',
+        marginBottom: 40,
+        paddingHorizontal: 20,
+    },
+    featureCard: {
+        backgroundColor: 'white',
+        borderRadius: 16,
+        padding: 24,
+        marginBottom: 16,
+        width: '100%',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.08,
+        shadowRadius: 8,
+        elevation: 3,
+    },
+    featureEmoji: {
+        fontSize: 32,
+        marginBottom: 12,
+    },
+    featureTitle: {
+        fontSize: 20,
+        fontWeight: '600',
+        color: '#212529',
+        marginBottom: 8,
+    },
+    featureDescription: {
+        fontSize: 15,
+        color: '#6c757d',
+        lineHeight: 22,
+    },
+    statusContainer: {
+        marginTop: 20,
+        padding: 16,
+        backgroundColor: '#e7f3ff',
+        borderRadius: 12,
+        width: '100%',
+    },
+    statusText: {
+        fontSize: 14,
+        color: '#0070f3',
+        textAlign: 'center',
+        fontWeight: '500',
     },
     contactList: {
         flex: 1,
