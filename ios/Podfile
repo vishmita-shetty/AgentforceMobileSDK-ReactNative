@@ -43,8 +43,13 @@ target 'ReactAgentforce' do
   $artifactory_url = 'https://rpm.repo.local.sfdc.net/artifactory/api/pods/cocoapods-mobe'
 
   # Use local AgentforceSDK and AgentforceService
-  pod "AgentforceSDK", '~> 14.2.0', :source => $artifactory_url
-  pod 'AgentforceService', '~> 4.1.0', :source => $artifactory_url
+  pod "AgentforceSDK", '~> 14.8.4', :source => $artifactory_url
+  pod 'AgentforceService', '~> 4.3.0', :source => $artifactory_url
+
+  # swift-markdown-ui from git repository
+  pod "swift-markdown-ui", :git => 'https://git.soma.salesforce.com/iOS/swift-markdown-ui.git', :branch => 'main'
+  pod "cmark_gfm", :git => 'https://git.soma.salesforce.com/iOS/swift-markdown-ui.git', :branch => 'main'
+
 end
 
 pre_install do |installer|
