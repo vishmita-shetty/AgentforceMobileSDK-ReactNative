@@ -32,38 +32,46 @@ import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
+import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
+import com.facebook.react.defaults.DefaultReactNativeHost;
 import com.facebook.soloader.SoLoader;
-import com.salesforce.androidsdk.BuildConfig;
-import com.salesforce.androidsdk.reactnative.app.SalesforceReactSDKManager;
 
 import java.util.List;
 
 /**
- * Application class for our application.
+ * Simplified Application class for Agentforce Service Agent sample
+ * No Salesforce Mobile SDK required - lightweight implementation
  */
 public class MainApplication extends Application implements ReactApplication {
 
-	private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
+	private final ReactNativeHost mReactNativeHost = new DefaultReactNativeHost(this) {
 		@Override
 		public boolean getUseDeveloperSupport() {
-			return BuildConfig.DEBUG;
+			return com.salesforce.android.reactagentforce.BuildConfig.DEBUG;
 		}
 
 		@Override
 		protected List<ReactPackage> getPackages() {
 			@SuppressWarnings("UnnecessaryLocalVariable")
 			List<ReactPackage> packages = new PackageList(this).getPackages();
-			// Packages that cannot be autolinked yet can be added manually here, for example:
-			// packages.add(new MyReactNativePackage());
-			packages.add(SalesforceReactSDKManager.getInstance().getReactPackage());
-			packages.add(new AgentforceManagerPackage());
+			// Add our Service Agent package
+			packages.add(new ServiceAgentPackage());
 			return packages;
 		}
-
 
 		@Override
 		protected String getJSMainModuleName() {
 			return "index";
+		}
+
+		@Override
+		protected boolean isNewArchEnabled() {
+			return BuildConfig.IS_NEW_ARCHITECTURE_ENABLED;
+		}
+
+		@Override
+		protected Boolean isHermesEnabled() {
+			return BuildConfig.IS_HERMES_ENABLED;
 		}
 	};
 
@@ -76,20 +84,9 @@ public class MainApplication extends Application implements ReactApplication {
 	public void onCreate() {
 		super.onCreate();
 		SoLoader.init(this, /* native exopackage */ false);
-		SalesforceReactSDKManager.initReactNative(getApplicationContext(), MainActivity.class);
-
-		/*
-         * Uncomment the following line to enable IDP login flow. This will allow the user to
-         * either authenticate using the current app or use a designated IDP app for login.
-         * Replace 'idpAppURIScheme' with the URI scheme of the IDP app meant to be used.
-         */
-		// SalesforceReactSDKManager.getInstance().setIDPAppURIScheme(idpAppURIScheme);
-
-        /*
-		 * Un-comment the line below to enable push notifications in this app.
-		 * Replace 'pnInterface' with your implementation of 'PushNotificationInterface'.
-		 * Add your Firebase 'google-services.json' file to the 'app' folder of your project.
-		 */
-        // SalesforceReactSDKManager.getInstance().setPushNotificationReceiver(pnInterface);
+		if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
+			// If you opted-in for the New Architecture, we load the native entry point for this app.
+			DefaultNewArchitectureEntryPoint.load();
+		}
 	}
 }

@@ -1,54 +1,40 @@
-# Resolve react_native_pods.rb with node to allow for hoisting
 require File.join(File.dirname(`node --print "require.resolve('react-native/package.json')"`), "scripts/react_native_pods")
-mobile_sdk_repo = 'https://github.com/forcedotcom/SalesforceMobileSDK-iOS.git'
 
-platform :ios, '17.0'
+platform :ios, min_ios_version_supported
 prepare_react_native_project!
-use_modular_headers!
 
-use_frameworks!
+use_frameworks! :linkage => :static
 
 project 'ReactAgentforce.xcodeproj'
 target 'ReactAgentforce' do
   source 'https://github.com/forcedotcom/SalesforceMobileSDK-iOS-Specs.git'
   source 'https://cdn.cocoapods.org/'
 
-  $config = use_native_modules!
+  config = use_native_modules!
 
   use_react_native!(
-    :path => $config[:reactNativePath],
-    # An absolute path to your application root.
-    :app_path => "#{Pod::Config.instance.installation_root}/.."
+    :path => config[:reactNativePath],
+    :app_path => "#{Pod::Config.instance.installation_root}/..",
+    :hermes_enabled => false
   )
 
-  # Salesforce Mobile SDK pods
-  pod 'SalesforceSDKCore'
-  pod 'MobileSync'
-  pod 'SalesforceReact', :path => '../node_modules/react-native-force'
-  mobile_sdk_release_tag = 'v13.0.2'
-  pod 'SmartStore', :git => mobile_sdk_repo, :tag => mobile_sdk_release_tag
-
-  pod 'DequeModule'
-  pod 'InternalCollectionsUtilities'
-  pod 'OrderedCollections'
-  # Necessary for the AgentforceDataProvider implementation
-  pod 'SalesforceCache', :git => 'https://github.com/forcedotcom/SalesforceMobileInterfaces-iOS.git', :tag => '1.0.0'
+  # Agentforce SDK for Service Agent (lightweight - no Mobile SDK required)
+  $artifactory_url = 'https://rpm.repo.local.sfdc.net/artifactory/api/pods/cocoapods-mobe'
+  
+  pod "AgentforceSDK", '~> 14.8.4', :source => $artifactory_url
+  pod 'AgentforceService', '~> 4.3.0', :source => $artifactory_url
 
   # Force exact version match for binary framework compatibility
   pod 'Messaging-InApp-Core', :podspec => './Frameworks/Messaging-InApp-Core/Messaging-InApp-Core-binary.podspec'
 
-  pod 'FMDB/SQLCipher', '~> 2.7.12'
-  pod 'SQLCipher', '~> 4.6.1'
-
-  $artifactory_url = 'https://rpm.repo.local.sfdc.net/artifactory/api/pods/cocoapods-mobe'
-
-  # Use local AgentforceSDK and AgentforceService
-  pod "AgentforceSDK", '~> 14.8.4', :source => $artifactory_url
-  pod 'AgentforceService', '~> 4.3.0', :source => $artifactory_url
-
   # swift-markdown-ui from git repository
   pod "swift-markdown-ui", :git => 'https://git.soma.salesforce.com/iOS/swift-markdown-ui.git', :branch => 'main'
   pod "cmark_gfm", :git => 'https://git.soma.salesforce.com/iOS/swift-markdown-ui.git', :branch => 'main'
+
+  # Required dependencies for AgentforceSDK
+  pod 'DequeModule'
+  pod 'InternalCollectionsUtilities'
+  pod 'OrderedCollections'
 
 end
 
