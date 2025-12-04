@@ -145,12 +145,32 @@ class ServiceAgentModule(reactContext: ReactApplicationContext) :
                 return
             }
 
-            // Launch conversation activity (it will start the conversation itself)
-            val intent = Intent(activity, ServiceAgentConversationActivity::class.java)
-            activity.startActivity(intent)
-
-            Log.d(TAG, "Conversation activity launched")
-            promise.resolve(true)
+            // Initialize SDK if not already initialized (e.g., after app restart with saved config)
+            if (!AgentforceClientHolder.isConfigured) {
+                Log.d(TAG, "SDK not initialized, initializing with saved config...")
+                CoroutineScope(Dispatchers.Main).launch {
+                    try {
+                        viewModel?.initializeAgentforce()
+                        // Wait a moment for initialization to complete
+                        kotlinx.coroutines.delay(500)
+                        
+                        // Launch conversation activity
+                        val intent = Intent(activity, ServiceAgentConversationActivity::class.java)
+                        activity.startActivity(intent)
+                        Log.d(TAG, "Conversation activity launched after initialization")
+                        promise.resolve(true)
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Failed to initialize SDK", e)
+                        promise.reject("ERROR", "Failed to initialize: ${e.message}")
+                    }
+                }
+            } else {
+                // SDK already initialized, just launch
+                val intent = Intent(activity, ServiceAgentConversationActivity::class.java)
+                activity.startActivity(intent)
+                Log.d(TAG, "Conversation activity launched")
+                promise.resolve(true)
+            }
         } catch (e: Exception) {
             Log.e(TAG, "Failed to launch conversation", e)
             promise.reject("ERROR", "Failed to launch: ${e.message}")
@@ -164,11 +184,146 @@ class ServiceAgentModule(reactContext: ReactApplicationContext) :
     @ReactMethod
     fun isConfigured(promise: Promise) {
         try {
+            // Ensure we have a ViewModel
+            if (viewModel == null) {
+                val activity = currentActivity
+                if (activity != null && activity is ViewModelStoreOwner) {
+                    viewModel = ViewModelProvider(
+                        activity,
+                        ViewModelProvider.AndroidViewModelFactory.getInstance(
+                            reactApplicationContext.applicationContext as Application
+                        )
+                    )[ServiceAgentViewModel::class.java]
+                }
+            }
+            
             val configured = viewModel?.isConfigured?.value ?: false
-            Log.d(TAG, "isConfigured() returning: $configured")
             promise.resolve(configured)
         } catch (e: Exception) {
             Log.e(TAG, "Error checking configuration", e)
+            promise.reject("ERROR", e.message)
+        }
+    }
+    
+    /**
+     * Get current saved configuration
+     * @param promise Promise to resolve with configuration map
+     */
+    @ReactMethod
+    fun getConfiguration(promise: Promise) {
+        try {
+            // Ensure we have a ViewModel
+            if (viewModel == null) {
+                val activity = currentActivity
+                if (activity != null && activity is ViewModelStoreOwner) {
+                    viewModel = ViewModelProvider(
+                        activity,
+                        ViewModelProvider.AndroidViewModelFactory.getInstance(
+                            reactApplicationContext.applicationContext as Application
+                        )
+                    )[ServiceAgentViewModel::class.java]
+                }
+            }
+            
+            val config = viewModel?.getConfiguration() ?: mapOf(
+                "serviceApiURL" to "",
+                "organizationId" to "",
+                "esDeveloperName" to ""
+            )
+            val resultMap = Arguments.createMap().apply {
+                putString("serviceApiURL", config["serviceApiURL"])
+                putString("organizationId", config["organizationId"])
+                putString("esDeveloperName", config["esDeveloperName"])
+            }
+            promise.resolve(resultMap)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error getting configuration", e)
+            promise.reject("ERROR", e.message)
+        }
+    }
+    
+    /**
+     * Check if SDK is initialized
+     * @param promise Promise to resolve with boolean status
+     */
+    @ReactMethod
+    fun isInitialized(promise: Promise) {
+        try {
+            val initialized = AgentforceClientHolder.isConfigured
+            Log.d(TAG, "isInitialized() returning: $initialized")
+            promise.resolve(initialized)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error checking initialization", e)
+            promise.reject("ERROR", e.message)
+        }
+    }
+    
+    /**
+     * Close the current conversation
+     * @param promise Promise to resolve with success
+     */
+    @ReactMethod
+    fun closeConversation(promise: Promise) {
+        try {
+            viewModel?.closeConversation()
+            Log.d(TAG, "closeConversation() called successfully")
+            promise.resolve(true)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error closing conversation", e)
+            promise.reject("ERROR", e.message)
+        }
+    }
+    
+    /**
+     * Start a new conversation (closes existing one)
+     * @param promise Promise to resolve with success/failure
+     */
+    @ReactMethod
+    fun startNewConversation(promise: Promise) {
+        Log.d(TAG, "startNewConversation() called")
+
+        try {
+            val activity = currentActivity
+            if (activity == null) {
+                Log.e(TAG, "Activity not available")
+                promise.reject("ERROR", "Activity not available")
+                return
+            }
+
+            // Check if configured
+            if (viewModel?.isConfigured?.value != true) {
+                Log.e(TAG, "SDK not configured")
+                promise.reject("ERROR", "SDK not configured. Call configure() first.")
+                return
+            }
+
+            // Close existing conversation and start fresh
+            viewModel?.startNewConversation()
+
+            // Launch conversation activity
+            val intent = Intent(activity, ServiceAgentConversationActivity::class.java)
+            activity.startActivity(intent)
+
+            Log.d(TAG, "New conversation started and activity launched")
+            promise.resolve(true)
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to start new conversation", e)
+            promise.reject("ERROR", "Failed to start new conversation: ${e.message}")
+        }
+    }
+    
+    /**
+     * Reset all settings to defaults
+     * @param promise Promise to resolve with success
+     */
+    @ReactMethod
+    fun resetSettings(promise: Promise) {
+        try {
+            viewModel?.resetConfiguration()
+            Log.d(TAG, "resetSettings() called successfully")
+            promise.resolve(true)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error resetting settings", e)
             promise.reject("ERROR", e.message)
         }
     }

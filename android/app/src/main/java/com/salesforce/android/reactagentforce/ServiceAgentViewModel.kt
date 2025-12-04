@@ -5,6 +5,8 @@
 package com.salesforce.android.reactagentforce
 
 import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -29,7 +31,13 @@ class ServiceAgentViewModel(application: Application) : AndroidViewModel(applica
 
     companion object {
         private const val TAG = "ServiceAgentViewModel"
+        private const val PREFS_NAME = "ServiceAgentPrefs"
+        private const val KEY_SERVICE_API_URL = "serviceApiURL"
+        private const val KEY_ORGANIZATION_ID = "organizationId"
+        private const val KEY_ES_DEVELOPER_NAME = "esDeveloperName"
     }
+    
+    private val prefs: SharedPreferences = application.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
     // Service Agent configuration
     private val _serviceApiURL = MutableStateFlow("")
@@ -51,9 +59,44 @@ class ServiceAgentViewModel(application: Application) : AndroidViewModel(applica
     val isConfigured: StateFlow<Boolean> = _isConfigured.asStateFlow()
     
     init {
-        // Sync state with holder
-        _isConfigured.value = AgentforceClientHolder.isConfigured
+        // Load saved configuration from SharedPreferences
+        loadConfiguration()
+        
+        // Update isConfigured based on loaded values
+        updateConfiguredState()
+        
+        // Sync conversation state with holder
         _conversation.value = AgentforceClientHolder.currentConversation
+    }
+    
+    /**
+     * Load configuration from SharedPreferences
+     */
+    private fun loadConfiguration() {
+        _serviceApiURL.value = prefs.getString(KEY_SERVICE_API_URL, "") ?: ""
+        _organizationId.value = prefs.getString(KEY_ORGANIZATION_ID, "") ?: ""
+        _esDeveloperName.value = prefs.getString(KEY_ES_DEVELOPER_NAME, "") ?: ""
+    }
+    
+    /**
+     * Update configured state based on current configuration values
+     */
+    private fun updateConfiguredState() {
+        val hasValidConfig = _serviceApiURL.value.isNotBlank() &&
+                             _organizationId.value.isNotBlank() &&
+                             _esDeveloperName.value.isNotBlank()
+        _isConfigured.value = hasValidConfig
+    }
+    
+    /**
+     * Save configuration to SharedPreferences
+     */
+    private fun saveConfiguration() {
+        prefs.edit()
+            .putString(KEY_SERVICE_API_URL, _serviceApiURL.value)
+            .putString(KEY_ORGANIZATION_ID, _organizationId.value)
+            .putString(KEY_ES_DEVELOPER_NAME, _esDeveloperName.value)
+            .commit()
     }
 
     /**
@@ -64,18 +107,41 @@ class ServiceAgentViewModel(application: Application) : AndroidViewModel(applica
         organizationId: String,
         esDeveloperName: String
     ) {
-        Log.d(TAG, "Updating configuration")
         _serviceApiURL.value = serviceApiURL
         _organizationId.value = organizationId
         _esDeveloperName.value = esDeveloperName
+        saveConfiguration()
+        updateConfiguredState()
+    }
+    
+    /**
+     * Get current configuration
+     */
+    fun getConfiguration(): Map<String, String> {
+        return mapOf(
+            "serviceApiURL" to _serviceApiURL.value,
+            "organizationId" to _organizationId.value,
+            "esDeveloperName" to _esDeveloperName.value
+        )
+    }
+    
+    /**
+     * Reset configuration to defaults
+     */
+    fun resetConfiguration() {
+        _serviceApiURL.value = ""
+        _organizationId.value = ""
+        _esDeveloperName.value = ""
+        _isConfigured.value = false
+        saveConfiguration()
+        AgentforceClientHolder.clear()
     }
 
     /**
      * Initialize Agentforce SDK with Service Agent mode
+     * Clears any existing client and conversation to start fresh
      */
     fun initializeAgentforce() {
-        Log.d(TAG, "initializeAgentforce() called")
-
         if (_serviceApiURL.value.isEmpty() ||
             _organizationId.value.isEmpty() ||
             _esDeveloperName.value.isEmpty()
@@ -84,9 +150,12 @@ class ServiceAgentViewModel(application: Application) : AndroidViewModel(applica
             return
         }
 
+        // Clear existing client and conversation when reconfiguring
+        AgentforceClientHolder.clear()
+        _conversation.value = null
+
         viewModelScope.launch {
             try {
-                Log.d(TAG, "Creating Service Agent configuration")
 
                 // Simple auth provider for Service Agent (no authentication needed)
                 val authCredentialProvider = object : AgentforceAuthCredentialProvider {
@@ -123,8 +192,6 @@ class ServiceAgentViewModel(application: Application) : AndroidViewModel(applica
                         .build()
                 )
 
-                Log.d(TAG, "Initializing AgentforceClient")
-
                 // Initialize client
                 val client = AgentforceClient()
                 client.init(
@@ -135,8 +202,6 @@ class ServiceAgentViewModel(application: Application) : AndroidViewModel(applica
                 // Store in shared holder
                 AgentforceClientHolder.setClient(client)
                 _isConfigured.value = true
-
-                Log.d(TAG, "Agentforce initialized successfully")
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to initialize Agentforce", e)
                 _isConfigured.value = false
@@ -146,10 +211,16 @@ class ServiceAgentViewModel(application: Application) : AndroidViewModel(applica
     }
 
     /**
-     * Start a new conversation
+     * Get or start a conversation (reuses existing if available)
      */
     fun startConversation() {
-        Log.d(TAG, "startConversation() called")
+        // Reuse existing conversation if available
+        val existingConversation = AgentforceClientHolder.currentConversation
+        if (existingConversation != null) {
+            _conversation.value = existingConversation
+            return
+        }
+        
         val client = AgentforceClientHolder.agentforceClient
         if (client == null) {
             Log.e(TAG, "AgentforceClient is null - not initialized")
@@ -158,15 +229,31 @@ class ServiceAgentViewModel(application: Application) : AndroidViewModel(applica
         
         viewModelScope.launch {
             try {
-                Log.d(TAG, "Starting conversation with client: $client")
                 val newConversation = client.startAgentforceConversation()
                 _conversation.value = newConversation
                 AgentforceClientHolder.setConversation(newConversation)
-                Log.d(TAG, "Conversation started successfully")
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to start conversation", e)
             }
         }
+    }
+    
+    /**
+     * Start a new conversation (closes existing one)
+     */
+    fun startNewConversation() {
+        closeConversation()
+        startConversation()
+    }
+    
+    /**
+     * Close the current conversation
+     * Android SDK doesn't require explicit conversation closure,
+     * just clear the reference to allow a new conversation to start
+     */
+    fun closeConversation() {
+        _conversation.value = null
+        AgentforceClientHolder.setConversation(null)
     }
 
     /**
@@ -174,7 +261,6 @@ class ServiceAgentViewModel(application: Application) : AndroidViewModel(applica
      */
     override fun onCleared() {
         super.onCleared()
-        Log.d(TAG, "ViewModel cleared")
         // Don't clear the shared client holder - it should persist
         _conversation.value = null
     }
