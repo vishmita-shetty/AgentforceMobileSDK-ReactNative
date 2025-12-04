@@ -1,217 +1,299 @@
-# Agentforce Service Agent Sample App (React Native)
+# Agentforce SDK React Native Sample App
 
-A lightweight React Native sample application demonstrating Service Agent integration with the Agentforce Mobile SDK for both Android and iOS.
+A lightweight React Native sample application demonstrating **Service Agent** integration with Salesforce Agentforce SDK for both **iOS** and **Android**.
 
-## ✨ Features
+## 🎯 What is a Service Agent?
 
-- **Lightweight**: Simplified 2-screen app (Home + Settings)
-- **No Authentication**: Service Agent mode requires no user authentication
-- **Simple Configuration**: Only 3 fields needed to get started
-- **Cross-Platform**: Full iOS and Android support
-- **Native SDK UI**: Uses pre-built Agentforce conversation interface
+Service Agent is a **lightweight mode** of Agentforce that:
+- ✅ **No Mobile SDK required** - Pure Agentforce SDK integration
+- ✅ **Guest user authentication** - No complex user management
+- ✅ **Simpler setup** - Fewer dependencies and configuration
+- ✅ **Perfect for customer service** - Anonymous user support scenarios
 
-## 📋 Requirements
+This differs from Employee Agent mode which requires full Salesforce Mobile SDK authentication.
 
-- **React Native**: 0.74.7+
-- **Node.js**: 18+
-- **Android**: SDK 29+ (Android 10+)
-- **iOS**: 17.0+
-- **Xcode**: 15+ (for iOS development)
-- **Android Studio**: Latest (for Android development)
+## 🏗️ Architecture
+
+### Android (Service Agent - Lightweight)
+- **Native Layer**: Kotlin + Jetpack Compose
+- **Pattern**: Singleton `AgentforceClientHolder` for lifecycle management
+- **UI**: Native `ServiceAgentConversationActivity` with Compose
+- **Auth**: Guest user credential provider
+
+### iOS (Service Agent - Lightweight)
+- **Native Layer**: Swift + SwiftUI
+- **Pattern**: Singleton `ServiceAgentManager` for lifecycle management
+- **UI**: Native `AgentforceConversationContainer` with SwiftUI
+- **Auth**: Guest user credential provider
+
+### JavaScript Layer (Common)
+- **Framework**: React Native + TypeScript
+- **Navigation**: React Navigation
+- **Bridge**: Native modules for SDK initialization and conversation launch
+- **Screens**: Home, Settings, About
+
+## 📋 Prerequisites
+
+### General
+- Node.js 18+ and npm/yarn
+- Git
+
+### Android
+- Android Studio
+- Android SDK 24+
+- Gradle 8.0+
+
+### iOS
+- macOS
+- Xcode 15+
+- CocoaPods
+- iOS 17.0+
 
 ## 🚀 Quick Start
 
 ### 1. Clone and Install
 
 ```bash
+# Clone the repository
 git clone <repository-url>
 cd AgentforceSDK-ReactNative
+
+# Install JavaScript dependencies
 npm install
 ```
 
-### 2. Configure Service Agent
+### 2. iOS Setup
 
-You'll need three values from your Salesforce org:
-
-- **Service API URL**: Your Salesforce instance URL (e.g., `https://your-domain.my.salesforce.com`)
-- **Organization ID**: Your 15 or 18 character Salesforce Org ID
-- **ES Developer Name**: The API name of your Einstein Service Agent
-
-### 3. Run the App
-
-**Android:**
 ```bash
-npm run android
-```
+# Run iOS setup script (installs pods)
+node installios.js
 
-**iOS:**
-```bash
-cd ios
-pod install
-cd ..
+# Run on iOS
 npm run ios
 ```
 
-### 4. Configure in the App
+### 3. Android Setup
 
-1. Launch the app
-2. Tap **Settings**
-3. Enter your three configuration values
-4. Tap **Save Configuration**
-5. Return to home and tap **Launch Agentforce**
+```bash
+# Android setup is automatic with Gradle
+# Just run the app directly
+npx react-native run-android
+```
 
-## 📱 App Structure
+## ⚙️ Configuration
+
+### Service Agent Settings
+
+When you first launch the app, navigate to **Settings** and configure:
+
+1. **Organization URL** (required)
+   - Example: `https://your-org.my.salesforce.com`
+
+2. **API Name** (required)
+   - The API name of your Service Agent in Salesforce
+   - Example: `My_Service_Agent`
+
+3. **Developer Name** (required)
+   - The developer name of your Service Agent
+   - Example: `My_Service_Agent`
+
+4. **Site URL** (required)
+   - Your Experience Cloud site URL
+   - Example: `https://your-site.force.com`
+
+5. **Save** the configuration
+
+### Testing the Conversation
+
+1. From the Home screen, tap **Launch Agentforce**
+2. The SDK will initialize with your configuration
+3. Native conversation UI will appear
+4. Start chatting with your Service Agent!
+
+## 📁 Project Structure
 
 ```
-├── App.tsx                      # Main navigation setup
-├── src/
+AgentforceSDK-ReactNative/
+├── src/                           # React Native JavaScript/TypeScript
 │   ├── screens/
-│   │   ├── HomeScreen.tsx       # Main screen with launch button
-│   │   └── SettingsScreen.tsx   # Configuration screen
-│   └── services/
-│       └── AgentforceService.ts # Native module bridge
-├── android/
-│   └── app/src/main/java/.../reactagentforce/
-│       ├── ServiceAgentModule.kt           # React Native bridge
-│       ├── ServiceAgentViewModel.kt        # SDK state management
-│       ├── ServiceAgentConversationActivity.kt # Compose UI
-│       └── ServiceAgentPackage.kt          # Module registration
-└── ios/
-    └── ReactAgentforce/ServiceAgent/
-        ├── ServiceAgentModule.swift        # ViewModel & auth provider
-        ├── ServiceAgentBridge.m            # Bridge header
-        └── ServiceAgentBridge.swift        # Bridge implementation
+│   │   ├── HomeScreen.tsx         # Home screen with launch button
+│   │   ├── SettingsScreen.tsx    # Service Agent configuration
+│   │   └── AboutScreen.tsx        # App information
+│   ├── services/
+│   │   └── AgentforceService.ts  # Bridge wrapper for native modules
+│   └── types/
+│       └── agentforce.types.ts   # TypeScript types
+├── android/                       # Android native code
+│   └── app/src/main/
+│       ├── java/.../agentforce/
+│       │   ├── AgentforceModule.kt              # RN bridge
+│       │   ├── AgentforceClientHolder.kt        # Singleton manager
+│       │   ├── ServiceAgentConversationActivity.kt  # Compose UI
+│       │   └── ServiceAgentCredentialProvider.kt    # Auth
+│       └── AndroidManifest.xml
+├── ios/                           # iOS native code
+│   └── ReactAgentforce/
+│       ├── Agentforce/
+│       │   ├── AgentforceModule.swift           # RN bridge
+│       │   ├── AgentforceModule.m               # ObjC bridge
+│       │   ├── ServiceAgentManager.swift        # Singleton manager
+│       │   └── ServiceAgentCredentialProvider.swift # Auth
+│       ├── AppDelegate.h
+│       └── AppDelegate.m
+└── App.tsx                        # Root component with navigation
 ```
 
-## 🔧 Configuration Details
+## 🔧 Development
 
-### Service API URL
-The base URL of your Salesforce instance. Find this in Setup → Company Information → Instance Name.
+### Running on Android
 
-Example: `https://mycompany.my.salesforce.com`
+```bash
+# Start Metro bundler
+npm start
 
-### Organization ID
-Your unique Salesforce organization identifier. Find this in Setup → Company Information → Organization ID.
+# In another terminal, run Android
+npx react-native run-android
 
-Example: `00D000000000000AAA`
+# View logs
+npx react-native log-android
+```
 
-### ES Developer Name
-The API name of your Einstein Service Agent configuration. Find this in Setup → Einstein Service Agents.
+### Running on iOS
 
-Example: `My_Service_Agent`
+```bash
+# Start Metro bundler
+npm start
 
-## 🏗️ Architecture
+# In another terminal, run iOS
+npm run ios
 
-### React Native Layer
-- **HomeScreen**: Displays configuration status and launch button
-- **SettingsScreen**: Simple form for three configuration fields
-- **AgentforceService**: TypeScript wrapper for native modules
+# View logs
+npx react-native log-ios
+```
 
-### Android Native Layer
-- **ServiceAgentModule**: Bridge between React Native and SDK
-- **ServiceAgentViewModel**: Manages SDK lifecycle and state
-- **ServiceAgentConversationActivity**: Jetpack Compose UI hosting
+### Debugging
 
-### iOS Native Layer
-- **ServiceAgentModule**: SwiftUI-based ViewModel managing state
-- **ServiceAgentBridge**: Objective-C/Swift bridge to React Native
-- **ConversationView**: SwiftUI wrapper for SDK UI
+- **React Native Debugger**: Use Flipper or React Native Debugger
+- **Native Android**: Use Android Studio logcat
+- **Native iOS**: Use Xcode console
+- **JavaScript logs**: Check Metro bundler output
 
-## 🔄 What Changed from Employee Agent?
+## 🧪 Testing
 
-This app was simplified from an Employee Agent demo to Service Agent:
+### Manual Testing Flow
 
-| Aspect | Employee Agent (Before) | Service Agent (After) |
-|--------|------------------------|----------------------|
-| **Authentication** | OAuth with Salesforce user login | No authentication required |
-| **Configuration** | Complex: agents array, auth, endpoints | Simple: 3 fields only |
-| **Dependencies** | Mobile SDK + Agentforce SDK | Agentforce SDK only |
-| **Code Lines** | ~1,400 (JS) + heavy native | ~400 (JS) + minimal native |
-| **Screens** | 3+ (Contacts, Details, Settings) | 2 (Home, Settings) |
-| **Use Case** | Internal employees | External customers/service |
+1. **Configuration Test**
+   - Open Settings
+   - Fill in all Service Agent fields
+   - Save and verify success message
 
-## 🧹 Removed Features
+2. **Initialization Test**
+   - Return to Home screen
+   - Tap "Launch Agentforce"
+   - Verify "Initializing..." message appears
 
-To keep this sample lightweight, the following were removed:
+3. **Conversation Test**
+   - Wait for conversation UI to load
+   - Send a test message
+   - Verify response from Service Agent
 
-- ❌ Salesforce Mobile SDK
-- ❌ OAuth authentication flows
-- ❌ Contact list and SOQL queries
-- ❌ Complex agent management (CRUD)
-- ❌ Navigation event interception
-- ❌ Multiple conversation management
-- ❌ Data persistence layers
-- ❌ react-native-force dependency
+4. **Error Handling Test**
+   - Try launching without configuration
+   - Verify appropriate error message
 
 ## 🐛 Troubleshooting
 
-### Android
+### iOS Issues
 
-**Issue**: Build fails with dependency conflicts
-```bash
-cd android
-./gradlew clean cleanBuildCache
-cd ..
-npm run android
-```
-
-**Issue**: "SDK not configured" error
-- Verify all three fields are filled in Settings
-- Check console logs for initialization errors
-
-### iOS
-
-**Issue**: Pod install fails
+**Pod install fails**
 ```bash
 cd ios
 pod deintegrate
-pod install
-cd ..
+pod cache clean --all
+pod install --repo-update
 ```
 
-**Issue**: Module 'AgentforceModule' not found
-- Clean build folder in Xcode (Cmd+Shift+K)
-- Rebuild the app
+**Build fails in Xcode**
+```bash
+# Clean build folder
+cd ios
+xcodebuild clean -workspace ReactAgentforce.xcworkspace -scheme ReactAgentforce
+# Rebuild
+npm run ios
+```
 
-## 📊 Performance
+### Android Issues
 
-- **APK Size**: ~8-10 MB (vs ~20 MB with Mobile SDK)
-- **Launch Time**: <2 seconds on modern devices
-- **Memory**: Minimal overhead, SDK handles conversation state
+**Gradle sync fails**
+```bash
+cd android
+./gradlew clean
+./gradlew build
+```
 
-## 🔐 Security
+**App crashes on launch**
+- Check Android logcat: `npx react-native log-android`
+- Verify SDK dependencies in `build.gradle`
+- Ensure minimum SDK version is 24+
 
-- No user credentials stored in the app
-- Service Agent uses organizational configuration only
-- All communication over HTTPS with Salesforce
-- Follow Salesforce security best practices for your org
+### JavaScript Issues
 
-## 📚 Additional Resources
+**Metro bundler errors**
+```bash
+npm start -- --reset-cache
+```
+
+**Navigation not working**
+- Verify `react-native-gesture-handler` is imported in `index.js`
+- Check that `GestureHandlerRootView` wraps the app
+
+## 📚 Key Differences from Employee Agent
+
+| Feature | Service Agent (This App) | Employee Agent |
+|---------|-------------------------|----------------|
+| **Authentication** | Guest user / Token-based | Full Salesforce OAuth |
+| **Mobile SDK** | ❌ Not required | ✅ Required |
+| **Setup Complexity** | Low | High |
+| **Use Cases** | Customer service, public support | Employee-facing apps |
+| **Dependencies** | Agentforce SDK only | Agentforce + Mobile SDK |
+
+## 🔐 Security Considerations
+
+### Service Agent Mode
+- Uses **guest user authentication** - suitable for public-facing scenarios
+- Credentials are managed per-conversation
+- No persistent user sessions
+- Suitable for customer service use cases
+
+### Important Notes
+- **Not for sensitive data**: Service Agent mode is designed for public support scenarios
+- **For employee apps**: Consider using Employee Agent mode with full Mobile SDK
+- **Production deployment**: Follow Salesforce security best practices
+
+## 📖 Additional Resources
 
 - [Agentforce SDK Documentation](https://developer.salesforce.com/docs/agentforce)
-- [Service Agent Setup Guide](https://help.salesforce.com/einstein-service)
-- [React Native Documentation](https://reactnative.dev/)
+- [React Native Documentation](https://reactnative.dev/docs/getting-started)
+- [Salesforce Mobile SDK](https://developer.salesforce.com/docs/platform/mobile-sdk)
 
 ## 🤝 Contributing
 
-This is a sample/demo application. For production use, consider:
-- Adding configuration persistence (AsyncStorage)
-- Implementing error recovery
-- Adding analytics/logging
-- Custom theming support
-- Localization
+This is a sample application for demonstration purposes. For production use:
+1. Add comprehensive error handling
+2. Implement proper state management (Redux/MobX)
+3. Add unit and integration tests
+4. Implement logging and analytics
+5. Follow security best practices
 
 ## 📄 License
 
-See LICENSE file for details.
+Copyright (c) 2024-present, salesforce.com, inc. All rights reserved.
+
+See LICENSE file for full details.
 
 ## 🆘 Support
 
-For issues with:
-- **Agentforce SDK**: Contact Salesforce Support
-- **This Sample App**: File an issue in this repository
-- **React Native**: See React Native documentation
-
----
-
-**Note**: This is a sample application intended for demonstration purposes. Customize according to your production requirements.
+For issues and questions:
+1. Check the troubleshooting section above
+2. Review Salesforce Developer documentation
+3. Raise an issue in this repository

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -21,6 +21,29 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   const [organizationId, setOrganizationId] = useState('');
   const [esDeveloperName, setEsDeveloperName] = useState('');
   const [loading, setLoading] = useState(false);
+  const [loadingConfig, setLoadingConfig] = useState(true);
+
+  // Load saved configuration on mount
+  useEffect(() => {
+    loadSavedConfiguration();
+  }, []);
+
+  const loadSavedConfiguration = async () => {
+    try {
+      setLoadingConfig(true);
+      const savedConfig = await AgentforceService.getConfiguration();
+      if (savedConfig) {
+        setServiceApiURL(savedConfig.serviceApiURL);
+        setOrganizationId(savedConfig.organizationId);
+        setEsDeveloperName(savedConfig.esDeveloperName);
+        console.log('Loaded saved configuration');
+      }
+    } catch (error) {
+      console.error('Failed to load saved configuration:', error);
+    } finally {
+      setLoadingConfig(false);
+    }
+  };
 
   const validateInputs = (): boolean => {
     if (!serviceApiURL.trim()) {
@@ -120,6 +143,13 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
             credentials. All three fields are required.
           </Text>
         </View>
+
+        {/* Loading Indicator */}
+        {loadingConfig && (
+          <View style={styles.loadingContainer}>
+            <Text style={styles.loadingText}>Loading saved configuration...</Text>
+          </View>
+        )}
 
         {/* Form Fields */}
         <View style={styles.formContainer}>
@@ -238,6 +268,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#6c757d',
     lineHeight: 20,
+  },
+  loadingContainer: {
+    padding: 16,
+    alignItems: 'center',
+    backgroundColor: '#e7f3ff',
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  loadingText: {
+    fontSize: 14,
+    color: '#0070f3',
+    fontWeight: '500',
   },
   formContainer: {
     backgroundColor: '#ffffff',
