@@ -106,7 +106,6 @@ UNCONFIGURED → CONFIGURED → INITIALIZED → CONVERSATION_ACTIVE
 #### Storage Keys
 ```swift
 "ServiceAgentOrgUrl"      → organizationId
-"ServiceAgentApiName"     → esDeveloperName (legacy key name)
 "ServiceAgentDevName"     → esDeveloperName
 "ServiceAgentSiteUrl"     → serviceApiURL
 ```
@@ -127,15 +126,14 @@ UNCONFIGURED → CONFIGURED → INITIALIZED → CONVERSATION_ACTIVE
 
 #### Read Pattern
 ```swift
-private func loadFromUserDefaults() {
-    orgUrl = UserDefaults.standard.string(forKey: "ServiceAgentOrgUrl") ?? ""
-    apiName = UserDefaults.standard.string(forKey: "ServiceAgentApiName") ?? ""
-    devName = UserDefaults.standard.string(forKey: "ServiceAgentDevName") ?? ""
-    siteUrl = UserDefaults.standard.string(forKey: "ServiceAgentSiteUrl") ?? ""
-    
-    credentialProvider.updateConfiguration(organizationUrl: orgUrl)
-    validateConfiguration()
-}
+    private func loadFromUserDefaults() {
+        orgUrl = UserDefaults.standard.string(forKey: "ServiceAgentOrgUrl") ?? ""
+        devName = UserDefaults.standard.string(forKey: "ServiceAgentDevName") ?? ""
+        siteUrl = UserDefaults.standard.string(forKey: "ServiceAgentSiteUrl") ?? ""
+        
+        credentialProvider.updateConfiguration(organizationUrl: orgUrl)
+        validateConfiguration()
+    }
 ```
 
 **Trigger**: `init()` of ServiceAgentManager singleton
@@ -392,8 +390,7 @@ fun initializeAgentforce() {
 **iOS**:
 ```swift
 var isConfigured: Bool {
-    !orgUrl.isEmpty && !apiName.isEmpty && 
-    !devName.isEmpty && !siteUrl.isEmpty
+    !orgUrl.isEmpty && !devName.isEmpty && !siteUrl.isEmpty
 }
 ```
 

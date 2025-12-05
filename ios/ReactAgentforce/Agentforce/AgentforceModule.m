@@ -15,7 +15,6 @@ RCT_EXTERN_METHOD(configure:(NSString *)serviceApiURL
                   rejecter:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(initializeServiceAgent:(NSString *)orgUrl
-                  apiName:(NSString *)apiName
                   devName:(NSString *)devName
                   siteUrl:(NSString *)siteUrl
                   resolver:(RCTPromiseResolveBlock)resolve
