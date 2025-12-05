@@ -103,9 +103,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
           <View style={styles.featureCard}>
             <Text style={styles.featureIcon}>⚡</Text>
-            <Text style={styles.featureTitle}>No Authentication</Text>
+            <Text style={styles.featureTitle}>Simple Setup</Text>
             <Text style={styles.featureDescription}>
-              Simple 3-field configuration
+              Just 3 configuration parameters
             </Text>
           </View>
 

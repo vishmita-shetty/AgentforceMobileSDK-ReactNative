@@ -28,12 +28,6 @@ class ServiceAgentManager: ObservableObject {
         }
     }
     
-    @Published var apiName: String = "" {
-        didSet {
-            UserDefaults.standard.set(apiName, forKey: "ServiceAgentApiName")
-        }
-    }
-    
     @Published var devName: String = "" {
         didSet {
             UserDefaults.standard.set(devName, forKey: "ServiceAgentDevName")
@@ -70,7 +64,6 @@ class ServiceAgentManager: ObservableObject {
     
     private func loadFromUserDefaults() {
         orgUrl = UserDefaults.standard.string(forKey: "ServiceAgentOrgUrl") ?? ""
-        apiName = UserDefaults.standard.string(forKey: "ServiceAgentApiName") ?? ""
         devName = UserDefaults.standard.string(forKey: "ServiceAgentDevName") ?? ""
         siteUrl = UserDefaults.standard.string(forKey: "ServiceAgentSiteUrl") ?? ""
         
@@ -83,12 +76,10 @@ class ServiceAgentManager: ObservableObject {
     /// Update all configuration values at once
     func configure(
         orgUrl: String,
-        apiName: String,
         devName: String,
         siteUrl: String
     ) {
         self.orgUrl = orgUrl.trimmingCharacters(in: .whitespacesAndNewlines)
-        self.apiName = apiName.trimmingCharacters(in: .whitespacesAndNewlines)
         self.devName = devName.trimmingCharacters(in: .whitespacesAndNewlines)
         self.siteUrl = siteUrl.trimmingCharacters(in: .whitespacesAndNewlines)
         
@@ -99,7 +90,6 @@ class ServiceAgentManager: ObservableObject {
     /// Validate that all required fields are present
     private func validateConfiguration() {
         isConfigured = !orgUrl.isEmpty &&
-                       !apiName.isEmpty &&
                        !devName.isEmpty &&
                        !siteUrl.isEmpty
     }
@@ -217,7 +207,6 @@ class ServiceAgentManager: ObservableObject {
     /// Reset all settings to defaults
     func resetToDefaults() {
         orgUrl = ""
-        apiName = ""
         devName = ""
         siteUrl = ""
         cleanupSDK()

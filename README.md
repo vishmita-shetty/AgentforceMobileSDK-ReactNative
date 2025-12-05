@@ -2,29 +2,33 @@
 
 A lightweight React Native sample application demonstrating **Service Agent** integration with Salesforce Agentforce SDK for both **iOS** and **Android**.
 
-## 🎯 What is a Service Agent?
+## 🎯 Overview
 
-Service Agent is a **lightweight mode** of Agentforce that:
-- ✅ **No Mobile SDK required** - Pure Agentforce SDK integration
-- ✅ **Guest user authentication** - No complex user management
-- ✅ **Simpler setup** - Fewer dependencies and configuration
-- ✅ **Perfect for customer service** - Anonymous user support scenarios
+This sample app demonstrates how to integrate the Agentforce Mobile SDK with **Service Agents** in your React Native applications for both iOS and Android.
 
-This differs from Employee Agent mode which requires full Salesforce Mobile SDK authentication.
+The Agentforce Mobile SDK empowers you to integrate Salesforce's trusted AI platform directly into your mobile applications. Service Agents provide AI-powered conversational experiences for customer support scenarios.
+
+## ✨ Features
+
+- **Service Agent Configuration** - Configure and initialize the SDK with Service Agent settings
+- **Full UI Experience** - Use the pre-built chat interface provided by the Agentforce SDK
+- **Cross-Platform** - Single codebase for both iOS and Android with native SDK integration
+- **Persistent Configuration** - Settings are saved and restored automatically
+- **Conversation Continuity** - Conversations persist across app launches
 
 ## 🏗️ Architecture
 
-### Android (Service Agent - Lightweight)
+### Android
 - **Native Layer**: Kotlin + Jetpack Compose
 - **Pattern**: Singleton `AgentforceClientHolder` for lifecycle management
 - **UI**: Native `ServiceAgentConversationActivity` with Compose
-- **Auth**: Guest user credential provider
+- **SDK Integration**: Service Agent mode with simplified credential provider
 
-### iOS (Service Agent - Lightweight)
+### iOS
 - **Native Layer**: Swift + SwiftUI
 - **Pattern**: Singleton `ServiceAgentManager` for lifecycle management
 - **UI**: Native `AgentforceConversationContainer` with SwiftUI
-- **Auth**: Guest user credential provider
+- **SDK Integration**: Service Agent mode with simplified credential provider
 
 ### JavaScript Layer (Common)
 - **Framework**: React Native + TypeScript
@@ -86,22 +90,19 @@ npx react-native run-android
 
 When you first launch the app, navigate to **Settings** and configure:
 
-1. **Organization URL** (required)
-   - Example: `https://your-org.my.salesforce.com`
+1. **Service API URL** (required)
+   - Your Salesforce instance URL
+   - Example: `https://your-domain.my.salesforce.com`
 
-2. **API Name** (required)
-   - The API name of your Service Agent in Salesforce
-   - Example: `My_Service_Agent`
+2. **Organization ID** (required)
+   - Your 15 or 18 character Salesforce Org ID
+   - Example: `00D000000000000`
 
-3. **Developer Name** (required)
-   - The developer name of your Service Agent
-   - Example: `My_Service_Agent`
+3. **ES Developer Name** (required)
+   - The API name of your Einstein Service Agent
+   - Example: `Your_Service_Agent_Name`
 
-4. **Site URL** (required)
-   - Your Experience Cloud site URL
-   - Example: `https://your-site.force.com`
-
-5. **Save** the configuration
+4. **Save** the configuration
 
 ### Testing the Conversation
 
@@ -246,54 +247,3 @@ npm start -- --reset-cache
 **Navigation not working**
 - Verify `react-native-gesture-handler` is imported in `index.js`
 - Check that `GestureHandlerRootView` wraps the app
-
-## 📚 Key Differences from Employee Agent
-
-| Feature | Service Agent (This App) | Employee Agent |
-|---------|-------------------------|----------------|
-| **Authentication** | Guest user / Token-based | Full Salesforce OAuth |
-| **Mobile SDK** | ❌ Not required | ✅ Required |
-| **Setup Complexity** | Low | High |
-| **Use Cases** | Customer service, public support | Employee-facing apps |
-| **Dependencies** | Agentforce SDK only | Agentforce + Mobile SDK |
-
-## 🔐 Security Considerations
-
-### Service Agent Mode
-- Uses **guest user authentication** - suitable for public-facing scenarios
-- Credentials are managed per-conversation
-- No persistent user sessions
-- Suitable for customer service use cases
-
-### Important Notes
-- **Not for sensitive data**: Service Agent mode is designed for public support scenarios
-- **For employee apps**: Consider using Employee Agent mode with full Mobile SDK
-- **Production deployment**: Follow Salesforce security best practices
-
-## 📖 Additional Resources
-
-- [Agentforce SDK Documentation](https://developer.salesforce.com/docs/agentforce)
-- [React Native Documentation](https://reactnative.dev/docs/getting-started)
-- [Salesforce Mobile SDK](https://developer.salesforce.com/docs/platform/mobile-sdk)
-
-## 🤝 Contributing
-
-This is a sample application for demonstration purposes. For production use:
-1. Add comprehensive error handling
-2. Implement proper state management (Redux/MobX)
-3. Add unit and integration tests
-4. Implement logging and analytics
-5. Follow security best practices
-
-## 📄 License
-
-Copyright (c) 2024-present, salesforce.com, inc. All rights reserved.
-
-See LICENSE file for full details.
-
-## 🆘 Support
-
-For issues and questions:
-1. Check the troubleshooting section above
-2. Review Salesforce Developer documentation
-3. Raise an issue in this repository

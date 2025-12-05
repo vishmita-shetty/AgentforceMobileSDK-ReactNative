@@ -42,10 +42,9 @@ class AgentforceModule: NSObject {
                 // Map JavaScript parameters to native configuration:
                 // - serviceApiURL -> siteUrl (the Service API endpoint)
                 // - organizationId -> orgUrl (the organization URL/ID)
-                // - esDeveloperName -> devName AND apiName (Einstein Service developer name)
+                // - esDeveloperName -> devName (Einstein Service developer name)
                 ServiceAgentManager.shared.configure(
                     orgUrl: organizationId,
-                    apiName: esDeveloperName,
                     devName: esDeveloperName,
                     siteUrl: serviceApiURL
                 )
@@ -67,7 +66,6 @@ class AgentforceModule: NSObject {
     @objc
     func initializeServiceAgent(
         _ orgUrl: String,
-        apiName: String,
         devName: String,
         siteUrl: String,
         resolver resolve: @escaping RCTPromiseResolveBlock,
@@ -78,7 +76,6 @@ class AgentforceModule: NSObject {
                 // Update configuration
                 ServiceAgentManager.shared.configure(
                     orgUrl: orgUrl,
-                    apiName: apiName,
                     devName: devName,
                     siteUrl: siteUrl
                 )

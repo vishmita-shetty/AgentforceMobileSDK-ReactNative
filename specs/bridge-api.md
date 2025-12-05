@@ -16,8 +16,8 @@ Configures and initializes the Service Agent SDK with provided credentials.
 ```typescript
 interface ServiceAgentConfig {
   serviceApiURL: string;      // Salesforce instance URL (e.g., "https://example.my.salesforce.com")
-  organizationId: string;     // Organization ID or URL
-  esDeveloperName: string;    // Einstein Service developer name
+  organizationId: string;     // Salesforce Organization ID (15 or 18 character ID)
+  esDeveloperName: string;    // Einstein Service Agent developer name
 }
 ```
 
@@ -215,7 +215,6 @@ Task { @MainActor in
     do {
         ServiceAgentManager.shared.configure(
             orgUrl: organizationId,
-            apiName: esDeveloperName,
             devName: esDeveloperName,
             siteUrl: serviceApiURL
         )
