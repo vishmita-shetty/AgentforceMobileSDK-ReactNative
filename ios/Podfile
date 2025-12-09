@@ -9,7 +9,7 @@ use_frameworks!
 
 project 'ReactAgentforce.xcodeproj'
 target 'ReactAgentforce' do
-  # CocoaPods Sources
+  source 'https://github.com/forcedotcom/SalesforceMobileSDK-iOS-Specs.git'
   source 'https://github.com/livekit/podspecs.git'
   source 'https://cdn.cocoapods.org/'
 
@@ -17,35 +17,23 @@ target 'ReactAgentforce' do
 
   use_react_native!(
     :path => $config[:reactNativePath],
-    :app_path => "#{Pod::Config.instance.installation_root}/..",
-    :hermes_enabled => false
+    # An absolute path to your application root.
+    :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  # ========================================
-  # Agentforce SDK - Service Agent Mode
-  # ========================================
-  # Note: Service Agent does NOT require SalesforceMobileSDK
-  
-  $artifactory_url = 'https://rpm.repo.local.sfdc.net/artifactory/api/pods/cocoapods-mobe'
-  
-  # Core Agentforce SDK
-  pod 'AgentforceSDK', '~> 14.8.4', :source => $artifactory_url
-  pod 'AgentforceService', '~> 4.3.0', :source => $artifactory_url
-  
-  # Messaging Framework (binary)
-  pod 'Messaging-InApp-Core', :podspec => './Frameworks/Messaging-InApp-Core/Messaging-InApp-Core-binary.podspec'
-  
-  # LiveKit for voice/video capabilities
-  pod 'LiveKitClient'
-  
-  # Markdown rendering for rich text
-  pod 'swift-markdown-ui', :git => 'https://git.soma.salesforce.com/iOS/swift-markdown-ui.git', :branch => 'main'
-  pod 'cmark_gfm', :git => 'https://git.soma.salesforce.com/iOS/swift-markdown-ui.git', :branch => 'main'
-  
-  # Required Swift dependencies
+  pod 'AgentforceSDK'
+  pod 'Messaging-InApp-Core', '1.9.3-Experimental' #AgentforceSDK uses a pre-release version of this for now
+  pod 'LiveKitClient' #This is required to ensure Cocoapods looks in the correct source location
+
   pod 'DequeModule'
   pod 'InternalCollectionsUtilities'
   pod 'OrderedCollections'
+
+  pod 'Logging', '1.4.0'
+
+  # swift-markdown-ui from git repository
+  pod "swift-markdown-ui", :git => 'https://github.com/salesforce-misc/swift-markdown-ui.git', :branch => 'main'
+  pod "cmark_gfm", :git => 'https://github.com/salesforce-misc/swift-markdown-ui.git', :branch => 'main'
 
 end
 
