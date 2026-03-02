@@ -56,6 +56,14 @@ post_install do |installer|
       # Enable module stability
       config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
       
+      if target.name == 'cmark_gfm'
+        config.build_settings['USE_HEADERMAP'] = 'NO'
+        src = "#{Pod::Config.instance.installation_root}/Pods/cmark_gfm/Sources/cmark-gfm"
+        # Use only cmark's paths (no $(inherited)) to avoid picking up React  Native's
+        # Yoga Config.h (C++) instead of cmark's config.h (C) - which causes 'bitset' not found
+        config.build_settings['HEADER_SEARCH_PATHS'] = ["#{src}/include", src]
+      end
+      
       # Disable code signing for frameworks
       if defined?(target.product_type) && target.product_type == "com.apple.product-type.framework"
         config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
